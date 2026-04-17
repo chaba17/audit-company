@@ -1136,9 +1136,19 @@ h2.display, .display {
 /* ---------- Pricing ---------- */
 .pricing-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 0;
   border: 1px solid var(--color-line);
+}
+.pricing-grid[data-count="1"] { grid-template-columns: 1fr; max-width: 420px; margin: 0 auto; }
+.pricing-grid[data-count="2"] { grid-template-columns: repeat(2, 1fr); max-width: 780px; margin: 0 auto; }
+.pricing-grid[data-count="3"] { grid-template-columns: repeat(3, 1fr); }
+.pricing-grid[data-count="4"] { grid-template-columns: repeat(4, 1fr); }
+.pricing-grid[data-count="5"], .pricing-grid[data-count="6"] { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+@media (max-width: 1100px) {
+  .pricing-grid[data-count="4"], .pricing-grid[data-count="5"], .pricing-grid[data-count="6"] {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 .price-card {
   padding: 44px 36px;
@@ -1149,6 +1159,21 @@ h2.display, .display {
   position: relative;
 }
 .price-card:last-child { border-right: none; }
+/* When plans wrap (4+), fix borders for each row */
+.pricing-grid[data-count="4"] .price-card:nth-child(4n) { border-right: none; }
+@media (max-width: 1100px) {
+  .pricing-grid[data-count="4"] .price-card,
+  .pricing-grid[data-count="5"] .price-card,
+  .pricing-grid[data-count="6"] .price-card {
+    border-right: 1px solid var(--color-line);
+    border-bottom: 1px solid var(--color-line);
+  }
+  .pricing-grid[data-count="4"] .price-card:nth-child(2n) { border-right: none; }
+}
+@media (max-width: 640px) {
+  .pricing-grid .price-card { border-right: none !important; border-bottom: 1px solid var(--color-line); }
+  .pricing-grid .price-card:last-child { border-bottom: none; }
+}
 .price-card:hover { background: var(--color-gray-50); }
 .price-card.featured {
   background: var(--color-ink);

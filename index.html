@@ -355,10 +355,10 @@
   <script src="assets/js/main.js?v=1776462985"></script>
   <script src="assets/js/content-loader.js?v=1776462985"></script>
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      setTimeout(() => {
-        const lang = localStorage.getItem("lang") || "ka";
-        const t = window.translations[lang];
+    function renderDynamicSections() {
+      const lang = localStorage.getItem("lang") || "ka";
+      const t = window.translations?.[lang];
+      if (!t) return;
 
         // Services
         const servicesEl = document.getElementById("services-grid");
@@ -383,10 +383,15 @@
         // Pricing
         const pricingEl = document.getElementById("pricing-grid");
         if (pricingEl) {
-          pricingEl.innerHTML = t.pricing.plans.map((plan, i) => {
-            const featured = i === 1 ? "featured" : "";
-            const badgeHtml = i === 1 ? `<span class="price-badge" data-i18n="pricing.popular"></span>` : `<span class="price-badge">PLAN 0${i + 1}</span>`;
-            const features = plan.features.map((_, fi) => `
+          const plans = t.pricing.plans || [];
+          pricingEl.setAttribute("data-count", plans.length);
+          pricingEl.innerHTML = plans.map((plan, i) => {
+            const isFeatured = plan.badge || (plans.length === 3 && i === 1);
+            const featured = isFeatured ? "featured" : "";
+            const badgeHtml = isFeatured
+              ? `<span class="price-badge">${plan.badge || t.pricing.popular}</span>`
+              : `<span class="price-badge">PLAN 0${i + 1}</span>`;
+            const features = (plan.features || []).map((_, fi) => `
               <li class="price-feature-item">
                 <span class="check"></span>
                 <span data-i18n="pricing.plans.${i}.features.${fi}"></span>
@@ -403,7 +408,7 @@
                   <span class="period" data-i18n="pricing.monthly"></span>
                 </div>
                 <ul class="price-features">${features}</ul>
-                <a href="contact.html" class="btn ${i === 1 ? 'btn-yellow' : 'btn-outline'}" data-i18n="pricing.cta_start"></a>
+                <a href="contact.html" class="btn ${isFeatured ? 'btn-yellow' : 'btn-outline'}" data-i18n="pricing.cta_start"></a>
               </div>
             `;
           }).join("");
@@ -452,8 +457,9 @@
           }, { threshold: 0.1 });
           io.observe(el);
         });
-      }, 50);
-    });
+    }
+    document.addEventListener("DOMContentLoaded", () => setTimeout(renderDynamicSections, 50));
+    document.addEventListener("content-loaded", () => setTimeout(renderDynamicSections, 50));
   </script>
 
 </body>

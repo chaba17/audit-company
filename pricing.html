@@ -90,44 +90,107 @@
   <script src="assets/js/main.js?v=1776462985"></script>
   <script src="assets/js/content-loader.js?v=1776462985"></script>
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      setTimeout(() => {
-        const lang = localStorage.getItem("lang") || "ka";
-        const t = window.translations[lang];
-        const pricingEl = document.getElementById("pricing-grid");
-        pricingEl.innerHTML = t.pricing.plans.map((plan, i) => {
-          const featured = i === 1 ? "featured" : "";
-          const badgeHtml = i === 1 ? `<span class="price-badge" data-i18n="pricing.popular"></span>` : `<span class="price-badge">PLAN 0${i + 1}</span>`;
-          const features = plan.features.map((_, fi) => `
-            <li class="price-feature-item">
-              <span class="check"></span>
-              <span data-i18n="pricing.plans.${i}.features.${fi}"></span>
-            </li>
-          `).join("");
-          return `
-            <div class="price-card ${featured} reveal">
-              ${badgeHtml}
-              <h3 class="price-title" data-i18n="pricing.plans.${i}.name"></h3>
-              <p class="price-desc" data-i18n="pricing.plans.${i}.desc"></p>
-              <div class="price-amount">
-                <span class="currency" data-i18n="pricing.plans.${i}.currency"></span>
-                <strong data-i18n="pricing.plans.${i}.price"></strong>
-                <span class="period" data-i18n="pricing.monthly"></span>
-              </div>
-              <ul class="price-features">${features}</ul>
-              <a href="contact.html" class="btn ${i === 1 ? 'btn-yellow' : 'btn-outline'}" data-i18n="pricing.cta_start"></a>
+    function renderPricing() {
+      const lang = localStorage.getItem("lang") || "ka";
+      const t = window.translations?.[lang];
+      if (!t?.pricing?.plans) return;
+      const plans = t.pricing.plans;
+      const pricingEl = document.getElementById("pricing-grid");
+      if (!pricingEl) return;
+
+      pricingEl.setAttribute("data-count", plans.length);
+      pricingEl.innerHTML = plans.map((plan, i) => {
+        // Use `badge` from content if present, else fall back to "popular" for middle, else PLAN
+        const isFeatured = plan.badge || (plans.length === 3 && i === 1);
+        const featured = isFeatured ? "featured" : "";
+        const badgeHtml = isFeatured
+          ? `<span class="price-badge">${plan.badge || t.pricing.popular}</span>`
+          : `<span class="price-badge">PLAN 0${i + 1}</span>`;
+        const features = (plan.features || []).map((_, fi) => `
+          <li class="price-feature-item">
+            <span class="check"></span>
+            <span data-i18n="pricing.plans.${i}.features.${fi}"></span>
+          </li>
+        `).join("");
+        return `
+          <div class="price-card ${featured} reveal">
+            ${badgeHtml}
+            <h3 class="price-title" data-i18n="pricing.plans.${i}.name"></h3>
+            <p class="price-desc" data-i18n="pricing.plans.${i}.desc"></p>
+            <div class="price-amount">
+              <span class="currency" data-i18n="pricing.plans.${i}.currency"></span>
+              <strong data-i18n="pricing.plans.${i}.price"></strong>
+              <span class="period" data-i18n="pricing.monthly"></span>
             </div>
-          `;
-        }).join("");
-        window.applyTranslations(lang);
-        document.querySelectorAll(".reveal").forEach(el => {
-          if (el.classList.contains("visible")) return;
-          const io = new IntersectionObserver((entries) => {
-            entries.forEach(e => { if (e.isIntersecting) { el.classList.add("visible"); io.unobserve(el); } });
-          }, { threshold: 0.1 });
-          io.observe(el);
-        });
-      }, 50);
+            <ul class="price-features">${features}</ul>
+            <a href="contact.html" class="btn ${isFeatured ? 'btn-yellow' : 'btn-outline'}" data-i18n="pricing.cta_start"></a>
+          </div>
+        `;
+      }).join("");
+
+      window.applyTranslations(lang);
+      document.querySelectorAll(".reveal").forEach(el => {
+        if (el.classList.contains("visible")) return;
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach(e => { if (e.isIntersecting) { el.classList.add("visible"); io.unobserve(el); } });
+        }, { threshold: 0.1 });
+        io.observe(el);
+      });
+
+      // Rebuild comparison table dynamically
+      buildComparisonTable(plans);
+    }
+
+    function buildComparisonTable(plans) {
+      const tableWrap = document.querySelector(".section.bg-soft table");
+      if (!tableWrap || !plans?.length) return;
+
+      const headerRow = `
+        <tr style="border-bottom: 2px solid var(--color-ink);">
+          <th style="text-align: left; padding: 20px 24px; font-family: var(--font-sans); font-size: 12px; font-weight: 600; color: var(--color-muted); text-transform: uppercase; letter-spacing: 0.08em;">მახასიათებელი</th>
+          ${plans.map((p, i) => {
+            const isFeatured = p.badge || (plans.length === 3 && i === 1);
+            return `<th style="padding: 20px 24px; font-family: var(--font-display); font-size: 17px; font-weight: 800; ${isFeatured ? 'background: var(--color-yellow);' : ''}">${p.name || ''}</th>`;
+          }).join("")}
+        </tr>
+      `;
+
+      const priceRow = `
+        <tr style="border-top: 1px solid var(--color-line);">
+          <td style="padding: 16px 24px; font-weight: 600;">თვიური ფასი</td>
+          ${plans.map((p, i) => {
+            const isFeatured = p.badge || (plans.length === 3 && i === 1);
+            return `<td style="text-align:center; font-weight: 700; ${isFeatured ? 'background: rgba(255,230,0,0.08);' : ''}">${p.currency || ''} ${p.price || ''}</td>`;
+          }).join("")}
+        </tr>
+      `;
+
+      // Collect unique feature texts across all plans — use first plan's features as canonical rows
+      const maxFeat = Math.max(...plans.map(p => (p.features || []).length));
+      const featureRows = [];
+      for (let fi = 0; fi < maxFeat; fi++) {
+        const label = plans[0].features?.[fi] || plans.find(p => p.features?.[fi])?.features[fi] || `მახასიათებელი ${fi+1}`;
+        featureRows.push(`
+          <tr style="border-top: 1px solid var(--color-line);">
+            <td style="padding: 16px 24px;">${label.length > 60 ? label.substring(0, 60) + '...' : label}</td>
+            ${plans.map((p, i) => {
+              const has = !!(p.features && p.features[fi]);
+              const isFeatured = p.badge || (plans.length === 3 && i === 1);
+              return `<td style="text-align:center; ${isFeatured ? 'background: rgba(255,230,0,0.08);' : ''}">${has ? '<span style="color: var(--color-success, #10B981); font-weight: 700;">✓</span>' : '<span style="color: var(--color-muted);">—</span>'}</td>`;
+            }).join("")}
+          </tr>
+        `);
+      }
+
+      tableWrap.innerHTML = `<thead>${headerRow}</thead><tbody style="font-size: 14.5px;">${priceRow}${featureRows.join("")}</tbody>`;
+      tableWrap.style.minWidth = Math.max(720, 200 + plans.length * 180) + "px";
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      setTimeout(renderPricing, 50);
+    });
+    document.addEventListener("content-loaded", () => {
+      setTimeout(renderPricing, 50);
     });
   </script>
 </body>
