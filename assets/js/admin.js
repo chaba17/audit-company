@@ -232,6 +232,7 @@
 
       toast('✅ ცვლილებები გამოქვეყნებულია! Vercel 30-60 წამში გაააქტიურებს.', 'success', 5000);
       console.log('Commit:', result.commit?.html_url);
+      logActivity('publish', 'content.json → GitHub', 'publish');
     } catch (err) {
       if (err.message === 'NO_TOKEN') {
         toast('❌ ჯერ GitHub Token-ი უნდა დააყენო. წადი → Settings', 'error', 5000);
@@ -270,6 +271,7 @@
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state.content));
     markClean();
     toast('ცვლილებები წარმატებით შენახულია!', 'success');
+    logActivity('update', 'კონტენტი შენახულია', state.currentSection);
     updateBadges();
   }
 
@@ -359,7 +361,15 @@
       footer: 'Footer',
       translations: 'Translations',
       import: 'Import / Restore',
-      settings: 'Settings'
+      settings: 'Settings',
+      seo: 'SEO Dashboard',
+      meta: 'Meta Tags',
+      sitemap: 'Sitemap',
+      analytics: 'Analytics',
+      media: 'Media Library',
+      theme: 'Theme & Colors',
+      activity: 'Activity Log',
+      shortcuts: 'Keyboard Shortcuts'
     };
     $('#current-section-label').textContent = labels[section] || section;
     renderSection(section);
@@ -386,7 +396,15 @@
       footer: renderFooter,
       translations: renderTranslations,
       import: renderImport,
-      settings: renderSettings
+      settings: renderSettings,
+      seo: renderSEO,
+      meta: renderMeta,
+      sitemap: renderSitemap,
+      analytics: renderAnalytics,
+      media: renderMedia,
+      theme: renderTheme,
+      activity: renderActivity,
+      shortcuts: renderShortcuts
     };
     const renderer = renderers[section] || renderDashboard;
     main.innerHTML = renderer();
@@ -407,7 +425,15 @@
       footer: attachFooter,
       translations: attachTranslations,
       import: attachImport,
-      settings: attachSettings
+      settings: attachSettings,
+      seo: attachSEO,
+      meta: attachMeta,
+      sitemap: attachSitemap,
+      analytics: attachAnalytics,
+      media: attachMedia,
+      theme: attachTheme,
+      activity: attachActivity,
+      shortcuts: () => {}
     };
     if (attachers[section]) attachers[section]();
     // Scroll to top
@@ -728,6 +754,11 @@
   function attachHero() {
     attachFieldListeners();
     attachImagePreview();
+    // Rich text editor on subtitle
+    const sub = document.querySelector('[data-field="hero.subtitle"]');
+    if (sub && sub.tagName === 'TEXTAREA') {
+      makeRichEditor(sub);
+    }
   }
 
   // --- SERVICES ---
@@ -1584,6 +1615,8 @@
 
   function attachFooter() {
     attachFieldListeners();
+    const f = document.querySelector('[data-field="footer.about"]');
+    if (f && f.tagName === 'TEXTAREA') makeRichEditor(f);
   }
 
   // --- TRANSLATIONS ---
@@ -1793,6 +1826,913 @@
     });
   }
 
+  // ====== ACTIVITY LOG ======
+  const ACTIVITY_KEY = 'audit_activity_log';
+  function logActivity(action, title, section) {
+    const log = JSON.parse(localStorage.getItem(ACTIVITY_KEY) || '[]');
+    log.unshift({ action, title, section, time: Date.now() });
+    // Keep last 100
+    if (log.length > 100) log.length = 100;
+    localStorage.setItem(ACTIVITY_KEY, JSON.stringify(log));
+  }
+  function getActivityLog() { return JSON.parse(localStorage.getItem(ACTIVITY_KEY) || '[]'); }
+  function clearActivityLog() { localStorage.removeItem(ACTIVITY_KEY); }
+
+  function timeAgo(ts) {
+    const diff = Date.now() - ts;
+    const min = Math.floor(diff / 60000);
+    const hr = Math.floor(diff / 3600000);
+    const days = Math.floor(diff / 86400000);
+    if (days > 0) return days + 'd';
+    if (hr > 0) return hr + 'h';
+    if (min > 0) return min + 'm';
+    return 'ახლახან';
+  }
+
+  // ====== RICH TEXT EDITOR (Quill) ======
+  const editorInstances = new Map();
+
+  function makeRichEditor(selector, onChange) {
+    const el = typeof selector === 'string' ? document.querySelector(selector) : selector;
+    if (!el || typeof Quill === 'undefined') return null;
+    const initialValue = el.value || el.textContent || '';
+    const holder = document.createElement('div');
+    holder.className = 'quill-holder';
+    el.parentNode.insertBefore(holder, el);
+    el.style.display = 'none';
+
+    const quill = new Quill(holder, {
+      theme: 'snow',
+      placeholder: el.placeholder || 'ჩაწერე ტექსტი...',
+      modules: {
+        toolbar: [
+          [{ header: [1, 2, 3, false] }],
+          ['bold', 'italic', 'underline'],
+          [{ color: [] }, { background: [] }],
+          [{ list: 'ordered' }, { list: 'bullet' }],
+          ['link', 'blockquote'],
+          ['clean']
+        ]
+      }
+    });
+
+    quill.root.innerHTML = initialValue;
+    quill.on('text-change', () => {
+      const html = quill.root.innerHTML;
+      el.value = html === '<p><br></p>' ? '' : html;
+      if (onChange) onChange(el.value);
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+
+    editorInstances.set(el, quill);
+    return quill;
+  }
+
+  // ====== SEO DASHBOARD ======
+  function renderSEO() {
+    const c = state.content;
+    const checks = [];
+
+    // Site name check
+    checks.push({
+      title: 'საიტის სახელი',
+      desc: c.site?.name ? `დაყენებულია: ${c.site.name}` : 'სახელი დაყენებული არაა',
+      status: c.site?.name ? 'success' : 'danger',
+      value: c.site?.name ? '✓' : '✗'
+    });
+
+    // Phone/email
+    checks.push({
+      title: 'კონტაქტი',
+      desc: c.site?.phone && c.site?.email ? 'ტელეფონი და ელ.ფოსტა ორივე დაყენებულია' : 'დარჩა კონტაქტი',
+      status: c.site?.phone && c.site?.email ? 'success' : 'warning',
+      value: (c.site?.phone ? 1 : 0) + (c.site?.email ? 1 : 0) + '/2'
+    });
+
+    // Hero title
+    const heroTitleText = (c.hero?.title || '').replace(/<[^>]+>/g, '');
+    checks.push({
+      title: 'Hero სათაური',
+      desc: heroTitleText.length === 0 ? 'სათაური ცარიელია' : heroTitleText.length < 30 ? 'სათაური მოკლეა — დაამატე კონტექსტი' : heroTitleText.length > 100 ? 'სათაური ძალიან გრძელია' : `${heroTitleText.length} სიმბოლო — იდეალურია`,
+      status: heroTitleText.length >= 30 && heroTitleText.length <= 100 ? 'success' : 'warning',
+      value: heroTitleText.length + 'ch'
+    });
+
+    // Hero subtitle
+    const heroSub = c.hero?.subtitle || '';
+    checks.push({
+      title: 'Hero აღწერა',
+      desc: heroSub.length === 0 ? 'აღწერა ცარიელია' : heroSub.length < 120 ? 'შეიძლება მეტი იყოს' : heroSub.length > 200 ? 'ძალიან გრძელი — 200-ის ფარგლებში შეინახე' : `${heroSub.length} სიმბოლო — იდეალურია`,
+      status: heroSub.length >= 120 && heroSub.length <= 200 ? 'success' : heroSub.length > 0 ? 'warning' : 'danger',
+      value: heroSub.length + 'ch'
+    });
+
+    // Services count
+    const svcCount = c.services?.length || 0;
+    checks.push({
+      title: 'სერვისები',
+      desc: svcCount < 3 ? 'მინიმუმ 3 სერვისი დაამატე' : svcCount < 6 ? 'კარგია, მაგრამ 6-9 უკეთესია' : `${svcCount} სერვისი — შესანიშნავია`,
+      status: svcCount >= 6 ? 'success' : svcCount >= 3 ? 'warning' : 'danger',
+      value: svcCount
+    });
+
+    // Blog count
+    const blogCount = c.blog?.length || 0;
+    checks.push({
+      title: 'ბლოგის პოსტები',
+      desc: blogCount === 0 ? 'ბლოგი ცარიელია — SEO-სთვის მინიმუმ 5 სტატია სჭირდება' : blogCount < 5 ? `${blogCount}/5 — დაამატე მეტი` : `${blogCount} სტატია`,
+      status: blogCount >= 5 ? 'success' : blogCount > 0 ? 'warning' : 'danger',
+      value: blogCount
+    });
+
+    // Team count
+    checks.push({
+      title: 'გუნდის წევრები',
+      desc: (c.team?.length || 0) === 0 ? 'დაამატე გუნდის წევრები — trust signal-ისთვის' : `${c.team.length} წევრი`,
+      status: (c.team?.length || 0) >= 3 ? 'success' : (c.team?.length || 0) > 0 ? 'warning' : 'danger',
+      value: c.team?.length || 0
+    });
+
+    // Testimonials
+    checks.push({
+      title: 'გამოხმაურებები',
+      desc: (c.testimonials?.length || 0) === 0 ? 'გამოხმაურებები ზრდის კონვერსიას' : `${c.testimonials.length} გამოხმაურება`,
+      status: (c.testimonials?.length || 0) >= 3 ? 'success' : (c.testimonials?.length || 0) > 0 ? 'warning' : 'danger',
+      value: c.testimonials?.length || 0
+    });
+
+    // FAQ
+    checks.push({
+      title: 'FAQ',
+      desc: (c.faq?.length || 0) === 0 ? 'FAQ ცარიელია — SEO-სთვის მნიშვნელოვანია' : `${c.faq.length} კითხვა`,
+      status: (c.faq?.length || 0) >= 5 ? 'success' : (c.faq?.length || 0) > 0 ? 'warning' : 'danger',
+      value: c.faq?.length || 0
+    });
+
+    // Social
+    const socialCount = Object.values(c.site?.social || {}).filter(v => v && v !== '#').length;
+    checks.push({
+      title: 'სოციალური ქსელები',
+      desc: socialCount === 0 ? 'დაუკავშირდი სოციალურ ქსელებს' : `${socialCount}/4 ქსელი დაყენებული`,
+      status: socialCount >= 2 ? 'success' : socialCount > 0 ? 'warning' : 'danger',
+      value: socialCount + '/4'
+    });
+
+    // Calculate score
+    const successCount = checks.filter(c => c.status === 'success').length;
+    const warningCount = checks.filter(c => c.status === 'warning').length;
+    const dangerCount = checks.filter(c => c.status === 'danger').length;
+    const score = Math.round((successCount + warningCount * 0.5) / checks.length * 100);
+    const scoreLabel = score >= 80 ? 'შესანიშნავი' : score >= 60 ? 'კარგი' : score >= 40 ? 'საშუალო' : 'სუსტი';
+    const scoreRingClass = score >= 80 ? '' : score >= 60 ? 'warn' : 'danger';
+    const circleLength = 314;
+    const offset = circleLength - (score / 100) * circleLength;
+
+    // Update badge
+    const badge = $('#badge-seo');
+    if (badge) badge.textContent = score;
+
+    return `
+      <div class="page-header">
+        <div>
+          <h1>SEO Dashboard</h1>
+          <p>საიტის SEO-ს ჯანმრთელობის შემოწმება და Google-ში აღმოჩენისთვის მომზადება</p>
+        </div>
+        <div class="page-header-actions">
+          <a href="https://pagespeed.web.dev/analysis?url=https://audit-company-sage.vercel.app" target="_blank" class="btn btn-outline">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            PageSpeed Test
+          </a>
+          <a href="https://search.google.com/search-console" target="_blank" class="btn btn-dark">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            Search Console
+          </a>
+        </div>
+      </div>
+
+      <div class="seo-score-card">
+        <div class="seo-score-ring ${scoreRingClass}">
+          <svg viewBox="0 0 120 120">
+            <circle class="bg" cx="60" cy="60" r="50"/>
+            <circle class="fg" cx="60" cy="60" r="50" style="stroke-dashoffset: ${offset}"/>
+          </svg>
+          <div class="seo-score-value">
+            <div class="num">${score}</div>
+            <div class="lbl">SEO SCORE</div>
+          </div>
+        </div>
+        <div class="seo-score-info">
+          <h2>${scoreLabel}</h2>
+          <p>საიტი ${score >= 60 ? 'მზადაა' : 'საჭიროებს გაუმჯობესებას'} Google-ში აღმოჩენისთვის. გამოიყენე ქვემოთ მოცემული შემოწმებები პრობლემების გამოსასწორებლად.</p>
+          <div class="seo-score-stats">
+            <div class="seo-score-stat"><span class="dot success"></span>${successCount} OK</div>
+            <div class="seo-score-stat"><span class="dot warning"></span>${warningCount} გასაუმჯობესებელი</div>
+            <div class="seo-score-stat"><span class="dot danger"></span>${dangerCount} კრიტიკული</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">შემოწმებები (${checks.length})</h3>
+        </div>
+        <div class="seo-checks">
+          ${checks.map(ch => `
+            <div class="seo-check">
+              <div class="seo-check-icon ${ch.status}">
+                ${ch.status === 'success' ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>' :
+                  ch.status === 'warning' ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>' :
+                  '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 6 6 18M6 6l12 12"/></svg>'}
+              </div>
+              <div class="seo-check-body">
+                <h4>${escapeHtml(ch.title)}</h4>
+                <p>${escapeHtml(ch.desc)}</p>
+              </div>
+              <div class="seo-check-value">${escapeHtml(String(ch.value))}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">📋 გვერდის SEO აუდიტი</h3>
+          <p class="card-subtitle">თითოეული გვერდის title/description-ის სტატუსი</p>
+        </div>
+        <div class="seo-page-audit">
+          ${renderPageAudit()}
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><h3 class="card-title">🔗 სასარგებლო ბმულები</h3></div>
+        <div class="form-grid cols-2">
+          <a href="https://search.google.com/search-console/welcome" target="_blank" class="quick-action">
+            <div class="quick-action-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></div>
+            <div class="quick-action-text">
+              <div class="quick-action-title">Google Search Console</div>
+              <div class="quick-action-desc">საიტი Google-ში დაარეგისტრირე</div>
+            </div>
+          </a>
+          <a href="https://analytics.google.com/" target="_blank" class="quick-action">
+            <div class="quick-action-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg></div>
+            <div class="quick-action-text">
+              <div class="quick-action-title">Google Analytics</div>
+              <div class="quick-action-desc">ვიზიტორების სტატისტიკა</div>
+            </div>
+          </a>
+          <a href="https://pagespeed.web.dev/" target="_blank" class="quick-action">
+            <div class="quick-action-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+            <div class="quick-action-text">
+              <div class="quick-action-title">PageSpeed Insights</div>
+              <div class="quick-action-desc">საიტის სისწრაფის ტესტი</div>
+            </div>
+          </a>
+          <a href="https://www.bing.com/webmasters" target="_blank" class="quick-action">
+            <div class="quick-action-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg></div>
+            <div class="quick-action-text">
+              <div class="quick-action-title">Bing Webmaster</div>
+              <div class="quick-action-desc">Bing-ზე საიტის დარეგისტრირება</div>
+            </div>
+          </a>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderPageAudit() {
+    const seo = state.content.seo || {};
+    const pages = [
+      { name: 'მთავარი', url: '/', key: 'home' },
+      { name: 'სერვისები', url: '/services', key: 'services' },
+      { name: 'ფასები', url: '/pricing', key: 'pricing' },
+      { name: 'ჩვენ შესახებ', url: '/about', key: 'about' },
+      { name: 'ბლოგი', url: '/blog', key: 'blog' },
+      { name: 'კონტაქტი', url: '/contact', key: 'contact' }
+    ];
+    return pages.map(p => {
+      const pageSeo = seo.pages?.[p.key] || {};
+      const hasTitle = !!pageSeo.title;
+      const hasDesc = !!pageSeo.description;
+      const titleOk = hasTitle && pageSeo.title.length >= 30 && pageSeo.title.length <= 60;
+      const descOk = hasDesc && pageSeo.description.length >= 120 && pageSeo.description.length <= 160;
+      const overall = titleOk && descOk ? 'success' : (hasTitle || hasDesc) ? 'warning' : 'danger';
+      return `
+        <div class="seo-page-row">
+          <div>
+            <div class="seo-page-name">${escapeHtml(p.name)}</div>
+            <div class="seo-page-url">${escapeHtml(p.url)}</div>
+          </div>
+          <span class="seo-mini-badge ${hasTitle ? (titleOk ? 'success' : 'warning') : 'danger'}">
+            Title ${hasTitle ? pageSeo.title.length + 'ch' : '—'}
+          </span>
+          <span class="seo-mini-badge ${hasDesc ? (descOk ? 'success' : 'warning') : 'danger'}">
+            Desc ${hasDesc ? pageSeo.description.length + 'ch' : '—'}
+          </span>
+          <a href="#meta" class="btn btn-outline btn-xs" onclick="location.hash='#meta'">რედაქტირება →</a>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function attachSEO() {}
+
+  // ====== META TAGS EDITOR ======
+  function renderMeta() {
+    if (!state.content.seo) state.content.seo = { pages: {} };
+    if (!state.content.seo.pages) state.content.seo.pages = {};
+
+    const pages = [
+      { name: 'მთავარი', key: 'home' },
+      { name: 'სერვისები', key: 'services' },
+      { name: 'ფასები', key: 'pricing' },
+      { name: 'ჩვენ შესახებ', key: 'about' },
+      { name: 'ბლოგი', key: 'blog' },
+      { name: 'კონტაქტი', key: 'contact' }
+    ];
+
+    return `
+      <div class="page-header">
+        <div>
+          <h1>Meta Tags</h1>
+          <p>თითოეული გვერდის SEO meta title და description</p>
+        </div>
+      </div>
+
+      <div class="info-banner">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+        <div>
+          <strong>რჩევები:</strong><br>
+          • <strong>Title</strong>: 30-60 სიმბოლო, მთავარი საძიებო სიტყვა ტექსტის დასაწყისში<br>
+          • <strong>Description</strong>: 120-160 სიმბოლო, მოკლე და მიზიდვალი ტექსტი<br>
+          • <strong>OG Image</strong>: სოციალურ ქსელებში გამოჩენის სურათი (1200×630px)
+        </div>
+      </div>
+
+      ${pages.map(p => {
+        const s = state.content.seo.pages[p.key] || {};
+        return `
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">${escapeHtml(p.name)}</h3>
+              <p class="card-subtitle">URL: /${p.key === 'home' ? '' : p.key}</p>
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Meta Title <span class="required">*</span> <span style="color: var(--gray-500); font-weight: 400;">(${(s.title || '').length}/60)</span></label>
+                <input type="text" data-field="seo.pages.${p.key}.title" value="${escapeHtml(s.title || '')}" placeholder="მაგ. ${p.name} — Audit" maxlength="80" />
+              </div>
+              <div class="form-group">
+                <label>Meta Description <span style="color: var(--gray-500); font-weight: 400;">(${(s.description || '').length}/160)</span></label>
+                <textarea data-field="seo.pages.${p.key}.description" rows="2" placeholder="მოკლე აღწერა რაც Google-ში გამოჩნდება" maxlength="200">${escapeHtml(s.description || '')}</textarea>
+              </div>
+              <div class="form-grid cols-2">
+                <div class="form-group">
+                  <label>OG Image URL (სოც. ქსელებისთვის)</label>
+                  <input type="url" data-field="seo.pages.${p.key}.ogImage" value="${escapeHtml(s.ogImage || '')}" placeholder="https://..." />
+                </div>
+                <div class="form-group">
+                  <label>Keywords (მძიმით გამოყოფილი)</label>
+                  <input type="text" data-field="seo.pages.${p.key}.keywords" value="${escapeHtml(s.keywords || '')}" placeholder="ბუღალტერია, აუდიტი, ..." />
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('')}
+    `;
+  }
+
+  function attachMeta() {
+    attachFieldListeners();
+  }
+
+  // ====== SITEMAP ======
+  function renderSitemap() {
+    const baseUrl = 'https://audit-company-sage.vercel.app';
+    const urls = [
+      { loc: baseUrl + '/', priority: '1.0', freq: 'weekly' },
+      { loc: baseUrl + '/services.html', priority: '0.9', freq: 'weekly' },
+      { loc: baseUrl + '/pricing.html', priority: '0.9', freq: 'monthly' },
+      { loc: baseUrl + '/about.html', priority: '0.8', freq: 'monthly' },
+      { loc: baseUrl + '/blog.html', priority: '0.8', freq: 'daily' },
+      { loc: baseUrl + '/contact.html', priority: '0.7', freq: 'monthly' }
+    ];
+    (state.content.services || []).forEach(s => {
+      urls.push({ loc: `${baseUrl}/services/${s.id}.html`, priority: '0.8', freq: 'monthly' });
+    });
+    (state.content.blog || []).forEach(b => {
+      urls.push({ loc: `${baseUrl}/blog.html#${b.slug}`, priority: '0.7', freq: 'monthly' });
+    });
+
+    const today = new Date().toISOString().split('T')[0];
+    const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls.map(u => `  <url>
+    <loc>${u.loc}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>${u.freq}</changefreq>
+    <priority>${u.priority}</priority>
+  </url>`).join('\n')}
+</urlset>`;
+
+    return `
+      <div class="page-header">
+        <div>
+          <h1>Sitemap.xml</h1>
+          <p>ავტომატურად გენერირებული sitemap Google-ისა და საძიებო სისტემებისთვის</p>
+        </div>
+        <div class="page-header-actions">
+          <button class="btn btn-outline" id="download-sitemap">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+            Download
+          </button>
+          <button class="btn btn-yellow" id="publish-sitemap">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            Publish to Site
+          </button>
+        </div>
+      </div>
+
+      <div class="info-banner">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/></svg>
+        <div>
+          <strong>სიტე-მაპის URL:</strong> <code>${baseUrl}/sitemap.xml</code><br>
+          <strong>ატვირთე Google Search Console-ში:</strong> Settings → Sitemaps → Add new sitemap
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">სიტე-მაპის შიგთავსი (${urls.length} URL)</h3>
+            <p class="card-subtitle">ავტო-გენერირდა ყოველი სერვისიდან და ბლოგიდან</p>
+          </div>
+        </div>
+        <pre style="background: var(--gray-900, #1a1a24); color: #a8e6cf; padding: 20px; overflow-x: auto; font-size: 12px; line-height: 1.55; font-family: 'JetBrains Mono', monospace; max-height: 500px; overflow-y: auto;"><code>${escapeHtml(sitemap)}</code></pre>
+      </div>
+    `;
+  }
+
+  function attachSitemap() {
+    const baseUrl = 'https://audit-company-sage.vercel.app';
+
+    const generateSitemapXml = () => {
+      const urls = [
+        { loc: baseUrl + '/', priority: '1.0', freq: 'weekly' },
+        { loc: baseUrl + '/services.html', priority: '0.9', freq: 'weekly' },
+        { loc: baseUrl + '/pricing.html', priority: '0.9', freq: 'monthly' },
+        { loc: baseUrl + '/about.html', priority: '0.8', freq: 'monthly' },
+        { loc: baseUrl + '/blog.html', priority: '0.8', freq: 'daily' },
+        { loc: baseUrl + '/contact.html', priority: '0.7', freq: 'monthly' }
+      ];
+      (state.content.services || []).forEach(s => {
+        urls.push({ loc: `${baseUrl}/services/${s.id}.html`, priority: '0.8', freq: 'monthly' });
+      });
+      const today = new Date().toISOString().split('T')[0];
+      return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls.map(u => `  <url>
+    <loc>${u.loc}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>${u.freq}</changefreq>
+    <priority>${u.priority}</priority>
+  </url>`).join('\n')}
+</urlset>`;
+    };
+
+    $('#download-sitemap')?.addEventListener('click', () => {
+      const xml = generateSitemapXml();
+      const blob = new Blob([xml], { type: 'application/xml' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'sitemap.xml';
+      a.click();
+      toast('sitemap.xml ჩამოიწერა', 'success');
+    });
+
+    $('#publish-sitemap')?.addEventListener('click', async () => {
+      if (!getGithubToken()) {
+        toast('❌ ჯერ GitHub Token-ი დააყენე Settings-ში', 'error');
+        return;
+      }
+      if (!confirm('Sitemap.xml გამოქვეყნდეს GitHub-ზე?')) return;
+      const btn = $('#publish-sitemap');
+      btn.disabled = true;
+      btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin"><path d="M21 12a9 9 0 1 1-6.22-8.56"/></svg> იტვირთება...';
+      try {
+        const xml = generateSitemapXml();
+        let sha = null;
+        try {
+          const curr = await githubAPI(`contents/sitemap.xml?ref=${GITHUB_BRANCH}`);
+          sha = curr.sha;
+        } catch (e) { if (!e.message.startsWith('NOT_FOUND')) throw e; }
+        const body = { message: 'Update sitemap.xml', content: toBase64(xml), branch: GITHUB_BRANCH };
+        if (sha) body.sha = sha;
+        await githubAPI('contents/sitemap.xml', { method: 'PUT', body: JSON.stringify(body) });
+        toast('✅ Sitemap გამოქვეყნებულია!', 'success');
+        logActivity('publish', 'Sitemap.xml', 'sitemap');
+      } catch (err) {
+        toast('❌ ' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg> Publish to Site';
+      }
+    });
+  }
+
+  // ====== ANALYTICS ======
+  function renderAnalytics() {
+    return `
+      <div class="page-header">
+        <div>
+          <h1>Analytics</h1>
+          <p>ვიზიტორების სტატისტიკა და Google Analytics ინტეგრაცია</p>
+        </div>
+      </div>
+
+      <div class="info-banner">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/></svg>
+        <div>
+          <strong>ანალიტიკისთვის სამი უფასო ვარიანტი გაქვს:</strong><br>
+          1. <strong>Google Analytics</strong> — ყველაზე პოპულარული. ჩასვი Measurement ID ქვემოთ.<br>
+          2. <strong>Vercel Analytics</strong> — ავტომატურად Vercel-ს აქვს ჩაშენებული (უფასო Hobby გეგმაზე).<br>
+          3. <strong>Plausible</strong> — კონფიდენციალურობაზე ორიენტირებული (ფასიანი).
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">📊 Google Analytics 4</h3>
+          <p class="card-subtitle">დააყენე Measurement ID (G-XXXXXXXXXX)</p>
+        </div>
+        <div class="form-grid" style="max-width: 520px;">
+          <div class="form-group">
+            <label>Measurement ID</label>
+            <input type="text" data-field="analytics.gaId" value="${escapeHtml(state.content.analytics?.gaId || '')}" placeholder="G-XXXXXXXXXX" />
+            <small class="hint">მიიღე <a href="https://analytics.google.com/analytics/web/#/a/admin/account/create" target="_blank" style="color: var(--ink); font-weight: 700;">analytics.google.com</a>-დან</small>
+          </div>
+          <div class="form-group">
+            <label class="switch">
+              <input type="checkbox" data-field="analytics.enabled" ${state.content.analytics?.enabled ? 'checked' : ''} />
+              <span class="switch-slider"></span>
+              <span class="switch-label">GA ტრექინგი ჩართულია</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">⚡ Vercel Analytics (რეკომენდებული)</h3>
+          <p class="card-subtitle">ავტომატურად ხელმისაწვდომია</p>
+        </div>
+        <p style="color: var(--gray-700); margin-bottom: 16px;">
+          Vercel-ს აქვს ჩაშენებული Analytics უფასო Hobby გეგმაზე. ჩართე <strong>Vercel Dashboard → Analytics → Enable</strong>.
+        </p>
+        <a href="https://vercel.com/chabas-projects-c40e9f58/audit-company/analytics" target="_blank" class="btn btn-dark">
+          გახსენი Vercel Analytics →
+        </a>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">📈 მიახლოებითი საიტის სტატისტიკა</h3>
+        </div>
+        <div class="analytics-grid">
+          <div class="analytics-tile">
+            <div class="analytics-tile-label">სერვისები</div>
+            <div class="analytics-tile-value">${state.content.services?.length || 0}</div>
+          </div>
+          <div class="analytics-tile">
+            <div class="analytics-tile-label">ბლოგი</div>
+            <div class="analytics-tile-value">${state.content.blog?.length || 0}</div>
+          </div>
+          <div class="analytics-tile">
+            <div class="analytics-tile-label">FAQ</div>
+            <div class="analytics-tile-value">${state.content.faq?.length || 0}</div>
+          </div>
+          <div class="analytics-tile">
+            <div class="analytics-tile-label">გუნდი</div>
+            <div class="analytics-tile-value">${state.content.team?.length || 0}</div>
+          </div>
+          <div class="analytics-tile">
+            <div class="analytics-tile-label">გამოხმაურებები</div>
+            <div class="analytics-tile-value">${state.content.testimonials?.length || 0}</div>
+          </div>
+          <div class="analytics-tile">
+            <div class="analytics-tile-label">ინდუსტრიები</div>
+            <div class="analytics-tile-value">${state.content.industries?.length || 0}</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function attachAnalytics() {
+    attachFieldListeners();
+  }
+
+  // ====== MEDIA LIBRARY ======
+  function renderMedia() {
+    const media = state.content.media || [];
+    return `
+      <div class="page-header">
+        <div>
+          <h1>Media Library</h1>
+          <p>სურათების ბიბლიოთეკა — ატვირთული სურათები GitHub-ზე</p>
+        </div>
+      </div>
+
+      ${!getGithubToken() ? `
+        <div class="info-banner">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/></svg>
+          <div><strong>ყურადღება:</strong> სურათების ატვირთვისთვის საჭიროა GitHub Token. წადი <a href="#settings" style="color: var(--ink); font-weight: 700;">Settings → GitHub Token</a></div>
+        </div>
+      ` : ''}
+
+      <div class="media-upload-zone" id="upload-zone">
+        <div class="icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+        </div>
+        <h3>ატვირთე სურათი</h3>
+        <p>გადმოიტანე ფაილი აქ ან დააჭირე ასარჩევად. Max 5MB, JPG/PNG/WebP/GIF</p>
+        <input type="file" id="upload-input" accept="image/*" style="display: none;" multiple />
+      </div>
+
+      ${media.length === 0 ? `
+        <div class="empty-state">
+          <div class="empty-state-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+          </div>
+          <h3>ჯერ სურათები არ გაქვს</h3>
+          <p>ატვირთე პირველი სურათი ზემოდან</p>
+        </div>
+      ` : `
+        <div class="media-grid">
+          ${media.map((m, i) => `
+            <div class="media-item" data-i="${i}">
+              <img src="${escapeHtml(m.url)}" alt="${escapeHtml(m.name || '')}" />
+              <div class="media-item-info">${escapeHtml(m.name || 'image')}</div>
+              <div class="media-item-actions">
+                <button data-copy-url="${escapeHtml(m.url)}" title="Copy URL">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                </button>
+                <button data-delete-media="${i}" title="Delete">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
+                </button>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `}
+    `;
+  }
+
+  function attachMedia() {
+    const zone = $('#upload-zone');
+    const input = $('#upload-input');
+    if (!zone || !input) return;
+
+    zone.addEventListener('click', () => input.click());
+    zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('drag-over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+    zone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      zone.classList.remove('drag-over');
+      if (e.dataTransfer.files.length) handleUpload(e.dataTransfer.files);
+    });
+    input.addEventListener('change', () => {
+      if (input.files.length) handleUpload(input.files);
+      input.value = '';
+    });
+
+    $$('[data-copy-url]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        navigator.clipboard.writeText(btn.dataset.copyUrl);
+        toast('✓ URL დაკოპირდა', 'success');
+      });
+    });
+
+    $$('[data-delete-media]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const i = parseInt(btn.dataset.deleteMedia);
+        if (!confirm('წაიშალოს სურათი ბიბლიოთეკიდან? (ფაილი GitHub-იდან არ წაიშლება)')) return;
+        if (!state.content.media) state.content.media = [];
+        state.content.media.splice(i, 1);
+        markDirty();
+        renderSection('media');
+        logActivity('delete', 'სურათი', 'media');
+      });
+    });
+  }
+
+  async function handleUpload(files) {
+    if (!getGithubToken()) {
+      toast('❌ ჯერ GitHub Token-ი დააყენე Settings-ში', 'error');
+      return;
+    }
+    for (const file of files) {
+      if (file.size > 5 * 1024 * 1024) {
+        toast(`❌ ${file.name} > 5MB`, 'error');
+        continue;
+      }
+      await uploadFile(file);
+    }
+  }
+
+  async function uploadFile(file) {
+    toast(`ატვირთვა: ${file.name}...`, 'info', 2000);
+    try {
+      const base64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+
+      const timestamp = Date.now();
+      const safeName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+      const path = `assets/images/uploads/${timestamp}-${safeName}`;
+
+      await githubAPI(`contents/${path}`, {
+        method: 'PUT',
+        body: JSON.stringify({
+          message: `Upload ${safeName}`,
+          content: base64,
+          branch: GITHUB_BRANCH
+        })
+      });
+
+      const url = `https://audit-company-sage.vercel.app/${path}`;
+      if (!state.content.media) state.content.media = [];
+      state.content.media.unshift({
+        name: file.name,
+        url,
+        size: file.size,
+        type: file.type,
+        uploaded: Date.now()
+      });
+      markDirty();
+      logActivity('create', file.name, 'media');
+      toast(`✓ ${file.name} ატვირთულია`, 'success');
+      renderSection('media');
+    } catch (err) {
+      toast(`❌ ${err.message}`, 'error', 5000);
+    }
+  }
+
+  // ====== THEME CUSTOMIZER ======
+  function renderTheme() {
+    const theme = state.content.theme || { yellow: '#FFE600', ink: '#2E2E38' };
+    return `
+      <div class="page-header">
+        <div>
+          <h1>Theme & Colors</h1>
+          <p>საიტის ძირითადი ფერები და შრიფტი</p>
+        </div>
+      </div>
+
+      <div class="info-banner">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/></svg>
+        <div><strong>ყურადღება:</strong> ფერების ცვლილება დააფიქსირდება JSON-ში. საიტზე ხილვადობისთვის საჭიროა დეველოპერული ცვლილება (style.css-ში). ამჟამად მხოლოდ admin-ში ხილვადია.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><h3 class="card-title">🎨 ძირითადი ფერები</h3></div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div class="color-swatch">
+            <input type="color" data-field="theme.yellow" value="${escapeHtml(theme.yellow)}" />
+            <div class="color-swatch-info">
+              <div class="color-swatch-label">Primary (ყვითელი)</div>
+              <div class="color-swatch-value">${escapeHtml(theme.yellow)}</div>
+            </div>
+            <input type="text" data-field="theme.yellow" value="${escapeHtml(theme.yellow)}" />
+          </div>
+          <div class="color-swatch">
+            <input type="color" data-field="theme.ink" value="${escapeHtml(theme.ink)}" />
+            <div class="color-swatch-info">
+              <div class="color-swatch-label">Dark (ფონი)</div>
+              <div class="color-swatch-value">${escapeHtml(theme.ink)}</div>
+            </div>
+            <input type="text" data-field="theme.ink" value="${escapeHtml(theme.ink)}" />
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><h3 class="card-title">🔤 შრიფტები</h3></div>
+        <div class="font-preview">
+          <div class="font-preview-label">სათაური (Archivo)</div>
+          <div class="font-preview-sample">გამჭვირვალე ფასები.</div>
+        </div>
+        <div class="font-preview">
+          <div class="font-preview-label">Body (Inter + Noto Sans Georgian)</div>
+          <div class="font-preview-sample body">ბუღალტრული, საგადასახადო, აუდიტის და საკონსულტაციო მომსახურება საქართველოში.</div>
+        </div>
+      </div>
+    `;
+  }
+
+  function attachTheme() {
+    attachFieldListeners();
+    // Sync color picker with text input
+    $$('[data-field^="theme."]').forEach(input => {
+      input.addEventListener('input', () => {
+        const siblingInputs = $$(`[data-field="${input.dataset.field}"]`);
+        siblingInputs.forEach(sib => { if (sib !== input) sib.value = input.value; });
+        const label = input.closest('.color-swatch')?.querySelector('.color-swatch-value');
+        if (label) label.textContent = input.value;
+      });
+    });
+  }
+
+  // ====== ACTIVITY LOG ======
+  function renderActivity() {
+    const log = getActivityLog();
+    const iconMap = {
+      create: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>',
+      update: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>',
+      delete: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>',
+      publish: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>'
+    };
+    const actionNames = { create: 'შეიქმნა', update: 'შეიცვალა', delete: 'წაიშალა', publish: 'გამოქვეყნდა' };
+
+    return `
+      <div class="page-header">
+        <div>
+          <h1>Activity Log</h1>
+          <p>ბოლო 100 ცვლილება. მხოლოდ შენს ბრაუზერში.</p>
+        </div>
+        ${log.length > 0 ? `<div class="page-header-actions"><button class="btn btn-outline" id="clear-log">წაშლა</button></div>` : ''}
+      </div>
+
+      ${log.length === 0 ? `
+        <div class="empty-state">
+          <div class="empty-state-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <h3>ჯერ აქტივობები არ არის</h3>
+          <p>ცვლილებები აქ გამოჩნდება ავტომატურად</p>
+        </div>
+      ` : `
+        <div class="activity-log">
+          ${log.map(e => `
+            <div class="activity-item">
+              <div class="activity-icon ${e.action}">${iconMap[e.action] || iconMap.update}</div>
+              <div class="activity-body">
+                <div class="activity-title">${escapeHtml(e.title)} — ${actionNames[e.action] || e.action}</div>
+                <div class="activity-desc">სექცია: ${escapeHtml(e.section)}</div>
+              </div>
+              <div class="activity-time" title="${new Date(e.time).toLocaleString('ka-GE')}">${timeAgo(e.time)}</div>
+            </div>
+          `).join('')}
+        </div>
+      `}
+    `;
+  }
+
+  function attachActivity() {
+    $('#clear-log')?.addEventListener('click', () => {
+      if (!confirm('ყველა აქტივობის წაშლა?')) return;
+      clearActivityLog();
+      renderSection('activity');
+      toast('Activity log გასუფთავდა', 'info');
+    });
+  }
+
+  // ====== SHORTCUTS HELP ======
+  function renderShortcuts() {
+    const shortcuts = [
+      { label: 'ცვლილებების შენახვა', keys: ['Ctrl', 'S'] },
+      { label: 'Publish Live', keys: ['Ctrl', 'Shift', 'P'] },
+      { label: 'Dashboard-ზე გადასვლა', keys: ['G', 'D'] },
+      { label: 'Services-ზე გადასვლა', keys: ['G', 'S'] },
+      { label: 'Blog-ზე გადასვლა', keys: ['G', 'B'] },
+      { label: 'Settings-ზე გადასვლა', keys: ['G', 'T'] },
+      { label: 'Modal-ის დახურვა', keys: ['Esc'] },
+      { label: 'Sidebar-ის გახსნა/დახურვა (mobile)', keys: ['Ctrl', 'M'] },
+      { label: 'Preview საიტი', keys: ['Ctrl', 'E'] },
+      { label: 'Export JSON', keys: ['Ctrl', 'Shift', 'E'] }
+    ];
+    return `
+      <div class="page-header">
+        <div>
+          <h1>Keyboard Shortcuts</h1>
+          <p>სწრაფი მუშაობისთვის</p>
+        </div>
+      </div>
+      <div class="shortcut-grid">
+        ${shortcuts.map(s => `
+          <div class="shortcut-row">
+            <span class="shortcut-label">${escapeHtml(s.label)}</span>
+            <div class="shortcut-keys">${s.keys.map(k => `<kbd>${escapeHtml(k)}</kbd>`).join('')}</div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
   // ====== HELPERS ======
   function emptyState(title, desc, btnId) {
     return `
@@ -1954,13 +2894,68 @@
     });
 
     // Keyboard shortcuts
+    let gPressed = false;
+    let gTimer = null;
     document.addEventListener('keydown', (e) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+      const isInput = /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable;
+
+      // Ctrl+S = Save
+      if ((e.ctrlKey || e.metaKey) && e.key === 's' && !e.shiftKey) {
         e.preventDefault();
         saveContent();
+        return;
       }
+
+      // Ctrl+Shift+P = Publish
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'P') {
+        e.preventDefault();
+        $('#publish-btn')?.click();
+        return;
+      }
+
+      // Ctrl+Shift+E = Export
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'E') {
+        e.preventDefault();
+        exportJSON();
+        return;
+      }
+
+      // Ctrl+E = Preview
+      if ((e.ctrlKey || e.metaKey) && e.key === 'e' && !e.shiftKey) {
+        e.preventDefault();
+        $('#preview-btn')?.click();
+        return;
+      }
+
+      // Ctrl+M = Toggle sidebar
+      if ((e.ctrlKey || e.metaKey) && e.key === 'm') {
+        e.preventDefault();
+        $('#sidebar-toggle')?.click();
+        return;
+      }
+
+      // ESC = close modal
       if (e.key === 'Escape' && !$('#modal').classList.contains('hidden')) {
         closeModal();
+        return;
+      }
+
+      // G-prefix navigation (not in inputs)
+      if (isInput) return;
+      if (e.key === 'g' || e.key === 'G') {
+        gPressed = true;
+        clearTimeout(gTimer);
+        gTimer = setTimeout(() => { gPressed = false; }, 1500);
+        return;
+      }
+      if (gPressed) {
+        const map = { d: 'dashboard', s: 'services', b: 'blog', t: 'settings', h: 'hero', p: 'pricing', m: 'media', e: 'seo', a: 'activity' };
+        const target = map[e.key.toLowerCase()];
+        if (target) {
+          e.preventDefault();
+          location.hash = '#' + target;
+          gPressed = false;
+        }
       }
     });
   }
