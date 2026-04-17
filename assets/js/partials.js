@@ -1,5 +1,5 @@
 /* ==========================================================
-   Shared Header + Footer — EY-inspired (Utility bar + Mega menu)
+   Shared Header + Footer — EY Exact Replica
    ========================================================== */
 
 const basePath = (() => {
@@ -30,13 +30,15 @@ const ICONS = {
   "globe":         '<svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>',
   "briefcase":     '<svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>',
   "cpu":           '<svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9"/><path d="M15 2v2M15 20v2M2 15h2M2 9h2M20 15h2M20 9h2M9 2v2M9 20v2"/></svg>',
-  "chevron-down":  '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>',
-  "arrow-right":   '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>',
-  "search":        '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>',
-  "user":          '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
-  "globe-sm":      '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a14.5 14.5 0 0 1 0 20M12 2a14.5 14.5 0 0 0 0 20"/></svg>',
-  "menu":          '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="8" y2="8"/><line x1="4" x2="20" y1="16" y2="16"/></svg>',
-  "close":         '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>',
+  "chevron-down":  '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>',
+  "chevron-up":    '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>',
+  "arrow-right":   '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>',
+  "arrow-right-sm":'<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>',
+  "search":        '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>',
+  "user":          '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+  "globe-sm":      '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a14.5 14.5 0 0 1 0 20M12 2a14.5 14.5 0 0 0 0 20"/></svg>',
+  "menu":          '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="8" y2="8"/><line x1="4" x2="20" y1="16" y2="16"/></svg>',
+  "close":         '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>',
   "check":         '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
   "facebook":      '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.77l-.44 2.89h-2.33v6.99A10 10 0 0 0 22 12z"/></svg>',
   "instagram":     '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>',
@@ -46,173 +48,163 @@ const ICONS = {
   "mail":          '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>'
 };
 
-// ====== MEGA MENU DATA ======
+// ====== MEGA MENU DATA (EY 3-part structure) ======
 const MEGA_MENUS = {
   services: {
     label: "სერვისები",
-    columns: [
-      {
-        title: "სერვისების ტიპები",
-        links: [
-          { title: "ბუღალტრული აღრიცხვა", desc: "თვიური საბუღალტრო მომსახურება", href: "services/accounting.html" },
-          { title: "საგადასახადო დეკლარაციები", desc: "დღგ, მოგება, საშემოსავლო", href: "services/tax.html" },
-          { title: "ფინანსური აუდიტი", desc: "IFRS და GAAP ანგარიშგება", href: "services/audit.html" },
-          { title: "ხელფასი და HR", desc: "თანამშრომლების მართვა", href: "services/payroll.html" },
-          { title: "საგადასახადო კონსულტაცია", desc: "სტრატეგიული რჩევა", href: "services/consulting.html" }
-        ]
-      },
-      {
-        title: "ბიზნესის ტიპები",
-        links: [
-          { title: "შპს-ის რეგისტრაცია", desc: "1 დღეში — ციფრულად", href: "services/registration.html" },
-          { title: "ინდივიდუალური მეწარმე", desc: "მცირე ბიზნესის სტატუსი", href: "services/smallbiz.html" },
-          { title: "არარეზიდენტებისთვის", desc: "უცხოელი მეწარმეები", href: "services/nonresident.html" },
-          { title: "ვირტუალური ზონა (IT)", desc: "0% მოგების გადასახადი", href: "services/virtualzone.html" }
-        ]
-      },
-      {
-        title: "დამატებით",
-        links: [
-          { title: "ყველა სერვისი", desc: "სრული სერვისების ჩამონათვალი", href: "services.html" },
-          { title: "ფასები", desc: "გამჭვირვალე პაკეტები", href: "pricing.html" },
-          { title: "მიიღე კონსულტაცია", desc: "30 წუთი · უფასოდ", href: "contact.html" }
-        ]
-      }
+    intro: {
+      title: "სერვისები",
+      desc: "Audit კლიენტებს ეხმარება შექმნან გრძელვადიანი ღირებულება. ჩვენი მომსახურება მოიცავს ბუღალტერიას, საგადასახადო დეკლარაციებს, აუდიტს და სტრატეგიულ კონსულტაციას — საქართველოს მეწარმეებისთვის.",
+      ctaText: "გაეცანი",
+      ctaHref: "services.html"
+    },
+    links: [
+      { title: "ბუღალტრული აღრიცხვა", href: "services/accounting.html" },
+      { title: "საგადასახადო დეკლარაციები", href: "services/tax.html" },
+      { title: "ფინანსური აუდიტი", href: "services/audit.html" },
+      { title: "ხელფასი და HR", href: "services/payroll.html" },
+      { title: "კომპანიის რეგისტრაცია", href: "services/registration.html" },
+      { title: "საგადასახადო კონსულტაცია", href: "services/consulting.html" },
+      { title: "არარეზიდენტებისთვის", href: "services/nonresident.html" },
+      { title: "მცირე ბიზნესის სტატუსი", href: "services/smallbiz.html" },
+      { title: "ვირტუალური ზონა", href: "services/virtualzone.html" }
     ],
-    featured: {
-      tag: "ახალი",
-      title: "2026 წლის საგადასახადო ცვლილებები",
-      desc: "გზამკვლევი საქართველოს მეწარმეებისთვის — ყველაფერი, რაც უნდა იცოდეთ.",
-      cta: "წაიკითხე →",
-      img: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=600&q=85",
-      href: "blog.html"
+    spotlight: {
+      title: "Spotlight",
+      items: [
+        { title: "Artificial Intelligence (AI)", href: "blog.html" },
+        { title: "2026 საგადასახადო ცვლილებები", href: "blog.html" },
+        { title: "ვირტუალური ზონის სტატუსი", href: "blog.html" },
+        { title: "IFRS მიგრაცია", href: "blog.html" },
+        { title: "დღგ-ის ოპტიმიზაცია", href: "blog.html" },
+        { title: "ტრანსფერ ფრაისინგი", href: "blog.html" }
+      ]
     }
   },
 
   industries: {
     label: "ინდუსტრიები",
-    columns: [
-      {
-        title: "ძირითადი სექტორები",
-        links: [
-          { title: "Technology & IT", desc: "SaaS, AI/ML, Fintech", href: "#" },
-          { title: "ფინანსური სერვისები", desc: "ბანკები, ფონდები, ბროკერები", href: "#" },
-          { title: "უძრავი ქონება", desc: "დეველოპერები, ფონდები", href: "#" },
-          { title: "საცალო & E-commerce", desc: "ონლაინ და ოფლაინ მაღაზიები", href: "#" }
-        ]
-      },
-      {
-        title: "სპეციალიზებული სექტორები",
-        links: [
-          { title: "ლოჯისტიკა", desc: "ტრანსპორტი და საბაჟო", href: "#" },
-          { title: "HoReCa", desc: "სასტუმროები, რესტორნები", href: "#" },
-          { title: "ჯანდაცვა & მედიცინა", desc: "კლინიკები, ფარმაცია", href: "#" },
-          { title: "საერთაშორისო ბიზნესი", desc: "ექსპორტ-იმპორტი", href: "#" }
-        ]
-      }
+    intro: {
+      title: "ინდუსტრიები",
+      desc: "ვემსახურებით საქართველოს სხვადასხვა სექტორის კომპანიებს — სპეციფიკური ექსპერტიზით თითოეული ნიშისთვის. ყოველ ინდუსტრიას ჰყავს ჩვენს გუნდში სპეციალისტი, რომელიც იცნობს სპეციფიკურ გამოწვევებს.",
+      ctaText: "ყველა ინდუსტრია",
+      ctaHref: "services.html"
+    },
+    links: [
+      { title: "Technology & IT", href: "#" },
+      { title: "ფინანსური სერვისები", href: "#" },
+      { title: "უძრავი ქონება", href: "#" },
+      { title: "საცალო & E-commerce", href: "#" },
+      { title: "ლოჯისტიკა", href: "#" },
+      { title: "HoReCa", href: "#" },
+      { title: "ჯანდაცვა & მედიცინა", href: "#" },
+      { title: "საერთაშორისო ბიზნესი", href: "#" }
     ],
-    featured: {
-      tag: "Case Study",
-      title: "როგორ დავეხმარეთ Tech სტარტაპს გაეზარდა 3×",
-      desc: "ვირტუალური ზონის სტატუსით და სწორი ფინანსური სტრუქტურით.",
-      cta: "წაიკითხე Case →",
-      img: "https://images.unsplash.com/photo-1551836022-deb4988cc6c0?auto=format&fit=crop&w=600&q=85",
-      href: "blog.html"
+    spotlight: {
+      title: "Spotlight",
+      items: [
+        { title: "Tech Startup Growth", href: "blog.html" },
+        { title: "ფინტექ რეგულაციები 2026", href: "blog.html" },
+        { title: "E-commerce დაბეგვრა", href: "blog.html" },
+        { title: "Real Estate Outlook", href: "blog.html" }
+      ]
     }
   },
 
   insights: {
     label: "Insights",
-    columns: [
-      {
-        title: "თემები",
-        links: [
-          { title: "საგადასახადო სიახლეები", desc: "კვირის ტოპ ცვლილებები", href: "blog.html" },
-          { title: "ბიზნესის სტრატეგია", desc: "ზრდის გზამკვლევები", href: "blog.html" },
-          { title: "ტექნოლოგია & IT", desc: "ვირტუალური ზონა, SaaS", href: "blog.html" },
-          { title: "აუდიტი & IFRS", desc: "პრაქტიკული რჩევები", href: "blog.html" }
-        ]
-      },
-      {
-        title: "ფორმატი",
-        links: [
-          { title: "ბლოგი & სტატიები", desc: "ყოველკვირა ახალი კონტენტი", href: "blog.html" },
-          { title: "გზამკვლევები", desc: "დეტალური PDF რესურსები", href: "blog.html" },
-          { title: "რეპორტები & კვლევები", desc: "წლიური ანალიზი", href: "blog.html" },
-          { title: "ვებინარები", desc: "ცოცხალი სესიები", href: "blog.html" }
-        ]
-      }
+    intro: {
+      title: "Insights & Thought Leadership",
+      desc: "საგადასახადო ანალიზი, ბიზნესის ტრენდები და ექსპერტების Insights საქართველოს ბიზნეს გარემოზე. კვირის სიახლეები, გზამკვლევები და კვლევები — ერთ სივრცეში.",
+      ctaText: "წაიკითხე ყველა",
+      ctaHref: "blog.html"
+    },
+    links: [
+      { title: "საგადასახადო სიახლეები", href: "blog.html" },
+      { title: "ბიზნესის სტრატეგია", href: "blog.html" },
+      { title: "ტექნოლოგია & IT", href: "blog.html" },
+      { title: "აუდიტი & IFRS", href: "blog.html" },
+      { title: "გზამკვლევები", href: "blog.html" },
+      { title: "რეპორტები & კვლევები", href: "blog.html" },
+      { title: "ვებინარები", href: "blog.html" }
     ],
-    featured: {
-      tag: "მთავარი სტატია",
-      title: "შპს vs ი/მ — სტრუქტურის არჩევის გზამკვლევი 2026",
-      desc: "დეტალური შედარება, რა ფორმას მიანიჭოთ უპირატესობა ბიზნესის მოცულობის მიხედვით.",
-      cta: "წაიკითხე →",
-      img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=85",
-      href: "blog.html"
+    spotlight: {
+      title: "Spotlight",
+      items: [
+        { title: "2026 Tax Guide", href: "blog.html" },
+        { title: "შპს vs ი/მ გზამკვლევი", href: "blog.html" },
+        { title: "Digital Transformation", href: "blog.html" },
+        { title: "ESG Reporting", href: "blog.html" }
+      ]
     }
   },
 
   about: {
     label: "ჩვენ შესახებ",
-    columns: [
-      {
-        title: "კომპანია",
-        links: [
-          { title: "ჩვენი მიდგომა", desc: "როგორ ვმუშაობთ", href: "about.html" },
-          { title: "ჩვენი ისტორია", desc: "15+ წელი საქართველოში", href: "about.html" },
-          { title: "ჩვენი გუნდი", desc: "სერტიფიცირებული ექსპერტები", href: "about.html" },
-          { title: "ღირებულებები", desc: "პრინციპები, რომლითაც ვცხოვრობთ", href: "about.html" }
-        ]
-      },
-      {
-        title: "კარიერა & კონტაქტი",
-        links: [
-          { title: "კარიერა Audit-ში", desc: "ვეძებთ ახალ ტალანტებს", href: "#" },
-          { title: "ღია ვაკანსიები", desc: "შესაძლებლობები ახლავე", href: "#" },
-          { title: "დაგვიკავშირდი", desc: "ოფისი და მხარდაჭერა", href: "contact.html" },
-          { title: "პრესა & მედია", desc: "რესურსები ჟურნალისტებისთვის", href: "#" }
-        ]
-      }
+    intro: {
+      title: "ჩვენ შესახებ",
+      desc: "15+ წლის გამოცდილების გუნდი, რომელიც საქართველოს ბიზნესს ეხმარება ფინანსური ზრდის გზაზე. 500+ კმაყოფილი კლიენტი, სერტიფიცირებული ექსპერტები, გამჭვირვალე მიდგომა.",
+      ctaText: "გაიცანი გუნდი",
+      ctaHref: "about.html"
+    },
+    links: [
+      { title: "ჩვენი მიდგომა", href: "about.html" },
+      { title: "ჩვენი ისტორია", href: "about.html" },
+      { title: "ჩვენი გუნდი", href: "about.html" },
+      { title: "ღირებულებები", href: "about.html" },
+      { title: "დაგვიკავშირდი", href: "contact.html" },
+      { title: "პრესა & მედია", href: "#" }
     ],
-    featured: {
-      tag: "გუნდი",
-      title: "გაიცანი ჩვენი ლიდერები",
-      desc: "15+ წლის გამოცდილების მქონე ექსპერტები, რომლებსაც ენდობა 500+ კომპანია.",
-      cta: "ნახე გუნდი →",
-      img: "https://i.pravatar.cc/600?img=47",
-      href: "about.html"
+    spotlight: {
+      title: "Spotlight",
+      items: [
+        { title: "Leadership Team", href: "about.html" },
+        { title: "2025 Impact Report", href: "blog.html" },
+        { title: "Career Opportunities", href: "#" },
+        { title: "ESG Commitment", href: "blog.html" }
+      ]
+    }
+  },
+
+  careers: {
+    label: "კარიერა",
+    intro: {
+      title: "კარიერა Audit-ში",
+      desc: "ვეძებთ ნიჭიერ და გატაცებულ ადამიანებს, რომლებიც მზად არიან აწარმოონ ცვლილებები. Audit-ში შენი იდეა მნიშვნელოვანია.",
+      ctaText: "იხილე ვაკანსიები",
+      ctaHref: "#"
+    },
+    links: [
+      { title: "ღია ვაკანსიები", href: "#" },
+      { title: "სტუდენტები & Graduates", href: "#" },
+      { title: "სტაჟირება", href: "#" },
+      { title: "კულტურა", href: "#" },
+      { title: "ბენეფიტები", href: "#" }
+    ],
+    spotlight: {
+      title: "Spotlight",
+      items: [
+        { title: "Graduate Program 2026", href: "#" },
+        { title: "Life at Audit", href: "#" },
+        { title: "Diversity & Inclusion", href: "#" }
+      ]
     }
   }
 };
 
 function renderMegaMenu(key, data) {
-  const columnsHtml = data.columns.map(col => `
-    <div class="mega-column">
-      <h4 class="mega-col-title">${col.title}</h4>
-      <ul class="mega-col-list">
-        ${col.links.map(link => `
-          <li>
-            <a href="${basePath}${link.href}">
-              <span class="mega-link-title">${link.title}</span>
-              <span class="mega-link-desc">${link.desc}</span>
-            </a>
-          </li>
-        `).join("")}
-      </ul>
-    </div>
+  const linksHtml = data.links.map(link => `
+    <a href="${basePath}${link.href}" class="mega-link-item">
+      <span>${link.title}</span>
+      <span class="mega-arrow">→</span>
+    </a>
   `).join("");
 
-  const featured = data.featured ? `
-    <div class="mega-featured">
-      <div class="mega-featured-img">
-        <img src="${data.featured.img}" alt="" />
-      </div>
-      <div class="mega-featured-body">
-        <span class="mega-featured-tag">${data.featured.tag}</span>
-        <h4 class="mega-featured-title">${data.featured.title}</h4>
-        <p class="mega-featured-desc">${data.featured.desc}</p>
-        <a href="${basePath}${data.featured.href}" class="mega-featured-link">${data.featured.cta}</a>
+  const spotlightHtml = data.spotlight ? `
+    <div class="mega-spotlight">
+      <h4>${data.spotlight.title}</h4>
+      <div class="mega-spotlight-list">
+        ${data.spotlight.items.map(s => `<a href="${basePath}${s.href}">${s.title}</a>`).join("")}
       </div>
     </div>
   ` : "";
@@ -220,46 +212,19 @@ function renderMegaMenu(key, data) {
   return `
     <div class="mega-menu" data-mega="${key}">
       <div class="mega-inner">
-        <div class="mega-columns">${columnsHtml}</div>
-        ${featured}
-      </div>
-    </div>
-  `;
-}
-
-function renderUtilityBar() {
-  return `
-    <div class="utility-bar">
-      <div class="container-wide">
-        <div class="utility-inner">
-          <div class="utility-left">
-            <a href="#" class="utility-link">
-              ${ICONS["user"]}
-              <span>My Audit</span>
-            </a>
-            <span class="utility-divider"></span>
-            <a href="#" class="utility-link utility-locale">
-              ${ICONS["globe-sm"]}
-              <span>Georgia / ქართული</span>
-              ${ICONS["chevron-down"]}
-            </a>
-          </div>
-          <div class="utility-right">
-            <div class="utility-social">
-              <a href="#" aria-label="LinkedIn">${ICONS["linkedin"]}</a>
-              <a href="#" aria-label="Facebook">${ICONS["facebook"]}</a>
-              <a href="#" aria-label="Instagram">${ICONS["instagram"]}</a>
-              <a href="#" aria-label="YouTube">${ICONS["youtube"]}</a>
-            </div>
-            <span class="utility-divider"></span>
-            <div class="lang-switch-top" role="group" aria-label="Language">
-              <button data-lang="ka" type="button">KA</button>
-              <span>/</span>
-              <button data-lang="en" type="button">EN</button>
-            </div>
-          </div>
+        <div class="mega-intro">
+          <h3>${data.intro.title}</h3>
+          <p>${data.intro.desc}</p>
+          <a href="${basePath}${data.intro.ctaHref}" class="mega-explore-btn">${data.intro.ctaText}</a>
         </div>
+        <div class="mega-links">
+          ${linksHtml}
+        </div>
+        ${spotlightHtml}
       </div>
+      <button class="mega-close" aria-label="Close">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m18 15-6-6-6 6"/></svg>
+      </button>
     </div>
   `;
 }
@@ -270,19 +235,15 @@ function renderHeader() {
     { key: "industries", type: "mega" },
     { key: "insights", type: "mega" },
     { key: "about", type: "mega" },
-    { key: "contact", type: "simple", label: "კონტაქტი", href: "contact.html" }
+    { key: "careers", type: "mega" }
   ];
 
   const navItemsHtml = navItems.map(item => {
-    if (item.type === "simple") {
-      return `<li><a href="${basePath}${item.href}">${item.label}</a></li>`;
-    }
     const mega = MEGA_MENUS[item.key];
     return `
       <li class="has-mega" data-mega-trigger="${item.key}">
         <button class="nav-link" type="button" aria-expanded="false">
           <span>${mega.label}</span>
-          ${ICONS["chevron-down"]}
         </button>
         ${renderMegaMenu(item.key, mega)}
       </li>
@@ -290,12 +251,14 @@ function renderHeader() {
   }).join("");
 
   return `
-    ${renderUtilityBar()}
     <header class="header">
       <div class="container-wide">
         <nav class="nav" aria-label="Main">
           <a href="${basePath}index.html" class="logo">
-            <span class="logo-mark">Audit</span>
+            <div class="logo-wrap">
+              <span class="logo-ey">Audit</span>
+            </div>
+            <span class="logo-tagline">Shape the future<br>with confidence</span>
           </a>
 
           <ul class="nav-menu">
@@ -303,10 +266,19 @@ function renderHeader() {
           </ul>
 
           <div class="nav-actions">
-            <button class="search-btn" aria-label="Search">${ICONS["search"]}</button>
-            <a href="${basePath}contact.html" class="btn btn-yellow btn-sm">
-              <span>მიიღე კონსულტაცია</span>
+            <button class="nav-action-item nav-search" aria-label="Search">
+              ${ICONS["search"]}
+              <span>Search</span>
+            </button>
+            <a href="${basePath}contact.html" class="nav-action-item nav-account">
+              ${ICONS["user"]}
+              <span>My Audit</span>
             </a>
+            <button class="nav-action-item nav-locale" type="button">
+              ${ICONS["globe-sm"]}
+              <span class="nav-locale-text">Georgia <strong>ქართული</strong></span>
+              ${ICONS["chevron-down"]}
+            </button>
             <button class="nav-toggle" type="button" aria-label="Menu" aria-expanded="false">
               <span class="nav-toggle-icon-open">${ICONS["menu"]}</span>
               <span class="nav-toggle-icon-close">${ICONS["close"]}</span>
@@ -316,8 +288,13 @@ function renderHeader() {
       </div>
     </header>
 
-    <!-- Mega menu backdrop -->
     <div class="mega-backdrop" aria-hidden="true"></div>
+
+    <!-- Hidden language switcher for i18n (keeps KA/EN toggle functionality) -->
+    <div class="lang-switch" style="position: absolute; left: -9999px;" role="group" aria-label="Language">
+      <button data-lang="ka" type="button">KA</button>
+      <button data-lang="en" type="button">EN</button>
+    </div>
   `;
 }
 
@@ -328,9 +305,10 @@ function renderFooter() {
         <div class="footer-top">
           <div class="footer-about">
             <a href="${basePath}index.html" class="logo">
-              <span class="logo-mark">Audit</span>
+              <div class="logo-wrap"><span class="logo-ey">Audit</span></div>
+              <span class="logo-tagline" style="color: rgba(255,255,255,0.6);">Shape the future<br>with confidence</span>
             </a>
-            <p data-i18n="footer.about"></p>
+            <p data-i18n="footer.about" style="margin-top: 20px;"></p>
             <p style="font-size: 13px; color: rgba(255,255,255,0.6);">
               <strong style="color: white; display: block; font-size: 16px; margin-bottom: 6px;">+995 32 2 00 00 00</strong>
               info@auditcompany.ge<br>
@@ -339,7 +317,7 @@ function renderFooter() {
           </div>
 
           <div>
-            <h5>სერვისები</h5>
+            <h5>Services</h5>
             <div class="footer-links">
               <a href="${basePath}services/audit.html" data-i18n="services.audit.title"></a>
               <a href="${basePath}services/tax.html" data-i18n="services.tax.title"></a>
@@ -350,7 +328,7 @@ function renderFooter() {
           </div>
 
           <div>
-            <h5>ინდუსტრიები</h5>
+            <h5>Industries</h5>
             <div class="footer-links">
               <a href="#">Technology & IT</a>
               <a href="#">ფინანსური სერვისები</a>
@@ -371,10 +349,10 @@ function renderFooter() {
           </div>
 
           <div>
-            <h5>კომპანია</h5>
+            <h5>About</h5>
             <div class="footer-links">
               <a href="${basePath}about.html" data-i18n="nav.about"></a>
-              <a href="#">კარიერა</a>
+              <a href="#">Careers</a>
               <a href="${basePath}contact.html" data-i18n="nav.contact"></a>
               <a href="#" data-i18n="footer.privacy"></a>
               <a href="#" data-i18n="footer.terms"></a>
