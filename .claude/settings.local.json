@@ -10,7 +10,9 @@
       "Bash(npx vercel *)",
       "Bash(npx vercel@latest --prod --yes)",
       "Bash(start \"\" \"https://audit-company-sage.vercel.app\")",
-      "Bash(gh auth *)"
+      "Bash(gh auth *)",
+      "Bash(gh repo *)",
+      "Bash(start \"\" \"https://github.com/chaba17/audit-company\")"
     ]
   }
 }

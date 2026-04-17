@@ -1,5 +1,5 @@
 /* ==========================================================
-   Audit Company — UI interactions
+   Audit Company — UI interactions (Mega menu + Mobile drawer)
    ========================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -11,17 +11,75 @@ document.addEventListener("DOMContentLoaded", () => {
     window.addEventListener("scroll", onScroll, { passive: true });
   }
 
-  // Mobile nav toggle
+  // ====== MEGA MENU (desktop) ======
+  const megaTriggers = document.querySelectorAll(".has-mega");
+  const backdrop = document.querySelector(".mega-backdrop");
+
+  const closeAllMegas = () => {
+    megaTriggers.forEach(t => t.classList.remove("open"));
+    if (backdrop) backdrop.classList.remove("active");
+  };
+
+  megaTriggers.forEach(trigger => {
+    const link = trigger.querySelector(".nav-link");
+    if (!link) return;
+
+    // Click to toggle (works on touch and mouse)
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const isOpen = trigger.classList.contains("open");
+      closeAllMegas();
+      if (!isOpen) {
+        trigger.classList.add("open");
+        if (backdrop && window.innerWidth > 1100) backdrop.classList.add("active");
+      }
+    });
+
+    // Hover (desktop only)
+    trigger.addEventListener("mouseenter", () => {
+      if (window.innerWidth > 1100) {
+        closeAllMegas();
+        trigger.classList.add("open");
+        if (backdrop) backdrop.classList.add("active");
+      }
+    });
+    trigger.addEventListener("mouseleave", () => {
+      if (window.innerWidth > 1100) {
+        trigger.classList.remove("open");
+        if (backdrop) backdrop.classList.remove("active");
+      }
+    });
+  });
+
+  // Click outside → close
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest(".has-mega") && !e.target.closest(".mega-menu")) {
+      closeAllMegas();
+    }
+  });
+
+  // ESC key → close
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      closeAllMegas();
+      if (document.body.classList.contains("nav-open")) closeMenu();
+    }
+  });
+
+  // ====== MOBILE NAV DRAWER ======
   const navToggle = document.querySelector(".nav-toggle");
   const navMenu = document.querySelector(".nav-menu");
+
+  let closeMenu = () => {};
+
   if (navToggle && navMenu) {
-    const closeMenu = () => {
+    closeMenu = () => {
       navMenu.classList.remove("open");
       navToggle.classList.remove("active");
       navToggle.setAttribute("aria-expanded", "false");
       document.body.classList.remove("nav-open");
-      // Close any open dropdowns
-      document.querySelectorAll(".has-dropdown.open").forEach(el => el.classList.remove("open"));
+      closeAllMegas();
     };
     const openMenu = () => {
       navMenu.classList.add("open");
@@ -36,34 +94,24 @@ document.addEventListener("DOMContentLoaded", () => {
       if (isOpen) closeMenu(); else openMenu();
     });
 
-    // Close on link click (not dropdown toggle)
+    // Close on link click inside menu (simple links, not dropdown toggles)
     navMenu.addEventListener("click", (e) => {
       const link = e.target.closest("a");
-      if (link) closeMenu();
+      if (link && !link.closest(".nav-link")) closeMenu();
     });
 
-    // ESC key closes
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && navMenu.classList.contains("open")) closeMenu();
-    });
-
-    // Close when resizing to desktop
+    // Close on resize to desktop
     window.addEventListener("resize", () => {
       if (window.innerWidth > 1100 && navMenu.classList.contains("open")) closeMenu();
     });
   }
 
-  // Dropdown tap toggle (mobile)
-  document.querySelectorAll(".has-dropdown > .nav-link").forEach(link => {
-    link.addEventListener("click", (e) => {
-      if (window.innerWidth <= 1100) {
-        e.preventDefault();
-        e.stopPropagation();
-        const parent = link.parentElement;
-        parent.classList.toggle("open");
-      }
+  // Backdrop click closes mega
+  if (backdrop) {
+    backdrop.addEventListener("click", () => {
+      closeAllMegas();
     });
-  });
+  }
 
   // Intersection Observer for scroll reveal
   const observer = new IntersectionObserver((entries) => {
