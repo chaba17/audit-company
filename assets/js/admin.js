@@ -129,9 +129,13 @@
     const token = getGithubToken();
     if (!token) throw new Error('NO_TOKEN');
     const base = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}`;
-    const url = path ? `${base}/${path}` : base;
+    let url = path ? `${base}/${path}` : base;
 
-    // Minimal headers to avoid CORS preflight issues
+    // Cache-bust GET requests to avoid browser caching stale SHA
+    if (!options.method || options.method === 'GET') {
+      url += (url.includes('?') ? '&' : '?') + '_t=' + Date.now();
+    }
+
     const headers = {
       'Authorization': `token ${token}`,
       'Accept': 'application/vnd.github.v3+json',
@@ -143,9 +147,8 @@
 
     let res;
     try {
-      res = await fetch(url, { ...options, headers });
+      res = await fetch(url, { ...options, headers, cache: 'no-store' });
     } catch (e) {
-      // Network error / CORS / AdBlocker / VPN
       throw new Error('NETWORK: ' + (e.message || 'Failed to fetch'));
     }
 
@@ -154,14 +157,24 @@
       try {
         const err = await res.json();
         detail = err.message || detail;
-        if (err.documentation_url) detail += ` (${err.documentation_url})`;
       } catch {}
       if (res.status === 401) throw new Error('UNAUTHORIZED: Token არასწორია ან ვადაგასული.');
-      if (res.status === 404) throw new Error('NOT_FOUND: Repository ვერ მოიძებნა ან token-ს არ აქვს `repo` უფლება.');
+      if (res.status === 404) throw new Error('NOT_FOUND: ' + detail);
       if (res.status === 403) throw new Error('FORBIDDEN: Token-ს არ აქვს საკმარისი უფლება.');
+      if (res.status === 409 || detail.includes('does not match')) throw new Error('SHA_CONFLICT: ' + detail);
       throw new Error(detail);
     }
     return res.json();
+  }
+
+  async function fetchFileSha() {
+    try {
+      const current = await githubAPI(`contents/${GITHUB_PATH}?ref=${GITHUB_BRANCH}`);
+      return current.sha;
+    } catch (e) {
+      if (e.message.startsWith('NOT_FOUND')) return null;
+      throw e;
+    }
   }
 
   // UTF-8 safe Base64 encoding
@@ -177,32 +190,41 @@
     }
 
     try {
-      // 1. Get current file SHA (needed for update)
-      let sha = null;
-      try {
-        const current = await githubAPI(`contents/${GITHUB_PATH}?ref=${GITHUB_BRANCH}`);
-        sha = current.sha;
-      } catch (e) {
-        if (e.message !== 'Not Found') throw e;
-        // File doesn't exist — will create
-      }
-
-      // 2. Prepare content
+      // Prepare content
       state.content._updated = new Date().toISOString();
       const jsonStr = JSON.stringify(state.content, null, 2);
+      const encoded = toBase64(jsonStr);
 
-      // 3. PUT the file
-      const body = {
-        message: `Update content via admin — ${new Date().toLocaleString('ka-GE')}`,
-        content: toBase64(jsonStr),
-        branch: GITHUB_BRANCH
+      // Get fresh SHA
+      let sha = await fetchFileSha();
+
+      const attemptPut = async (currentSha) => {
+        const body = {
+          message: `Update content via admin — ${new Date().toLocaleString('ka-GE')}`,
+          content: encoded,
+          branch: GITHUB_BRANCH
+        };
+        if (currentSha) body.sha = currentSha;
+        return await githubAPI(`contents/${GITHUB_PATH}`, {
+          method: 'PUT',
+          body: JSON.stringify(body)
+        });
       };
-      if (sha) body.sha = sha;
 
-      const result = await githubAPI(`contents/${GITHUB_PATH}`, {
-        method: 'PUT',
-        body: JSON.stringify(body)
-      });
+      let result;
+      try {
+        result = await attemptPut(sha);
+      } catch (e) {
+        if (e.message.startsWith('SHA_CONFLICT')) {
+          // Auto-retry with fresh SHA
+          console.log('SHA conflict — retrying with fresh SHA...');
+          await new Promise(r => setTimeout(r, 500));
+          sha = await fetchFileSha();
+          result = await attemptPut(sha);
+        } else {
+          throw e;
+        }
+      }
 
       // Save locally too
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state.content));
