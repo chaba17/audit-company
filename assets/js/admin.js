@@ -128,19 +128,38 @@
   async function githubAPI(path, options = {}) {
     const token = getGithubToken();
     if (!token) throw new Error('NO_TOKEN');
-    const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/${path}`;
-    const res = await fetch(url, {
-      ...options,
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Accept': 'application/vnd.github+json',
-        'X-GitHub-Api-Version': '2022-11-28',
-        ...(options.headers || {})
-      }
-    });
+    const base = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}`;
+    const url = path ? `${base}/${path}` : base;
+
+    // Minimal headers to avoid CORS preflight issues
+    const headers = {
+      'Authorization': `token ${token}`,
+      'Accept': 'application/vnd.github.v3+json',
+      ...(options.headers || {})
+    };
+    if (options.method && options.method !== 'GET') {
+      headers['Content-Type'] = 'application/json';
+    }
+
+    let res;
+    try {
+      res = await fetch(url, { ...options, headers });
+    } catch (e) {
+      // Network error / CORS / AdBlocker / VPN
+      throw new Error('NETWORK: ' + (e.message || 'Failed to fetch'));
+    }
+
     if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.message || `GitHub API ${res.status}`);
+      let detail = `HTTP ${res.status}`;
+      try {
+        const err = await res.json();
+        detail = err.message || detail;
+        if (err.documentation_url) detail += ` (${err.documentation_url})`;
+      } catch {}
+      if (res.status === 401) throw new Error('UNAUTHORIZED: Token არასწორია ან ვადაგასული.');
+      if (res.status === 404) throw new Error('NOT_FOUND: Repository ვერ მოიძებნა ან token-ს არ აქვს `repo` უფლება.');
+      if (res.status === 403) throw new Error('FORBIDDEN: Token-ს არ აქვს საკმარისი უფლება.');
+      throw new Error(detail);
     }
     return res.json();
   }
@@ -1715,12 +1734,32 @@
     });
 
     $('#test-token')?.addEventListener('click', async () => {
-      toast('Token-ის ტესტი...', 'info', 1500);
+      const btn = $('#test-token');
+      const orig = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin"><path d="M21 12a9 9 0 1 1-6.22-8.56"/></svg> ტესტი...';
+
       try {
         const data = await githubAPI('');
-        toast(`✓ კავშირი OK: ${data.full_name}`, 'success');
+        toast(`✅ კავშირი OK — ${data.full_name} (${data.private ? 'private' : 'public'})`, 'success', 5000);
       } catch (e) {
-        toast('✗ კავშირი ვერ დამყარდა: ' + e.message, 'error', 5000);
+        const msg = e.message;
+        if (msg.startsWith('NETWORK:')) {
+          toast('❌ ქსელის პრობლემა. შეამოწმე: 1) ინტერნეტი 2) AdBlocker/VPN 3) Brave Shield — გამორთე', 'error', 8000);
+          console.error('Network error — try disabling AdBlocker or browser extensions that block api.github.com');
+        } else if (msg.startsWith('UNAUTHORIZED:')) {
+          toast('❌ ' + msg.replace('UNAUTHORIZED: ', ''), 'error', 5000);
+        } else if (msg.startsWith('NOT_FOUND:')) {
+          toast('❌ ' + msg.replace('NOT_FOUND: ', ''), 'error', 5000);
+        } else if (msg.startsWith('FORBIDDEN:')) {
+          toast('❌ ' + msg.replace('FORBIDDEN: ', ''), 'error', 5000);
+        } else {
+          toast('❌ ' + msg, 'error', 6000);
+        }
+        console.error('GitHub test failed:', e);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = orig;
       }
     });
 
