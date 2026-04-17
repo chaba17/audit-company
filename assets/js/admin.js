@@ -112,6 +112,105 @@
     localStorage.setItem(PASSWORD_KEY, hash);
   }
 
+  // ====== GITHUB CONFIG ======
+  const GITHUB_OWNER = 'chaba17';
+  const GITHUB_REPO = 'audit-company';
+  const GITHUB_PATH = 'assets/data/content.json';
+  const GITHUB_BRANCH = 'main';
+  const GITHUB_TOKEN_KEY = 'audit_github_token';
+
+  function getGithubToken() { return localStorage.getItem(GITHUB_TOKEN_KEY) || ''; }
+  function setGithubToken(token) {
+    if (token) localStorage.setItem(GITHUB_TOKEN_KEY, token);
+    else localStorage.removeItem(GITHUB_TOKEN_KEY);
+  }
+
+  async function githubAPI(path, options = {}) {
+    const token = getGithubToken();
+    if (!token) throw new Error('NO_TOKEN');
+    const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/${path}`;
+    const res = await fetch(url, {
+      ...options,
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/vnd.github+json',
+        'X-GitHub-Api-Version': '2022-11-28',
+        ...(options.headers || {})
+      }
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.message || `GitHub API ${res.status}`);
+    }
+    return res.json();
+  }
+
+  // UTF-8 safe Base64 encoding
+  function toBase64(str) {
+    return btoa(unescape(encodeURIComponent(str)));
+  }
+
+  async function publishToGitHub() {
+    const publishBtn = $('#publish-btn');
+    if (publishBtn) {
+      publishBtn.disabled = true;
+      publishBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin"><path d="M21 12a9 9 0 1 1-6.22-8.56"/></svg> იტვირთება...';
+    }
+
+    try {
+      // 1. Get current file SHA (needed for update)
+      let sha = null;
+      try {
+        const current = await githubAPI(`contents/${GITHUB_PATH}?ref=${GITHUB_BRANCH}`);
+        sha = current.sha;
+      } catch (e) {
+        if (e.message !== 'Not Found') throw e;
+        // File doesn't exist — will create
+      }
+
+      // 2. Prepare content
+      state.content._updated = new Date().toISOString();
+      const jsonStr = JSON.stringify(state.content, null, 2);
+
+      // 3. PUT the file
+      const body = {
+        message: `Update content via admin — ${new Date().toLocaleString('ka-GE')}`,
+        content: toBase64(jsonStr),
+        branch: GITHUB_BRANCH
+      };
+      if (sha) body.sha = sha;
+
+      const result = await githubAPI(`contents/${GITHUB_PATH}`, {
+        method: 'PUT',
+        body: JSON.stringify(body)
+      });
+
+      // Save locally too
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.content));
+      markClean();
+
+      toast('✅ ცვლილებები გამოქვეყნებულია! Vercel 30-60 წამში გაააქტიურებს.', 'success', 5000);
+      console.log('Commit:', result.commit?.html_url);
+    } catch (err) {
+      if (err.message === 'NO_TOKEN') {
+        toast('❌ ჯერ GitHub Token-ი უნდა დააყენო. წადი → Settings', 'error', 5000);
+        setTimeout(() => location.hash = '#settings', 1200);
+      } else if (err.message?.includes('Bad credentials') || err.message?.includes('401')) {
+        toast('❌ Token არასწორია. შეამოწმე Settings-ში.', 'error');
+      } else {
+        toast('❌ შეცდომა: ' + err.message, 'error', 5000);
+      }
+      console.error('Publish error:', err);
+    } finally {
+      if (publishBtn) {
+        publishBtn.disabled = false;
+        publishBtn.innerHTML = originalPublishBtnHTML;
+      }
+    }
+  }
+
+  const originalPublishBtnHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg> Publish Live`;
+
   // ====== CONTENT MANAGEMENT ======
   function loadContent() {
     const saved = localStorage.getItem(STORAGE_KEY);
@@ -1503,27 +1602,73 @@
 
   // --- SETTINGS ---
   function renderSettings() {
+    const hasToken = !!getGithubToken();
+    const maskedToken = hasToken ? '••••••••••••••••••••' + getGithubToken().slice(-4) : '';
+
     return `
       <div class="page-header">
-        <div><h1>პარამეტრები</h1><p>ადმინი პანელის მართვა</p></div>
+        <div><h1>პარამეტრები</h1><p>ადმინი პანელის და GitHub-ის კონფიგურაცია</p></div>
       </div>
+
+      <!-- GitHub Token -->
       <div class="card">
-        <div class="card-header"><h3 class="card-title">🔒 პაროლის შეცვლა</h3></div>
-        <div class="form-grid" style="max-width: 420px;">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">🚀 GitHub Auto-Publish ${hasToken ? '<span style="display: inline-block; margin-left: 8px; padding: 3px 10px; background: #10B981; color: white; font-size: 11px; border-radius: 4px; font-weight: 700;">ACTIVE</span>' : '<span style="display: inline-block; margin-left: 8px; padding: 3px 10px; background: #F59E0B; color: white; font-size: 11px; border-radius: 4px; font-weight: 700;">NOT CONFIGURED</span>'}</h3>
+            <p class="card-subtitle">"Publish Live" ღილაკისთვის საჭიროა GitHub Personal Access Token</p>
+          </div>
+        </div>
+
+        <div class="info-banner">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+          <div>
+            <strong>როგორ მივიღო Token:</strong><br>
+            1. გადადი <a href="https://github.com/settings/tokens/new?description=Audit%20Admin&scopes=repo" target="_blank" style="color: var(--ink); font-weight: 700; text-decoration: underline;">GitHub → New Token</a><br>
+            2. მონიშნე <code>repo</code> scope<br>
+            3. დააჭირე "Generate token"<br>
+            4. დააკოპირე ტოკენი (ერთჯერად ჩანს!) და ჩასვი ქვემოთ
+          </div>
+        </div>
+
+        <div class="form-grid" style="max-width: 640px;">
+          <div class="form-group">
+            <label>GitHub Personal Access Token</label>
+            <input type="password" id="gh-token" value="${escapeHtml(hasToken ? maskedToken : '')}" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" />
+            <small class="hint">შენახული მხოლოდ შენი ბრაუზერის localStorage-ში. Repository: <code>${GITHUB_OWNER}/${GITHUB_REPO}</code></small>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <button class="btn btn-dark" id="save-token">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              შენახვა
+            </button>
+            ${hasToken ? `
+              <button class="btn btn-outline" id="test-token">Test კავშირი</button>
+              <button class="btn btn-outline" id="remove-token" style="color: var(--danger); border-color: var(--danger);">წაშლა</button>
+            ` : ''}
+          </div>
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="card">
+        <div class="card-header"><h3 class="card-title">🔒 Admin პაროლი</h3></div>
+        <div class="form-grid cols-2" style="max-width: 640px;">
           <div class="form-group">
             <label>ახალი პაროლი</label>
             <input type="password" id="new-password" />
           </div>
           <div class="form-group">
-            <label>გაიმეორე პაროლი</label>
+            <label>გაიმეორე</label>
             <input type="password" id="confirm-password" />
           </div>
-          <button class="btn btn-dark" id="change-pw">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            შეცვლა
-          </button>
         </div>
+        <button class="btn btn-dark" id="change-pw">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          შეცვლა
+        </button>
       </div>
+
+      <!-- System Info -->
       <div class="card">
         <div class="card-header"><h3 class="card-title">ℹ️ სისტემური ინფო</h3></div>
         <div class="form-grid cols-2">
@@ -1531,16 +1676,15 @@
           <div class="form-group"><label>ბოლო განახლება</label><input type="text" readonly value="${state.content._updated ? new Date(state.content._updated).toLocaleString('ka-GE') : 'N/A'}" /></div>
         </div>
       </div>
+
+      <!-- How it works -->
       <div class="card">
-        <div class="card-header"><h3 class="card-title">📖 ინსტრუქცია</h3></div>
-        <div style="font-size: 13px; line-height: 1.7; color: var(--gray-700);">
-          <p><strong>როგორ მუშაობს:</strong></p>
-          <ol style="padding-left: 20px; margin-top: 8px;">
-            <li>ცვლილებები ინახება თქვენი ბრაუზერის მეხსიერებაში (localStorage)</li>
-            <li>"Save Changes" ღილაკი ინახავს ცვლილებებს მხოლოდ შენს ბრაუზერში</li>
-            <li>"Export JSON" ამზადებს ფაილს — ეს ფაილი უნდა ატვირთო GitHub-ზე საჯაროდ გამოსახვისთვის</li>
-            <li>გამოყენების შემდეგ — Vercel ავტომატურად განაახლებს საიტს</li>
-          </ol>
+        <div class="card-header"><h3 class="card-title">📖 როგორ მუშაობს</h3></div>
+        <div style="font-size: 14px; line-height: 1.7; color: var(--gray-700);">
+          <p><strong>🔵 Save Local</strong> — ცვლილებები შენახულია მხოლოდ შენს ბრაუზერში (localStorage). მხოლოდ შენ ხედავ.</p>
+          <p><strong>🟡 Publish Live</strong> — ცვლილებები იგზავნება GitHub-ზე, Vercel ავტომატურად ანახლებს საიტს. ყველას გამოუჩნდება 30-60 წამში.</p>
+          <p><strong>⚙️ Export JSON</strong> — ჩამოწერა backup-ისთვის (ფაილის სახით).</p>
+          <p style="margin-top: 12px; padding: 12px; background: var(--gray-100); border-left: 3px solid var(--yellow);"><strong>💡 რჩევა:</strong> Token-ი დააყენე ერთხელ → შემდეგ "Publish Live" ღილაკი იმუშავებს ყოველთვის.</p>
         </div>
       </div>
     `;
@@ -1556,6 +1700,35 @@
       $('#new-password').value = '';
       $('#confirm-password').value = '';
       toast('პაროლი შეიცვალა', 'success');
+    });
+
+    // GitHub token
+    $('#save-token')?.addEventListener('click', () => {
+      const val = $('#gh-token').value.trim();
+      if (!val || val.startsWith('••••')) { toast('ჩასვი სწორი ტოკენი', 'error'); return; }
+      if (!val.startsWith('ghp_') && !val.startsWith('github_pat_')) {
+        if (!confirm('Token არ იწყება ghp_ ან github_pat_. გააგრძელო?')) return;
+      }
+      setGithubToken(val);
+      toast('Token შენახულია', 'success');
+      renderSection('settings');
+    });
+
+    $('#test-token')?.addEventListener('click', async () => {
+      toast('Token-ის ტესტი...', 'info', 1500);
+      try {
+        const data = await githubAPI('');
+        toast(`✓ კავშირი OK: ${data.full_name}`, 'success');
+      } catch (e) {
+        toast('✗ კავშირი ვერ დამყარდა: ' + e.message, 'error', 5000);
+      }
+    });
+
+    $('#remove-token')?.addEventListener('click', () => {
+      if (!confirm('Token-ის წაშლა? "Publish Live" აღარ იმუშავებს.')) return;
+      setGithubToken('');
+      toast('Token წაიშალა', 'warning');
+      renderSection('settings');
     });
   }
 
@@ -1700,6 +1873,10 @@
 
   function setupTopbar() {
     $('#save-btn').addEventListener('click', saveContent);
+    $('#publish-btn')?.addEventListener('click', async () => {
+      if (!confirm('გამოვაქვეყნო ცვლილებები საიტზე?\n\n• ფაილი შეივსება GitHub-ში\n• Vercel ავტომატურად განაახლებს საიტს\n• 30-60 წამში ცვლილებები ხილვადი იქნება ყველასთვის')) return;
+      await publishToGitHub();
+    });
     $('#export-btn').addEventListener('click', exportJSON);
     $('#preview-btn').addEventListener('click', () => window.open('index.html', '_blank'));
     $('#logout-btn').addEventListener('click', () => {

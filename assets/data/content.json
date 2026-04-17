@@ -1,0 +1,93 @@
+{
+  "_version": "1.0.0",
+  "_updated": "2026-04-18T00:00:00.000Z",
+  "site": {
+    "name": "Audit",
+    "tagline": "Shape the future with confidence",
+    "phone": "+995 32 2 00 00 00",
+    "phoneAlt": "+995 599 00 00 00",
+    "email": "info@auditcompany.ge",
+    "emailAlt": "support@auditcompany.ge",
+    "address": "თბილისი, ვაჟა-ფშაველას გამზ. 71",
+    "addressDetails": "Business Hub, მე-4 სართული",
+    "hours": "ორშ - პარ: 09:00 - 19:00",
+    "hoursWeekend": "შაბათი: 10:00 - 15:00",
+    "copyright": "© 2026 Audit Financial Partners. ყველა უფლება დაცულია.",
+    "social": {
+      "facebook": "#",
+      "instagram": "#",
+      "linkedin": "#",
+      "youtube": "#"
+    }
+  },
+  "hero": {
+    "tag": "Shape your future · 2026",
+    "title": "შენ გააფორმებ <mark>მომავალს</mark>, თუ მომავალი გააფორმებს შენ?",
+    "subtitle": "გაიცანი რას მიიღებ ერთ-ერთი საქართველოში წამყვანი საბუღალტრო და საგადასახადო ფირმისგან — ბუღალტერიიდან აუდიტამდე, შპს-ის რეგისტრაციიდან ვირტუალური ზონის სტატუსამდე.",
+    "primaryCta": { "text": "გაიცანი როგორ დაგეხმარებით", "href": "contact.html" },
+    "secondaryCta": { "text": "ჩვენი სერვისები", "href": "services.html" },
+    "bgImage": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=2000&q=85"
+  },
+  "stats": [
+    { "value": "500+", "label": "კლიენტი, რომლებიც გვენდობიან საქართველოში" },
+    { "value": "15", "label": "წლის გამოცდილება Big 4-ის დონეზე" },
+    { "value": "₾2.4M", "label": "დაზოგილი გადასახადი კლიენტებისთვის" },
+    { "value": "98%", "label": "კლიენტის კმაყოფილება წლიური შეფასებით" }
+  ],
+  "services": [
+    {"id": "accounting", "title": "ბუღალტრული აღრიცხვა", "shortDesc": "თვიური საბუღალტრო მომსახურება", "icon": "book-open", "features": []},
+    {"id": "tax", "title": "საგადასახადო დეკლარაციები", "shortDesc": "დღგ, მოგება, საშემოსავლო გადასახადი", "icon": "receipt", "features": []},
+    {"id": "audit", "title": "ფინანსური აუდიტი", "shortDesc": "IFRS და ქართული სტანდარტების მიხედვით", "icon": "shield-check", "features": []},
+    {"id": "payroll", "title": "ხელფასი და HR", "shortDesc": "თანამშრომლების მართვა", "icon": "users", "features": []},
+    {"id": "registration", "title": "კომპანიის რეგისტრაცია", "shortDesc": "შპს, ი/მ, ფონდი — 1 დღეში", "icon": "building", "features": []},
+    {"id": "consulting", "title": "საგადასახადო კონსულტაცია", "shortDesc": "სტრატეგიული რჩევა", "icon": "message-circle", "features": []},
+    {"id": "nonresident", "title": "არარეზიდენტებისთვის", "shortDesc": "უცხოელი მეწარმეები", "icon": "globe", "features": []},
+    {"id": "smallbiz", "title": "მცირე ბიზნესის სტატუსი", "shortDesc": "1% ბრუნვის გადასახადი", "icon": "briefcase", "features": []},
+    {"id": "virtualzone", "title": "ვირტუალური ზონა", "shortDesc": "IT კომპანიების სტატუსი — 0% მოგება", "icon": "cpu", "features": []}
+  ],
+  "pricing": {
+    "monthly": "/ თვეში",
+    "popular": "ყველაზე პოპულარული",
+    "ctaStart": "დაიწყე ახლავე",
+    "plans": [
+      {"name": "სტარტერი", "description": "ახალი ინდმეწარმისთვის", "price": "150", "currency": "₾", "featured": false, "features": ["30-მდე ოპერაცია თვეში", "მცირე ბიზნესის დეკლარაცია", "საბანკო ამონაწერების დამუშავება", "საგადასახადო კონსულტაცია", "ელ.ფოსტით მხარდაჭერა"]},
+      {"name": "ბიზნესი", "description": "შპს-სთვის აქტიური ოპერაციებით", "price": "350", "currency": "₾", "featured": true, "features": ["150-მდე ოპერაცია თვეში", "დღგ და მოგების დეკლარაცია", "ხელფასის დარიცხვა (5-მდე)", "ყოველთვიური ფინანსური ანგარიშგება", "პერსონალური ბუღალტერი", "ტელეფონით მხარდაჭერა"]},
+      {"name": "კორპორაციული", "description": "დიდი კომპანიებისთვის", "price": "750", "currency": "₾", "featured": false, "features": ["შეუზღუდავი ოპერაციები", "სრული საგადასახადო მომსახურება", "ხელფასი (შეუზღუდავი)", "IFRS ანგარიშგება", "თვიური აუდიტი", "24/7 პრიორიტეტული მხარდაჭერა", "CFO კონსულტაცია"]}
+    ]
+  },
+  "team": [
+    {"name": "თამარ ჯაფარიძე", "role": "Managing Partner", "tag": "ACCA", "bio": "15+ წლის გამოცდილება საერთაშორისო აუდიტსა და ფინანსურ ანგარიშგებაში.", "photo": "https://i.pravatar.cc/600?img=47"},
+    {"name": "ლევან კიკნაძე", "role": "Tax Consultant", "tag": "12Y+", "bio": "12+ წლის გამოცდილება საგადასახადო კანონმდებლობაში.", "photo": "https://i.pravatar.cc/600?img=12"},
+    {"name": "ნინო ღოღობერიძე", "role": "Head of Audit", "tag": "CPA", "bio": "IFRS ექსპერტი, Big 4 გამოცდილებით.", "photo": "https://i.pravatar.cc/600?img=48"}
+  ],
+  "testimonials": [
+    {"quote": "ერთ წელზე მეტია ვთანამშრომლობთ და აბსოლუტურად კმაყოფილი ვარ.", "author": "ნინო ყიფიანი", "role": "Co-Founder, TechStart GE", "avatar": "https://i.pravatar.cc/100?img=47"},
+    {"quote": "როგორც არარეზიდენტმა, საერთოდ არ ვიცოდი საიდან დამეწყო. გუნდმა ყველა საკითხი გადაწყვიტა.", "author": "David Miller", "role": "CEO, Remote Ventures", "avatar": "https://i.pravatar.cc/100?img=12"},
+    {"quote": "ფინანსური ანგარიშგება ყოველთვიურად გვაქვს — მართვა გახდა გაცილებით მარტივი.", "author": "გიორგი ბერიძე", "role": "Founder, Logistics Pro", "avatar": "https://i.pravatar.cc/100?img=53"}
+  ],
+  "faq": [
+    {"question": "რამდენად სწრაფად შემიძლია დავიწყო?", "answer": "ჩვეულებრივ, 1-3 სამუშაო დღეში ვიწყებთ მომსახურებას."},
+    {"question": "არარეზიდენტი ვარ, შემიძლია თქვენი სერვისი?", "answer": "კი, სპეციალიზირებული პაკეტი გვაქვს არარეზიდენტებისთვის."},
+    {"question": "მცირე ბიზნესის სტატუსი რას იძლევა?", "answer": "1% გადასახადი ბრუნვაზე, წლიური 500,000 ლარის ლიმიტით."},
+    {"question": "შეიცავს თუ არა ფასი ყველა დეკლარაციას?", "answer": "დიახ, ყველა სტანდარტული პაკეტი მოიცავს ყველა დეკლარაციას."},
+    {"question": "შემიძლია გადავიდე მეორე პაკეტზე?", "answer": "რა თქმა უნდა, ნებისმიერ დროს. ცვლილება ძალაში შედის შემდეგი თვის პირველი რიცხვიდან."}
+  ],
+  "blog": [
+    {"title": "2026 წლის საგადასახადო ცვლილებები საქართველოში", "slug": "2026-tax-changes", "category": "საგადასახადო", "date": "2026-04-10", "readTime": "5 წუთი", "excerpt": "ახალი კანონმდებლობა, რომელიც შედის ძალაში 2026 წლის პირველი ივლისიდან.", "image": "https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=800&q=85", "featured": true},
+    {"title": "შპს vs ი/მ — რომელი აირჩიოთ 2026 წელს?", "slug": "llc-vs-sole-prop", "category": "ბიზნესი", "date": "2026-03-28", "readTime": "7 წუთი", "excerpt": "შედარებითი ანალიზი და რეკომენდაციები.", "image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=85", "featured": false},
+    {"title": "ვირტუალური ზონის სტატუსი — 0% მოგება", "slug": "virtual-zone", "category": "IT", "date": "2026-03-15", "readTime": "6 წუთი", "excerpt": "როგორ მიიღოთ ვირტუალური ზონის სტატუსი.", "image": "https://images.unsplash.com/photo-1551836022-deb4988cc6c0?auto=format&fit=crop&w=800&q=85", "featured": false}
+  ],
+  "industries": [
+    {"title": "Technology & IT", "description": "ვირტუალური ზონის სტატუსი, SaaS კომპანიები, AI/Blockchain სტარტაპები."},
+    {"title": "ფინანსური სერვისები", "description": "ბანკები, სადაზღვევო, საინვესტიციო ფონდები."},
+    {"title": "უძრავი ქონება", "description": "დეველოპმენტი, უძრავი ქონების მართვა."},
+    {"title": "საცალო & E-commerce", "description": "ონლაინ მაღაზიები, საცალო ქსელები."},
+    {"title": "ლოჯისტიკა", "description": "ტრანსპორტი, დისტრიბუცია, საბაჟო ოპერაციები."},
+    {"title": "HoReCa", "description": "სასტუმროები, რესტორნები, ტურისტული ოპერატორები."},
+    {"title": "ჯანდაცვა & მედიცინა", "description": "კლინიკები, ფარმაცევტული კომპანიები."},
+    {"title": "საერთაშორისო ბიზნესი", "description": "უცხოური კომპანიები, ექსპორტ-იმპორტი."}
+  ],
+  "footer": {
+    "about": "ვემსახურებით საქართველოს ბიზნესს — ბუღალტერია, გადასახადები, აუდიტი და კონსულტაცია."
+  }
+}

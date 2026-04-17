@@ -280,6 +280,8 @@ input, select, textarea { font-family: inherit; }
   background: var(--warning);
   animation: pulse 1.5s infinite;
 }
+.spin { animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
 @keyframes pulse {
   0%,100% { opacity: 1; }
   50% { opacity: 0.4; }
