@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:affotax.com)",
+      "Bash(start \"\" \"D:/Ai_Agents/Audit website/index.html\")",
+      "WebFetch(domain:bizee.com)",
+      "WebFetch(domain:www.ey.com)",
+      "Bash(npm --version)",
+      "Bash(where npx *)",
+      "Bash(npx vercel *)",
+      "Bash(npx vercel@latest --prod --yes)",
+      "Bash(start \"\" \"https://audit-company-sage.vercel.app\")",
+      "Bash(gh auth *)"
+    ]
+  }
+}
