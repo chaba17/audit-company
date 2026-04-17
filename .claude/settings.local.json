@@ -21,7 +21,8 @@
       "Bash(curl -sI \"https://audit-company-sage.vercel.app/\")",
       "Bash(start \"\" \"https://audit-company-sage.vercel.app/?refresh=$\\(date +%s\\)\")",
       "Bash(start \"\" \"https://audit-company-sage.vercel.app/admin.html\")",
-      "Bash(start \"\" \"https://audit-company-sage.vercel.app/admin.html#settings\")"
+      "Bash(start \"\" \"https://audit-company-sage.vercel.app/admin.html#settings\")",
+      "Bash(start \"\" \"https://audit-company-sage.vercel.app/pricing\")"
     ]
   }
 }

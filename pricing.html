@@ -22,7 +22,11 @@
 
   <section class="section">
     <div class="container">
-      <div class="pricing-grid" id="pricing-grid"></div>
+      <div class="pricing-wrap" id="pricing-wrap">
+        <button class="pricing-nav prev" id="pricing-prev" aria-label="Previous" disabled>‹</button>
+        <div class="pricing-grid" id="pricing-grid"></div>
+        <button class="pricing-nav next" id="pricing-next" aria-label="Next" disabled>›</button>
+      </div>
       <p class="text-center" style="margin-top: 28px; font-size: 13px; color: var(--color-muted); letter-spacing: 0.04em; text-transform: uppercase;">
         · ფასები დღგ-ის გარეშე · ინდივიდუალური მორგება შესაძლებელია ·
       </p>
@@ -139,6 +143,48 @@
 
       // Rebuild comparison table dynamically
       buildComparisonTable(plans);
+
+      // Setup scroll navigation
+      setupPricingScroll();
+    }
+
+    function setupPricingScroll() {
+      const wrap = document.getElementById("pricing-wrap");
+      const grid = document.getElementById("pricing-grid");
+      const prev = document.getElementById("pricing-prev");
+      const next = document.getElementById("pricing-next");
+      if (!grid || !prev || !next) return;
+
+      const needsScroll = () => grid.scrollWidth > grid.clientWidth + 5;
+      const updateNav = () => {
+        if (!needsScroll()) {
+          wrap.classList.add("no-scroll");
+          wrap.removeAttribute("data-can-scroll");
+          prev.disabled = true;
+          next.disabled = true;
+          return;
+        }
+        wrap.classList.remove("no-scroll");
+        wrap.setAttribute("data-can-scroll", "true");
+        const atStart = grid.scrollLeft <= 10;
+        const atEnd = grid.scrollLeft >= grid.scrollWidth - grid.clientWidth - 10;
+        prev.disabled = atStart;
+        next.disabled = atEnd;
+        wrap.setAttribute("data-scroll-start", atStart);
+        wrap.setAttribute("data-scroll-end", atEnd);
+      };
+
+      const scrollByOne = (dir) => {
+        const card = grid.querySelector(".price-card");
+        const step = card ? card.offsetWidth : 300;
+        grid.scrollBy({ left: step * dir, behavior: "smooth" });
+      };
+
+      prev.onclick = () => scrollByOne(-1);
+      next.onclick = () => scrollByOne(1);
+      grid.addEventListener("scroll", updateNav);
+      window.addEventListener("resize", updateNav);
+      setTimeout(updateNav, 100);
     }
 
     function buildComparisonTable(plans) {
