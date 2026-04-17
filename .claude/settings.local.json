@@ -12,7 +12,11 @@
       "Bash(start \"\" \"https://audit-company-sage.vercel.app\")",
       "Bash(gh auth *)",
       "Bash(gh repo *)",
-      "Bash(start \"\" \"https://github.com/chaba17/audit-company\")"
+      "Bash(start \"\" \"https://github.com/chaba17/audit-company\")",
+      "Bash(npx vercel@latest ls --prod)",
+      "Bash(curl -s \"https://audit-company-sage.vercel.app/index.html?v=$\\(date +%s\\)\" -H \"Cache-Control: no-cache\")",
+      "Bash(curl -s \"https://audit-company-sage.vercel.app/assets/js/partials.js?v=$\\(date +%s\\)\" -H \"Cache-Control: no-cache\")",
+      "Bash(curl -sI \"https://audit-company-sage.vercel.app/assets/js/partials.js\")"
     ]
   }
 }
