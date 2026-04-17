@@ -1,6 +1,6 @@
 {
   "_version": "1.0.0",
-  "_updated": "2026-04-17T23:15:48.432Z",
+  "_updated": "2026-04-17T23:24:30.926Z",
   "site": {
     "name": "Audit",
     "tagline": "Shape the future with confidence",
@@ -50,6 +50,10 @@
     {
       "value": "98%",
       "label": "კლიენტის კმაყოფილება წლიური შეფასებით"
+    },
+    {
+      "value": "100+",
+      "label": "ჩუკენობა დღეში (მიშა)"
     }
   ],
   "services": [
