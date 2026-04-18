@@ -1,6 +1,6 @@
 {
   "_version": "1.0.0",
-  "_updated": "2026-04-18T20:53:50.722Z",
+  "_updated": "2026-04-18T21:06:41.529Z",
   "site": {
     "name": "Audit",
     "tagline": "Shape the future with confidence",
@@ -211,6 +211,15 @@
       "features": [
         "დფსფსდ"
       ]
+    },
+    {
+      "id": "service-1776546380081",
+      "title": "ბუღალტრული ჩექინგი",
+      "shortDesc": "",
+      "fullDesc": "",
+      "icon": "shield-check",
+      "image": "",
+      "features": []
     }
   ],
   "pricing": {
