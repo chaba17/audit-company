@@ -1,6 +1,6 @@
 {
   "_version": "1.0.0",
-  "_updated": "2026-04-18T19:42:11.043131Z",
+  "_updated": "2026-04-18T20:35:01.366Z",
   "site": {
     "name": "Audit",
     "tagline": "Shape the future with confidence",
@@ -305,6 +305,13 @@
       "tag": "MBA",
       "bio": "Audit-ის დამფუძნებელი და ლიდერი. 10+ წლის გამოცდილება საფინანსო სტრატეგიაში.",
       "photo": "https://i.pravatar.cc/600?img=60"
+    },
+    {
+      "name": "გია გიუშააა",
+      "role": "დირქტორი",
+      "tag": "",
+      "bio": "",
+      "photo": ""
     }
   ],
   "testimonials": [
