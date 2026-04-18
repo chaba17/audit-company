@@ -124,17 +124,13 @@ document.addEventListener("DOMContentLoaded", () => {
   // Re-init nav when content-loader re-renders header
   document.addEventListener("nav-rendered", () => initNav());
 
-  // Safety net: after 2.5s, make ALL remaining .reveal elements visible
-  // (in case IntersectionObserver missed any dynamic content)
+  // Safety net: after 1.5s, make ALL remaining .reveal elements visible
+  // (content is visible even if IntersectionObserver missed some)
   setTimeout(() => {
     document.querySelectorAll('.reveal:not(.visible)').forEach(el => {
-      // If element is above the fold (negative top), mark visible
-      const rect = el.getBoundingClientRect();
-      if (rect.top < window.innerHeight * 1.5) {
-        el.classList.add('visible');
-      }
+      el.classList.add('visible');
     });
-  }, 2500);
+  }, 1500);
 
   // MutationObserver: any dynamically-added .reveal gets .visible after a frame
   const mutObs = new MutationObserver((mutations) => {
