@@ -1,6 +1,6 @@
 {
   "_version": "1.0.0",
-  "_updated": "2026-04-18T23:06:00.446Z",
+  "_updated": "2026-04-18T23:06:51.442Z",
   "site": {
     "name": "Audit",
     "tagline": "Shape the future with confidence",
@@ -251,14 +251,6 @@
           "პრიორიტეტული მხარდაჭერა 24/7",
           "საფინანსო დირექტორის კონსულტაცია"
         ]
-      },
-      {
-        "name": "ჩუკენობა",
-        "description": "1000",
-        "price": "1000",
-        "currency": "₾",
-        "featured": true,
-        "features": []
       },
       {
         "name": "ONEMORE",
