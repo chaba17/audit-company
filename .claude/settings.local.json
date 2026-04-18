@@ -33,7 +33,8 @@
       "Bash(curl -s \"https://audit-company-sage.vercel.app/api/content?t=$\\(date +%s\\)\")",
       "Bash(python -c \"import sys, json; d = json.load\\(sys.stdin\\); print\\('API plans:', len\\(d['pricing']['plans']\\)\\); [print\\(f'  {i+1}. {p[\\\\\"name\\\\\"]} \\({p[\\\\\"currency\\\\\"]}{p[\\\\\"price\\\\\"]}\\)'\\) for i, p in enumerate\\(d['pricing']['plans']\\)]\")",
       "Bash(start \"\" \"https://audit-company-sage.vercel.app/admin.html#megamenu\")",
-      "Bash(python -c ' *)"
+      "Bash(python -c ' *)",
+      "Bash(curl -s \"https://audit-company-sage.vercel.app/about.html\")"
     ]
   }
 }

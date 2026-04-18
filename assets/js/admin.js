@@ -61,9 +61,18 @@
 
   function markDirty() {
     state.isDirty = true;
+    // AUTO-SAVE to localStorage immediately — so refresh doesn't lose changes
+    try {
+      if (state.content) {
+        state.content._updated = new Date().toISOString();
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state.content));
+      }
+    } catch (e) {
+      console.error('Auto-save failed:', e);
+    }
     const indicator = $('#save-indicator');
     if (indicator) {
-      indicator.textContent = 'უნახავი ცვლილებები';
+      indicator.textContent = 'ლოკალურად შენახული · გამოუქვეყნებელი';
       indicator.classList.add('unsaved');
     }
   }
@@ -506,25 +515,34 @@
       const live = await res.json();
       const liveFilled = fillMissingDefaults(live);
 
-      const baseline = getBaseline();
-      const hasLocalChanges = state.content && baseline && JSON.stringify(state.content) !== JSON.stringify(baseline);
+      // Baseline: saved baseline, or defaults as fallback
+      let baseline = getBaseline();
+      if (!baseline) baseline = deepClone(window.DEFAULT_CONTENT);
 
+      // Always run merge to safely preserve ALL user changes
       let newState;
-      if (hasLocalChanges && !opts.force) {
-        // User has unsaved changes — merge live into state, keep user's work
-        newState = mergeContent(baseline, state.content, liveFilled);
-        opts.onMerged?.(newState);
-      } else {
-        // No unsaved changes (or forced) — use live as-is
+      if (opts.force) {
         newState = liveFilled;
+      } else {
+        newState = mergeContent(baseline, state.content || liveFilled, liveFilled);
       }
+
+      const hadLocalChanges = JSON.stringify(newState) !== JSON.stringify(liveFilled);
 
       state.content = newState;
       localStorage.setItem(STORAGE_KEY, JSON.stringify(newState));
-      setBaseline(liveFilled); // baseline always = what live had at sync time
-      if (!hasLocalChanges) markClean();
+      setBaseline(liveFilled); // baseline = live at sync time
+      if (!hadLocalChanges) markClean();
+      else {
+        // Still have unpublished changes
+        const indicator = $('#save-indicator');
+        if (indicator) {
+          indicator.textContent = 'ლოკალურად შენახული · გამოუქვეყნებელი';
+          indicator.classList.add('unsaved');
+        }
+      }
       updateBadges();
-      return { success: true, hadLocalChanges: hasLocalChanges, liveUpdated: live._updated };
+      return { success: true, hadLocalChanges, liveUpdated: live._updated };
     } catch (e) {
       console.error('Sync failed:', e);
       return { success: false, error: e.message };
@@ -581,9 +599,9 @@
   function saveContent() {
     state.content._updated = new Date().toISOString();
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state.content));
-    markClean();
-    toast('ცვლილებები წარმატებით შენახულია!', 'success');
-    logActivity('update', 'კონტენტი შენახულია', state.currentSection);
+    // Keep "unpublished" indicator if user has changes that aren't yet live
+    toast('ლოკალურად შენახულია · დააჭირე "Publish Live" საიტზე გამოსაქვეყნებლად', 'info', 4000);
+    logActivity('update', 'Local save', state.currentSection);
     updateBadges();
   }
 
@@ -3476,12 +3494,7 @@ ${urls.map(u => `  <url>
     startAutoPolling();
 
     window.addEventListener('hashchange', handleRoute);
-    window.addEventListener('beforeunload', (e) => {
-      if (state.isDirty) {
-        e.preventDefault();
-        e.returnValue = '';
-      }
-    });
+    // No need for beforeunload warning — changes auto-save to localStorage
   }
 
   function setupTopbar() {
