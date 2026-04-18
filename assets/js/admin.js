@@ -125,6 +125,32 @@
     else localStorage.removeItem(GITHUB_TOKEN_KEY);
   }
 
+  // ====== SHARED ADMIN SECRET (for multi-user via /api/publish) ======
+  const SHARED_SECRET_KEY = 'audit_shared_secret';
+  function getSharedSecret() { return localStorage.getItem(SHARED_SECRET_KEY) || ''; }
+  function setSharedSecret(secret) {
+    if (secret) localStorage.setItem(SHARED_SECRET_KEY, secret);
+    else localStorage.removeItem(SHARED_SECRET_KEY);
+  }
+
+  async function publishViaSharedAPI() {
+    const secret = getSharedSecret();
+    if (!secret) throw new Error('NO_SECRET');
+    state.content._updated = new Date().toISOString();
+
+    const res = await fetch('/api/publish', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ secret, content: state.content })
+    });
+
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(data.error || data.detail || `HTTP ${res.status}`);
+    }
+    return data;
+  }
+
   async function githubAPI(path, options = {}) {
     const token = getGithubToken();
     if (!token) throw new Error('NO_TOKEN');
@@ -187,6 +213,28 @@
     if (publishBtn) {
       publishBtn.disabled = true;
       publishBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin"><path d="M21 12a9 9 0 1 1-6.22-8.56"/></svg> იტვირთება...';
+    }
+
+    // If shared secret is configured, use /api/publish (multi-user mode)
+    if (getSharedSecret()) {
+      try {
+        const result = await publishViaSharedAPI();
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state.content));
+        markClean();
+        toast('✅ გამოქვეყნებულია shared API-ით! 10-30 წამში ხილვადი იქნება.', 'success', 5000);
+        logActivity('publish', 'content.json → shared API', 'publish');
+      } catch (err) {
+        if (err.message === 'NO_SECRET') toast('❌ Shared Secret დააყენე Settings-ში', 'error');
+        else if (err.message === 'Invalid secret') toast('❌ Shared Secret არასწორია', 'error');
+        else toast('❌ ' + err.message, 'error', 6000);
+        console.error('Shared publish error:', err);
+      } finally {
+        if (publishBtn) {
+          publishBtn.disabled = false;
+          publishBtn.innerHTML = originalPublishBtnHTML;
+        }
+      }
+      return;
     }
 
     try {
@@ -1684,12 +1732,52 @@
         <div><h1>პარამეტრები</h1><p>ადმინი პანელის და GitHub-ის კონფიგურაცია</p></div>
       </div>
 
-      <!-- GitHub Token -->
+      <!-- Shared Publish (Multi-user) -->
       <div class="card">
         <div class="card-header">
           <div>
-            <h3 class="card-title">🚀 GitHub Auto-Publish ${hasToken ? '<span style="display: inline-block; margin-left: 8px; padding: 3px 10px; background: #10B981; color: white; font-size: 11px; border-radius: 4px; font-weight: 700;">ACTIVE</span>' : '<span style="display: inline-block; margin-left: 8px; padding: 3px 10px; background: #F59E0B; color: white; font-size: 11px; border-radius: 4px; font-weight: 700;">NOT CONFIGURED</span>'}</h3>
-            <p class="card-subtitle">"Publish Live" ღილაკისთვის საჭიროა GitHub Personal Access Token</p>
+            <h3 class="card-title">👥 Shared Publish (Multi-user) ${getSharedSecret() ? '<span style="display: inline-block; margin-left: 8px; padding: 3px 10px; background: #10B981; color: white; font-size: 11px; border-radius: 4px; font-weight: 700;">ACTIVE</span>' : '<span style="display: inline-block; margin-left: 8px; padding: 3px 10px; background: #6B7688; color: white; font-size: 11px; border-radius: 4px; font-weight: 700;">OFF</span>'}</h3>
+            <p class="card-subtitle">მეგობრების დასამატებლად — მათ არ სჭირდებათ საკუთარი GitHub token</p>
+          </div>
+        </div>
+
+        <div class="info-banner">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/></svg>
+          <div>
+            <strong>სეტაპი (ერთხელ):</strong><br>
+            1. <a href="https://vercel.com/chabas-projects-c40e9f58/audit-company/settings/environment-variables" target="_blank" style="color: var(--ink); font-weight: 700;">Vercel → Environment Variables</a><br>
+            2. დაამატე <code>GITHUB_TOKEN</code> = შენი personal access token<br>
+            3. დაამატე <code>ADMIN_SECRET</code> = გამოიგონე პაროლი (მაგ. "auditsecret2026")<br>
+            4. <strong>Redeploy</strong> (Deployments → ... → Redeploy)<br>
+            5. გაუზიარე მეგობარს: admin.html URL + ADMIN_SECRET
+          </div>
+        </div>
+
+        <div class="form-grid" style="max-width: 640px;">
+          <div class="form-group">
+            <label>Shared Admin Secret</label>
+            <input type="password" id="shared-secret" value="${getSharedSecret() ? '••••••••••••••••' : ''}" placeholder="ADMIN_SECRET რაც Vercel-ში დააყენე" />
+            <small class="hint">ეს არის საერთო პაროლი რომელსაც შენ და მეგობარი ხმარობთ Publish-ისთვის. შეგიძლია ნებისმიერი სიტყვა იყოს.</small>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <button class="btn btn-dark" id="save-secret">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              შენახვა
+            </button>
+            ${getSharedSecret() ? `
+              <button class="btn btn-outline" id="test-secret">ტესტი</button>
+              <button class="btn btn-outline" id="remove-secret" style="color: var(--danger); border-color: var(--danger);">წაშლა</button>
+            ` : ''}
+          </div>
+        </div>
+      </div>
+
+      <!-- GitHub Token (personal, fallback) -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">🔑 Personal GitHub Token ${hasToken ? '<span style="display: inline-block; margin-left: 8px; padding: 3px 10px; background: #10B981; color: white; font-size: 11px; border-radius: 4px; font-weight: 700;">ACTIVE</span>' : '<span style="display: inline-block; margin-left: 8px; padding: 3px 10px; background: #6B7688; color: white; font-size: 11px; border-radius: 4px; font-weight: 700;">OFF</span>'}</h3>
+            <p class="card-subtitle">Fallback — თუ Shared Secret არ გაქვს დაყენებული</p>
           </div>
         </div>
 
@@ -1822,6 +1910,52 @@
       if (!confirm('Token-ის წაშლა? "Publish Live" აღარ იმუშავებს.')) return;
       setGithubToken('');
       toast('Token წაიშალა', 'warning');
+      renderSection('settings');
+    });
+
+    // Shared Secret handlers
+    $('#save-secret')?.addEventListener('click', () => {
+      const val = $('#shared-secret').value.trim();
+      if (!val || val.startsWith('••••')) { toast('ჩასვი Shared Secret', 'error'); return; }
+      setSharedSecret(val);
+      toast('Shared Secret შენახულია', 'success');
+      renderSection('settings');
+    });
+
+    $('#test-secret')?.addEventListener('click', async () => {
+      const btn = $('#test-secret');
+      const orig = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin"><path d="M21 12a9 9 0 1 1-6.22-8.56"/></svg> ტესტი...';
+      try {
+        // Test with empty content — server should reject invalid secret but accept valid one with content
+        const res = await fetch('/api/publish', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ secret: getSharedSecret(), content: { _test: true } })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (res.status === 401) {
+          toast('❌ Shared Secret არასწორია', 'error', 5000);
+        } else if (res.status === 500 && data.error?.includes('not configured')) {
+          toast('❌ Vercel-ზე env vars არ არის: ' + data.error, 'error', 8000);
+        } else if (res.ok || res.status === 400) {
+          toast('✅ კავშირი OK! Secret სწორია.', 'success');
+        } else {
+          toast('⚠️ ' + (data.error || `HTTP ${res.status}`), 'warning', 5000);
+        }
+      } catch (e) {
+        toast('❌ ' + e.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = orig;
+      }
+    });
+
+    $('#remove-secret')?.addEventListener('click', () => {
+      if (!confirm('Shared Secret-ის წაშლა?')) return;
+      setSharedSecret('');
+      toast('Secret წაიშალა', 'warning');
       renderSection('settings');
     });
   }

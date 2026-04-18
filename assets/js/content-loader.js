@@ -12,8 +12,17 @@
       if (local && location.pathname.includes('admin')) {
         return JSON.parse(local);
       }
-      // Fetch from repo
-      const res = await fetch(`assets/data/content.json?v=${Date.now()}`, { cache: 'no-store' });
+      // Determine relative API path based on current location
+      const apiBase = location.pathname.includes('/services/') ? '../' : '';
+
+      // Try serverless API first (always fresh, bypasses edge cache)
+      try {
+        const apiRes = await fetch(`${apiBase}api/content?t=${Date.now()}`, { cache: 'no-store' });
+        if (apiRes.ok) return await apiRes.json();
+      } catch (e) { /* fall through to static */ }
+
+      // Fallback to static file
+      const res = await fetch(`${apiBase}assets/data/content.json?v=${Date.now()}`, { cache: 'no-store' });
       if (!res.ok) throw new Error('Content load failed');
       return await res.json();
     } catch (e) {

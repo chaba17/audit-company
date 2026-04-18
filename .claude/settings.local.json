@@ -22,7 +22,14 @@
       "Bash(start \"\" \"https://audit-company-sage.vercel.app/?refresh=$\\(date +%s\\)\")",
       "Bash(start \"\" \"https://audit-company-sage.vercel.app/admin.html\")",
       "Bash(start \"\" \"https://audit-company-sage.vercel.app/admin.html#settings\")",
-      "Bash(start \"\" \"https://audit-company-sage.vercel.app/pricing\")"
+      "Bash(start \"\" \"https://audit-company-sage.vercel.app/pricing\")",
+      "Bash(curl -s \"https://audit-company-sage.vercel.app/assets/data/content.json?v=$\\(date +%s\\)\")",
+      "Bash(python -c \"import sys, json; data = json.load\\(sys.stdin\\); print\\('Plans count:', len\\(data.get\\('pricing',{}\\).get\\('plans',[]\\)\\)\\);[print\\(f'  {i+1}. {p.get\\(\\\\\"name\\\\\"\\)} - {p.get\\(\\\\\"currency\\\\\",\\\\\"\\\\\"\\)}{p.get\\(\\\\\"price\\\\\",\\\\\"\\\\\"\\)} featured={p.get\\(\\\\\"featured\\\\\"\\)}'\\) for i, p in enumerate\\(data.get\\('pricing',{}\\).get\\('plans',[]\\)\\)]\")",
+      "Bash(curl -s \"https://raw.githubusercontent.com/chaba17/audit-company/main/assets/data/content.json?v=$\\(date +%s\\)\")",
+      "Bash(python -c \"import sys, json; d = json.load\\(sys.stdin\\); print\\('GitHub raw plans:', len\\(d['pricing']['plans']\\)\\); [print\\(f'  {i+1}. {p[\\\\\"name\\\\\"]} \\({p[\\\\\"currency\\\\\"]}{p[\\\\\"price\\\\\"]}\\)'\\) for i, p in enumerate\\(d['pricing']['plans']\\)]\")",
+      "Bash(curl -s \"https://audit-company-sage.vercel.app/assets/data/content.json?v=$\\(date +%s\\)&nocache=1\" -H \"Cache-Control: no-cache\")",
+      "Bash(python -c \"import sys, json; d = json.load\\(sys.stdin\\); print\\('LIVE plans:', len\\(d['pricing']['plans']\\)\\)\")",
+      "Bash(curl -sI \"https://audit-company-sage.vercel.app/assets/data/content.json\")"
     ]
   }
 }
