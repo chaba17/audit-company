@@ -1,6 +1,6 @@
 {
   "_version": "1.0.0",
-  "_updated": "2026-04-18T21:06:41.529Z",
+  "_updated": "2026-04-18T21:08:14.489Z",
   "site": {
     "name": "Audit",
     "tagline": "Shape the future with confidence",
@@ -218,6 +218,15 @@
       "shortDesc": "",
       "fullDesc": "",
       "icon": "shield-check",
+      "image": "",
+      "features": []
+    },
+    {
+      "id": "service-1776546483638",
+      "title": "ლამაზო ",
+      "shortDesc": "",
+      "fullDesc": "",
+      "icon": "book-open",
       "image": "",
       "features": []
     }
