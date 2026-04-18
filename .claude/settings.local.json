@@ -44,7 +44,11 @@
       "Bash(curl -sI \"https://audit-company-sage.vercel.app/about.html\")",
       "Bash(curl -s \"https://audit-company-sage.vercel.app/about\")",
       "Bash(curl -s \"https://audit-company-sage.vercel.app/assets/js/content-loader.js?v=1776462985\")",
-      "mcp__Claude_Preview__preview_start"
+      "mcp__Claude_Preview__preview_start",
+      "Bash(curl -s \"https://audit-company-sage.vercel.app/assets/js/partials.js?v=$\\(date +%s\\)\")",
+      "Bash(curl -s \"https://audit-company-sage.vercel.app/assets/js/content-loader.js?v=$\\(date +%s\\)\")",
+      "Bash(start \"\" \"https://audit-company-sage.vercel.app/about\")",
+      "Bash(curl -s -H \"Origin: https://audit-company-sage.vercel.app\" \"https://audit-company-sage.vercel.app/api/content?t=$\\(date +%s\\)\")"
     ]
   }
 }
