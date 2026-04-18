@@ -1,6 +1,6 @@
 {
   "_version": "1.0.0",
-  "_updated": "2026-04-18T19:42:11.043131Z",
+  "_updated": "2026-04-18T20:52:06.978Z",
   "site": {
     "name": "Audit",
     "tagline": "Shape the future with confidence",
@@ -200,6 +200,15 @@
         "მუდმივი მხარდაჭერა",
         "საერთაშორისო დაბეგვრის კონსულტაცია"
       ]
+    },
+    {
+      "id": "service-1776545509758",
+      "title": "073",
+      "shortDesc": "",
+      "fullDesc": "",
+      "icon": "receipt",
+      "image": "",
+      "features": []
     }
   ],
   "pricing": {
