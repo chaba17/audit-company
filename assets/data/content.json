@@ -1,6 +1,6 @@
 {
   "_version": "1.0.0",
-  "_updated": "2026-04-18T19:02:50.165Z",
+  "_updated": "2026-04-18T19:03:01.991Z",
   "site": {
     "name": "Audit",
     "tagline": "Shape the future with confidence",
@@ -200,15 +200,6 @@
         "მუდმივი მხარდაჭერა",
         "საერთაშორისო დაბეგვრის კონსულტაცია"
       ]
-    },
-    {
-      "id": "service-1776538940333",
-      "title": "ლამაზო",
-      "shortDesc": "",
-      "fullDesc": "",
-      "icon": "book-open",
-      "image": "",
-      "features": []
     }
   ],
   "pricing": {
