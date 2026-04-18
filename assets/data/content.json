@@ -1,6 +1,6 @@
 {
   "_version": "1.0.0",
-  "_updated": "2026-04-18T19:07:17.298Z",
+  "_updated": "2026-04-17T23:51:19.546Z",
   "site": {
     "name": "Audit",
     "tagline": "Shape the future with confidence",
@@ -291,13 +291,6 @@
       "tag": "CPA",
       "bio": "IFRS-ის ექსპერტი, Big 4 გამოცდილებით — საერთაშორისო პროექტების ხელმძღვანელი.",
       "photo": "https://i.pravatar.cc/600?img=48"
-    },
-    {
-      "name": "მიხეილ კვირკველია",
-      "role": "CEO",
-      "tag": "",
-      "bio": "",
-      "photo": ""
     }
   ],
   "testimonials": [
@@ -558,176 +551,9 @@
         "ფინტექ რეგულაციები 2026",
         "E-commerce დაბეგვრა"
       ]
-    },
-    "insights": {
-      "label": "Insights",
-      "intro": {
-        "title": "Insights & Thought Leadership",
-        "desc": "საგადასახადო ანალიზი, ბიზნესის ტრენდები და ექსპერტების Insights საქართველოს ბიზნეს გარემოზე.",
-        "ctaText": "წაიკითხე ყველა",
-        "ctaHref": "blog.html"
-      },
-      "links": [
-        {
-          "title": "საგადასახადო სიახლეები",
-          "href": "blog.html"
-        },
-        {
-          "title": "ბიზნესის სტრატეგია",
-          "href": "blog.html"
-        },
-        {
-          "title": "ტექნოლოგია & IT",
-          "href": "blog.html"
-        },
-        {
-          "title": "აუდიტი & IFRS",
-          "href": "blog.html"
-        },
-        {
-          "title": "გზამკვლევები",
-          "href": "blog.html"
-        },
-        {
-          "title": "რეპორტები & კვლევები",
-          "href": "blog.html"
-        },
-        {
-          "title": "ვებინარები",
-          "href": "blog.html"
-        }
-      ],
-      "spotlight": {
-        "title": "Spotlight",
-        "items": [
-          {
-            "title": "2026 Tax Guide",
-            "href": "blog.html"
-          },
-          {
-            "title": "შპს vs ი/მ გზამკვლევი",
-            "href": "blog.html"
-          },
-          {
-            "title": "Digital Transformation",
-            "href": "blog.html"
-          },
-          {
-            "title": "ESG Reporting",
-            "href": "blog.html"
-          }
-        ]
-      }
-    },
-    "about": {
-      "label": "ჩვენ შესახებ",
-      "intro": {
-        "title": "ჩვენ შესახებ",
-        "desc": "15+ წლის გამოცდილების გუნდი. 500+ კმაყოფილი კლიენტი, სერტიფიცირებული ექსპერტები, გამჭვირვალე მიდგომა.",
-        "ctaText": "გაიცანი გუნდი",
-        "ctaHref": "about.html"
-      },
-      "links": [
-        {
-          "title": "ჩვენი მიდგომა",
-          "href": "about.html"
-        },
-        {
-          "title": "ჩვენი ისტორია",
-          "href": "about.html"
-        },
-        {
-          "title": "ჩვენი გუნდი",
-          "href": "about.html"
-        },
-        {
-          "title": "ღირებულებები",
-          "href": "about.html"
-        },
-        {
-          "title": "დაგვიკავშირდი",
-          "href": "contact.html"
-        },
-        {
-          "title": "პრესა & მედია",
-          "href": "#"
-        }
-      ],
-      "spotlight": {
-        "title": "Spotlight",
-        "items": [
-          {
-            "title": "Leadership Team",
-            "href": "about.html"
-          },
-          {
-            "title": "2025 Impact Report",
-            "href": "blog.html"
-          },
-          {
-            "title": "Career Opportunities",
-            "href": "#"
-          },
-          {
-            "title": "ESG Commitment",
-            "href": "blog.html"
-          }
-        ]
-      }
-    },
-    "careers": {
-      "label": "კარიერა",
-      "intro": {
-        "title": "კარიერა Audit-ში",
-        "desc": "ვეძებთ ნიჭიერ და გატაცებულ ადამიანებს, რომლებიც მზად არიან აწარმოონ ცვლილებები.",
-        "ctaText": "იხილე ვაკანსიები",
-        "ctaHref": "#"
-      },
-      "links": [
-        {
-          "title": "ღია ვაკანსიები",
-          "href": "#"
-        },
-        {
-          "title": "სტუდენტები & Graduates",
-          "href": "#"
-        },
-        {
-          "title": "სტაჟირება",
-          "href": "#"
-        },
-        {
-          "title": "კულტურა",
-          "href": "#"
-        },
-        {
-          "title": "ბენეფიტები",
-          "href": "#"
-        }
-      ],
-      "spotlight": {
-        "title": "Spotlight",
-        "items": [
-          {
-            "title": "Graduate Program 2026",
-            "href": "#"
-          },
-          {
-            "title": "Life at Audit",
-            "href": "#"
-          },
-          {
-            "title": "Diversity & Inclusion",
-            "href": "#"
-          }
-        ]
-      }
     }
   },
   "seo": {
     "pages": {}
-  },
-  "analytics": {},
-  "media": {},
-  "theme": {}
+  }
 }

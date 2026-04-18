@@ -136,19 +136,38 @@
   async function publishViaSharedAPI() {
     const secret = getSharedSecret();
     if (!secret) throw new Error('NO_SECRET');
-    state.content._updated = new Date().toISOString();
+
+    // 3-way merge: fetch fresh live, merge with user's changes
+    const baseline = getBaseline();
+    const live = await fetchLiveContent();
+    let mergedContent = state.content;
+    let mergeSummary = null;
+
+    if (baseline && live) {
+      const summary = diffSummary(baseline, state.content, live);
+      mergedContent = mergeContent(baseline, state.content, live);
+      mergeSummary = summary;
+    }
+
+    mergedContent._updated = new Date().toISOString();
 
     const res = await fetch('/api/publish', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ secret, content: state.content })
+      body: JSON.stringify({ secret, content: mergedContent })
     });
 
     const data = await res.json().catch(() => ({}));
     if (!res.ok) {
       throw new Error(data.error || data.detail || `HTTP ${res.status}`);
     }
-    return data;
+
+    // Update local state with merged content + set new baseline
+    state.content = mergedContent;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(mergedContent));
+    setBaseline(mergedContent);
+
+    return { ...data, mergeSummary };
   }
 
   async function githubAPI(path, options = {}) {
@@ -219,10 +238,15 @@
     if (getSharedSecret()) {
       try {
         const result = await publishViaSharedAPI();
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state.content));
         markClean();
-        toast('✅ გამოქვეყნებულია shared API-ით! 10-30 წამში ხილვადი იქნება.', 'success', 5000);
+        if (result.mergeSummary && (result.mergeSummary.myAdds > 0 || result.mergeSummary.theirAdds > 0)) {
+          toast(`✅ გამოქვეყნდა + სმარტ-მერჯი: +${result.mergeSummary.myAdds} შენი, +${result.mergeSummary.theirAdds} სხვების. 10-30 წამში live.`, 'success', 7000);
+        } else {
+          toast('✅ გამოქვეყნებულია! 10-30 წამში ხილვადი იქნება.', 'success', 5000);
+        }
         logActivity('publish', 'content.json → shared API', 'publish');
+        // Auto-rerender current section with merged content
+        renderSection(state.currentSection);
       } catch (err) {
         if (err.message === 'NO_SECRET') toast('❌ Shared Secret დააყენე Settings-ში', 'error');
         else if (err.message === 'Invalid secret') toast('❌ Shared Secret არასწორია', 'error');
@@ -238,6 +262,17 @@
     }
 
     try {
+      // 3-way merge before publish (personal token flow)
+      const baseline = getBaseline();
+      const live = await fetchLiveContent();
+      let mergedContent = state.content;
+      let mergeSummary = null;
+      if (baseline && live) {
+        mergeSummary = diffSummary(baseline, state.content, live);
+        mergedContent = mergeContent(baseline, state.content, live);
+        state.content = mergedContent;
+      }
+
       // Prepare content
       state.content._updated = new Date().toISOString();
       const jsonStr = JSON.stringify(state.content, null, 2);
@@ -274,13 +309,19 @@
         }
       }
 
-      // Save locally too
+      // Save locally + update baseline
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state.content));
+      setBaseline(state.content);
       markClean();
 
-      toast('✅ ცვლილებები გამოქვეყნებულია! Vercel 30-60 წამში გაააქტიურებს.', 'success', 5000);
+      if (mergeSummary && (mergeSummary.myAdds > 0 || mergeSummary.theirAdds > 0)) {
+        toast(`✅ გამოქვეყნდა + სმარტ-მერჯი: +${mergeSummary.myAdds} შენი, +${mergeSummary.theirAdds} სხვების.`, 'success', 7000);
+      } else {
+        toast('✅ ცვლილებები გამოქვეყნებულია!', 'success', 5000);
+      }
       console.log('Commit:', result.commit?.html_url);
       logActivity('publish', 'content.json → GitHub', 'publish');
+      renderSection(state.currentSection);
     } catch (err) {
       if (err.message === 'NO_TOKEN') {
         toast('❌ ჯერ GitHub Token-ი უნდა დააყენო. წადი → Settings', 'error', 5000);
@@ -300,6 +341,135 @@
   }
 
   const originalPublishBtnHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg> Publish Live`;
+
+  // ====== 3-WAY MERGE (for multi-user concurrent edits) ======
+  const BASELINE_KEY = 'audit_admin_baseline';
+  function getBaseline() {
+    const s = localStorage.getItem(BASELINE_KEY);
+    if (s) try { return JSON.parse(s); } catch {}
+    return null;
+  }
+  function setBaseline(content) {
+    localStorage.setItem(BASELINE_KEY, JSON.stringify(content));
+  }
+
+  // Key function — identifies list items for merging
+  function itemKey(item) {
+    if (!item || typeof item !== 'object') return String(item);
+    return item.id || item.slug || item.title || item.name || item.question || JSON.stringify(item);
+  }
+
+  function mergeArray(baseline, mine, live) {
+    const bMap = new Map(baseline.map(i => [itemKey(i), i]));
+    const mMap = new Map(mine.map(i => [itemKey(i), i]));
+    const lMap = new Map(live.map(i => [itemKey(i), i]));
+
+    // What user deleted = in baseline, not in mine
+    const userDeleted = new Set([...bMap.keys()].filter(k => !mMap.has(k)));
+    // What user added = in mine, not in baseline
+    const userAdded = new Set([...mMap.keys()].filter(k => !bMap.has(k)));
+
+    const result = [];
+    const seen = new Set();
+
+    // Step 1: iterate live order, keep items not deleted by user
+    live.forEach(item => {
+      const k = itemKey(item);
+      if (userDeleted.has(k)) return;
+      if (seen.has(k)) return;
+      // If user has this item and modified it → use user's version
+      // Otherwise use live's version
+      if (mMap.has(k)) {
+        const mineItem = mMap.get(k);
+        const baseItem = bMap.get(k);
+        const userModified = baseItem && JSON.stringify(mineItem) !== JSON.stringify(baseItem);
+        result.push(userModified ? mineItem : item);
+      } else {
+        result.push(item); // friend's addition
+      }
+      seen.add(k);
+    });
+
+    // Step 2: append user's new additions (not in live)
+    mine.forEach(item => {
+      const k = itemKey(item);
+      if (seen.has(k)) return;
+      if (userAdded.has(k) || !bMap.has(k)) {
+        result.push(item);
+        seen.add(k);
+      }
+    });
+
+    return result;
+  }
+
+  function mergeContent(baseline, mine, live) {
+    if (!baseline) return mine;
+    if (!live) return mine;
+
+    // Arrays
+    if (Array.isArray(mine) || Array.isArray(live)) {
+      return mergeArray(
+        Array.isArray(baseline) ? baseline : [],
+        Array.isArray(mine) ? mine : [],
+        Array.isArray(live) ? live : []
+      );
+    }
+
+    // Objects
+    if (mine && typeof mine === 'object' && live && typeof live === 'object') {
+      const result = {};
+      const allKeys = new Set([
+        ...Object.keys(baseline || {}),
+        ...Object.keys(mine),
+        ...Object.keys(live)
+      ]);
+      allKeys.forEach(key => {
+        if (key.startsWith('_')) {
+          // metadata — use mine
+          result[key] = mine[key] !== undefined ? mine[key] : live[key];
+          return;
+        }
+        const b = baseline?.[key];
+        const m = mine[key];
+        const l = live[key];
+        result[key] = mergeContent(b, m !== undefined ? m : l, l !== undefined ? l : m);
+      });
+      return result;
+    }
+
+    // Primitive: user wins if changed from baseline
+    if (mine === undefined) return live;
+    if (live === undefined) return mine;
+    if (JSON.stringify(baseline) !== JSON.stringify(mine)) return mine;
+    return live;
+  }
+
+  // Fetch live content for merge
+  async function fetchLiveContent() {
+    try {
+      const res = await fetch('/api/content?t=' + Date.now(), { cache: 'no-store' });
+      if (res.ok) return await res.json();
+    } catch {}
+    return null;
+  }
+
+  // Compute a diff summary for toast
+  function diffSummary(baseline, mine, live) {
+    const sections = ['services', 'team', 'testimonials', 'faq', 'blog', 'industries'];
+    let myAdds = 0, theirAdds = 0, myEdits = 0;
+    sections.forEach(key => {
+      const b = (baseline?.[key] || []);
+      const m = (mine?.[key] || []);
+      const l = (live?.[key] || []);
+      const bKeys = new Set(b.map(itemKey));
+      const mKeys = new Set(m.map(itemKey));
+      const lKeys = new Set(l.map(itemKey));
+      m.forEach(i => { if (!bKeys.has(itemKey(i))) myAdds++; });
+      l.forEach(i => { if (!bKeys.has(itemKey(i)) && !mKeys.has(itemKey(i))) theirAdds++; });
+    });
+    return { myAdds, theirAdds };
+  }
 
   // ====== CONTENT MANAGEMENT ======
   function fillMissingDefaults(content) {
@@ -337,6 +507,7 @@
       const merged = fillMissingDefaults(live);
       state.content = merged;
       localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+      setBaseline(merged); // baseline = live on sync
       markClean();
       updateBadges();
       return true;
