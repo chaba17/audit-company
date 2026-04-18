@@ -13,6 +13,7 @@ const translations = {
       pricing: "ფასები",
       blog: "ბლოგი",
       contact: "კონტაქტი",
+      faq: "FAQ",
       cta: "მიიღე შეთავაზება",
       menu: "მენიუ"
     },
@@ -261,6 +262,7 @@ const translations = {
       pricing: "Pricing",
       blog: "Blog",
       contact: "Contact",
+      faq: "FAQ",
       cta: "Get a Quote",
       menu: "Menu"
     },

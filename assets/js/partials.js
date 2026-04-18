@@ -283,6 +283,9 @@ function renderHeader() {
 
           <ul class="nav-menu">
             ${navItemsHtml}
+            <li class="nav-simple">
+              <a href="${basePath}index.html#faq" class="nav-link" data-i18n="nav.faq">FAQ</a>
+            </li>
           </ul>
 
           <div class="nav-actions">
@@ -291,8 +294,8 @@ function renderHeader() {
               <span>Search</span>
             </button>
             <a href="${basePath}contact.html" class="nav-action-item nav-account">
-              ${ICONS["user"]}
-              <span>My Audit</span>
+              ${ICONS["mail"]}
+              <span data-i18n="nav.contact">კონტაქტი</span>
             </a>
             <button class="nav-action-item nav-locale" type="button">
               ${ICONS["globe-sm"]}

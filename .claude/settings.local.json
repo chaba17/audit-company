@@ -57,7 +57,10 @@
       "Bash(npx vercel@latest ls --yes)",
       "Bash(npx vercel@latest inspect audit-company-e5i6d23wo-chabas-projects-c40e9f58.vercel.app)",
       "Bash(node -e \"const c=require\\('./assets/data/content.json'\\); console.log\\(c.services.map\\(s => \\({id: s.id, title: s.title}\\)\\)\\);\")",
-      "Bash(node -e ' *)"
+      "Bash(node -e ' *)",
+      "Bash(curl -s \"https://audit-company-sage.vercel.app/admin.html?cb=$\\(date +%s\\)\")",
+      "Bash(curl -sI \"https://audit-company-sage.vercel.app/admin.html\")",
+      "Bash(curl -sL \"https://audit-company-sage.vercel.app/admin\")"
     ]
   }
 }
