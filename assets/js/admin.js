@@ -302,16 +302,48 @@
   const originalPublishBtnHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg> Publish Live`;
 
   // ====== CONTENT MANAGEMENT ======
+  function fillMissingDefaults(content) {
+    // Ensure all default mega menus exist
+    if (!content.megaMenus) content.megaMenus = {};
+    Object.entries(window.DEFAULT_CONTENT.megaMenus || {}).forEach(([key, defaultMenu]) => {
+      if (!content.megaMenus[key]) {
+        content.megaMenus[key] = deepClone(defaultMenu);
+      }
+    });
+    // Ensure top-level keys exist
+    ['site', 'hero', 'stats', 'services', 'pricing', 'team', 'testimonials', 'faq', 'blog', 'industries', 'footer', 'seo', 'analytics', 'media', 'theme'].forEach(key => {
+      if (!content[key]) content[key] = deepClone(window.DEFAULT_CONTENT[key] || (Array.isArray(window.DEFAULT_CONTENT[key]) ? [] : {}));
+    });
+    return content;
+  }
+
   function loadContent() {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       try {
-        return JSON.parse(saved);
+        return fillMissingDefaults(JSON.parse(saved));
       } catch (e) {
         console.error('Failed to parse saved content:', e);
       }
     }
     return deepClone(window.DEFAULT_CONTENT);
+  }
+
+  async function syncFromLive() {
+    try {
+      const res = await fetch('/api/content?t=' + Date.now(), { cache: 'no-store' });
+      if (!res.ok) throw new Error('API failed');
+      const live = await res.json();
+      const merged = fillMissingDefaults(live);
+      state.content = merged;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+      markClean();
+      updateBadges();
+      return true;
+    } catch (e) {
+      console.error('Sync failed:', e);
+      return false;
+    }
   }
 
   function saveContent() {
@@ -3183,10 +3215,20 @@ ${urls.map(u => `  <url>
     });
   }
 
-  function showApp() {
+  async function showApp() {
     $('#login-screen').classList.add('hidden');
     $('#admin-app').classList.remove('hidden');
     state.content = loadContent();
+
+    // On first load (no localStorage yet), try to sync from live to prevent overwriting
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (!saved || Object.keys(JSON.parse(saved).megaMenus || {}).length < 3) {
+      const synced = await syncFromLive();
+      if (synced) {
+        toast('📥 Live content სინქრონიზდა. ცვლილებები უსაფრთხოა.', 'info', 4000);
+      }
+    }
+
     updateBadges();
     setupTopbar();
     setupSidebar();
@@ -3208,6 +3250,22 @@ ${urls.map(u => `  <url>
     });
     $('#export-btn').addEventListener('click', exportJSON);
     $('#preview-btn').addEventListener('click', () => window.open('index.html', '_blank'));
+    $('#sync-btn')?.addEventListener('click', async () => {
+      if (state.isDirty && !confirm('გაქვს უნახავი ცვლილებები. Sync-ი გადაწერს. გააგრძელო?')) return;
+      const btn = $('#sync-btn');
+      const orig = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin"><path d="M21 12a9 9 0 1 1-6.22-8.56"/></svg> Sync...';
+      const ok = await syncFromLive();
+      btn.disabled = false;
+      btn.innerHTML = orig;
+      if (ok) {
+        toast('✅ Live content ჩამოიტვირთა', 'success');
+        renderSection(state.currentSection);
+      } else {
+        toast('❌ Sync ვერ მოხერხდა', 'error');
+      }
+    });
     $('#logout-btn').addEventListener('click', () => {
       if (state.isDirty && !confirm('გაქვს უნახავი ცვლილებები. გამოსვლა?')) return;
       logout();

@@ -174,38 +174,76 @@
     });
   }
 
-  // Team (about page)
-  const teamCards = document.querySelectorAll('.insights-grid .insight-card');
-  if (teamCards.length && content.team?.length && location.pathname.includes('about')) {
-    teamCards.forEach((card, i) => {
-      if (content.team[i]) {
-        const img = card.querySelector('img');
-        const tag = card.querySelector('.tag');
-        const h3 = card.querySelector('h3');
-        const p = card.querySelector('p');
-        if (img && content.team[i].photo) img.src = content.team[i].photo;
-        if (tag) tag.textContent = content.team[i].role.toUpperCase();
-        if (h3) h3.textContent = content.team[i].name;
-        if (p) p.textContent = content.team[i].bio;
-      }
-    });
+  // Team (about page) — fully dynamic, re-renders the whole grid
+  if (location.pathname.includes('about') && content.team?.length) {
+    const teamSection = document.querySelector('.section.bg-soft .insights-grid');
+    if (teamSection) {
+      teamSection.innerHTML = content.team.map((m, i) => `
+        <div class="insight-card reveal ${i > 0 ? 'delay-' + Math.min(i, 3) : ''}">
+          <div class="insight-img"><img src="${m.photo || ''}" alt="${m.name || ''}" /></div>
+          <div class="insight-meta">
+            <span class="tag">${(m.role || '').toUpperCase()}</span>
+            ${m.tag ? `<span>· ${m.tag}</span>` : ''}
+          </div>
+          <h3>${m.name || ''}</h3>
+          <p>${m.bio || ''}</p>
+        </div>
+      `).join('');
+    }
   }
 
-  // Blog grid (blog page)
-  const blogCards = document.querySelectorAll('.insights-grid .insight-card');
-  if (blogCards.length && content.blog?.length && location.pathname.includes('blog')) {
-    blogCards.forEach((card, i) => {
-      const b = content.blog[i + 1]; // first is featured
-      if (b) {
-        const img = card.querySelector('img');
-        const tag = card.querySelector('.tag');
-        const h3 = card.querySelector('h3');
-        const p = card.querySelector('p');
-        if (img && b.image) img.src = b.image;
-        if (tag) tag.textContent = b.category.toUpperCase();
-        if (h3) h3.textContent = b.title;
-        if (p) p.textContent = b.excerpt;
+  // Blog grid (blog page) — fully dynamic
+  if (location.pathname.includes('blog') && content.blog?.length) {
+    const blogGrid = document.querySelector('.insights-grid');
+    if (blogGrid) {
+      // Featured = first post with featured=true, or first overall
+      const featured = content.blog.find(b => b.featured) || content.blog[0];
+      const rest = content.blog.filter(b => b !== featured);
+
+      // Update featured (link on top)
+      const featuredLink = document.querySelector('section.section .reveal[style*="grid-template-columns"]');
+      if (featuredLink && featured) {
+        const img = featuredLink.querySelector('img');
+        const tag = featuredLink.querySelector('.tag');
+        const meta = featuredLink.querySelectorAll('.insight-meta > span');
+        const h2 = featuredLink.querySelector('h2');
+        const p = featuredLink.querySelector('p');
+        if (img) img.src = featured.image || '';
+        if (tag) tag.textContent = 'FEATURED · ' + (featured.category || '').toUpperCase();
+        if (meta[1]) meta[1].textContent = featured.date || '';
+        if (meta[2]) meta[2].textContent = '· ' + (featured.readTime || '');
+        if (h2) h2.innerHTML = featured.title || '';
+        if (p) p.textContent = featured.excerpt || '';
       }
-    });
+
+      // Render rest in grid
+      blogGrid.innerHTML = rest.map((b, i) => `
+        <a href="#" class="insight-card reveal ${i > 0 ? 'delay-' + Math.min(i, 3) : ''}">
+          <div class="insight-img"><img src="${b.image || ''}" alt="${b.title || ''}" /></div>
+          <div class="insight-meta">
+            <span class="tag">${(b.category || '').toUpperCase()}</span>
+            <span>${b.date || ''}</span>
+            ${b.readTime ? `<span>· ${b.readTime}</span>` : ''}
+          </div>
+          <h3>${b.title || ''}</h3>
+          <p>${b.excerpt || ''}</p>
+        </a>
+      `).join('');
+    }
+  }
+
+  // Industries (home page) — fully dynamic
+  if (content.industries?.length) {
+    const indGrid = document.querySelector('.industries-grid');
+    if (indGrid) {
+      indGrid.innerHTML = content.industries.map((ind, i) => `
+        <div class="industry-card reveal ${i > 0 ? 'delay-' + Math.min(i % 4, 3) : ''}">
+          <svg class="industry-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect width="16" height="16" x="4" y="4" rx="2"/></svg>
+          <h4>${ind.title || ''}</h4>
+          <p>${ind.description || ''}</p>
+          <svg class="industry-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+      `).join('');
+    }
   }
 })();

@@ -1,6 +1,6 @@
 {
   "_version": "1.0.0",
-  "_updated": "2026-04-18T18:51:32.986Z",
+  "_updated": "2026-04-17T23:51:19.546Z",
   "site": {
     "name": "Audit",
     "tagline": "Shape the future with confidence",
@@ -251,6 +251,22 @@
           "პრიორიტეტული მხარდაჭერა 24/7",
           "საფინანსო დირექტორის კონსულტაცია"
         ]
+      },
+      {
+        "name": "ჩუკენობა",
+        "description": "1000",
+        "price": "1000",
+        "currency": "₾",
+        "featured": true,
+        "features": []
+      },
+      {
+        "name": "ONEMORE",
+        "description": "",
+        "price": "1000",
+        "currency": "₾",
+        "featured": false,
+        "features": []
       }
     ]
   },
@@ -275,13 +291,6 @@
       "tag": "CPA",
       "bio": "IFRS-ის ექსპერტი, Big 4 გამოცდილებით — საერთაშორისო პროექტების ხელმძღვანელი.",
       "photo": "https://i.pravatar.cc/600?img=48"
-    },
-    {
-      "name": "მიხეილ კვირკველია",
-      "role": "CEO",
-      "tag": "",
-      "bio": "magari kaci",
-      "photo": ""
     }
   ],
   "testimonials": [

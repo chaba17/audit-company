@@ -393,3 +393,5 @@ document.addEventListener("DOMContentLoaded", () => {
 window.ICONS = ICONS;
 window.SERVICES = SERVICES;
 window.MEGA_MENUS = MEGA_MENUS;
+window.renderHeader = renderHeader;
+window.renderFooter = renderFooter;
