@@ -91,13 +91,12 @@
       ka.faq.items = content.faq.map(f => ({ q: f.question, a: f.answer }));
     }
 
-    // Services (translations keys)
+    // Services (translations keys) — create entries for NEW services too
     if (content.services?.length) {
       content.services.forEach(s => {
-        if (ka.services[s.id]) {
-          ka.services[s.id].title = s.title;
-          ka.services[s.id].desc = s.shortDesc;
-        }
+        if (!ka.services[s.id]) ka.services[s.id] = { title: '', desc: '' };
+        ka.services[s.id].title = s.title;
+        ka.services[s.id].desc = s.shortDesc;
       });
     }
 
@@ -234,6 +233,55 @@
           <p>${b.excerpt || ''}</p>
         </a>
       `).join('');
+    }
+  }
+
+  // Services — replace window.SERVICES + re-render grids
+  if (content.services?.length) {
+    // Build new SERVICES array with all services from content.json
+    window.SERVICES = content.services.map(s => ({
+      slug: s.id,
+      key: `services.${s.id}`,
+      icon: s.icon || 'book-open',
+      title: s.title,
+      shortDesc: s.shortDesc
+    }));
+
+    // Helper to render a service card
+    const renderServiceCard = (s, i, limit) => {
+      const icons = window.ICONS || {};
+      const arrowIcon = icons['arrow-right-sm'] || '→';
+      const iconHtml = icons[s.icon] || '';
+      const serviceUrl = `services/${s.slug}.html`;
+      return `
+        <div class="service-card reveal visible">
+          <div class="service-number">0${i + 1} / ${String(limit).padStart(2,'0')}</div>
+          <div class="service-icon">${iconHtml}</div>
+          <h3>${s.title || ''}</h3>
+          <p>${s.shortDesc || ''}</p>
+          <a href="${serviceUrl}" class="service-link">
+            <span>გაიგე მეტი</span>
+            ${arrowIcon}
+          </a>
+        </div>
+      `;
+    };
+
+    // Home page services grid — show first 6
+    if (location.pathname === '/' || location.pathname.includes('index')) {
+      const servicesEl = document.getElementById('services-grid');
+      if (servicesEl) {
+        const first = window.SERVICES.slice(0, 6);
+        servicesEl.innerHTML = first.map((s, i) => renderServiceCard(s, i, first.length)).join('');
+      }
+    }
+
+    // Services page — show all
+    if (location.pathname.includes('services.html') || location.pathname === '/services') {
+      const servicesEl = document.getElementById('services-grid');
+      if (servicesEl) {
+        servicesEl.innerHTML = window.SERVICES.map((s, i) => renderServiceCard(s, i, window.SERVICES.length)).join('');
+      }
     }
   }
 
