@@ -253,9 +253,11 @@
       const arrowIcon = icons['arrow-right-sm'] || '→';
       const iconHtml = icons[s.icon] || '';
       const serviceUrl = `services/${s.slug}.html`;
+      const num = String(i + 1).padStart(2, '0');
+      const total = String(limit).padStart(2, '0');
       return `
         <div class="service-card reveal visible">
-          <div class="service-number">0${i + 1} / ${String(limit).padStart(2,'0')}</div>
+          <div class="service-number">${num} / ${total}</div>
           <div class="service-icon">${iconHtml}</div>
           <h3>${s.title || ''}</h3>
           <p>${s.shortDesc || ''}</p>
@@ -267,21 +269,30 @@
       `;
     };
 
-    // Home page services grid — show first 6
-    if (location.pathname === '/' || location.pathname.includes('index')) {
+    // Detect which grid this page should render
+    const isHome = location.pathname === '/' || location.pathname.includes('index');
+    const isServicesPage = location.pathname.includes('services.html')
+      || location.pathname === '/services'
+      || location.pathname === '/services/';
+
+    const renderServicesGrid = () => {
       const servicesEl = document.getElementById('services-grid');
-      if (servicesEl) {
+      if (!servicesEl) return;
+      if (isHome) {
         const first = window.SERVICES.slice(0, 6);
         servicesEl.innerHTML = first.map((s, i) => renderServiceCard(s, i, first.length)).join('');
-      }
-    }
-
-    // Services page — show all
-    if (location.pathname.includes('services.html') || location.pathname === '/services') {
-      const servicesEl = document.getElementById('services-grid');
-      if (servicesEl) {
+      } else if (isServicesPage) {
         servicesEl.innerHTML = window.SERVICES.map((s, i) => renderServiceCard(s, i, window.SERVICES.length)).join('');
       }
+    };
+
+    // Render immediately
+    renderServicesGrid();
+    // Re-render after inline page scripts finish (some pages have setTimeout 50ms inline renderers)
+    if (document.readyState !== 'complete') {
+      window.addEventListener('load', () => setTimeout(renderServicesGrid, 120));
+    } else {
+      setTimeout(renderServicesGrid, 120);
     }
   }
 

@@ -49,7 +49,15 @@
       "Bash(curl -s \"https://audit-company-sage.vercel.app/assets/js/content-loader.js?v=$\\(date +%s\\)\")",
       "Bash(start \"\" \"https://audit-company-sage.vercel.app/about\")",
       "Bash(curl -s -H \"Origin: https://audit-company-sage.vercel.app\" \"https://audit-company-sage.vercel.app/api/content?t=$\\(date +%s\\)\")",
-      "Bash(start \"\" \"https://audit-company-sage.vercel.app/about?refresh=$\\(date +%s\\)\")"
+      "Bash(start \"\" \"https://audit-company-sage.vercel.app/about?refresh=$\\(date +%s\\)\")",
+      "Bash(node -e \"const c = require\\('./assets/data/content.json'\\); console.log\\('Local services count:', c.services?.length\\); console.log\\('Services:', c.services?.map\\(s => s.title\\)\\);\")",
+      "Bash(curl -s \"https://raw.githubusercontent.com/chabas-projects-c40e9f58/audit-company/main/assets/data/content.json\")",
+      "Bash(curl -s \"https://raw.githubusercontent.com/chaba17/audit-company/main/assets/data/content.json\")",
+      "Bash(node -e \"let data=''; process.stdin.on\\('data',c=>data+=c\\); process.stdin.on\\('end',\\(\\)=>{try{const c=JSON.parse\\(data\\); console.log\\('Services on GitHub:', c.services?.length\\); console.log\\('Titles:', c.services?.map\\(s=>s.title\\)\\);}catch\\(e\\){console.log\\('Parse error:',e.message, data.slice\\(0,200\\)\\);}}\\)\")",
+      "Bash(npx vercel@latest ls --yes)",
+      "Bash(npx vercel@latest inspect audit-company-e5i6d23wo-chabas-projects-c40e9f58.vercel.app)",
+      "Bash(node -e \"const c=require\\('./assets/data/content.json'\\); console.log\\(c.services.map\\(s => \\({id: s.id, title: s.title}\\)\\)\\);\")",
+      "Bash(node -e ' *)"
     ]
   }
 }
