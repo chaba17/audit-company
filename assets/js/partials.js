@@ -230,16 +230,15 @@ function renderMegaMenu(key, data) {
 }
 
 function renderHeader() {
-  const navItems = [
-    { key: "services", type: "mega" },
-    { key: "industries", type: "mega" },
-    { key: "insights", type: "mega" },
-    { key: "about", type: "mega" },
-    { key: "careers", type: "mega" }
-  ];
+  // Use dynamic megaMenus from content.json if available, else fallback to hardcoded MEGA_MENUS
+  const dynMenus = (window.SITE_CONTENT && window.SITE_CONTENT.megaMenus) || null;
+  const menusToUse = dynMenus && Object.keys(dynMenus).length > 0 ? dynMenus : MEGA_MENUS;
+
+  const navItems = Object.keys(menusToUse).map(key => ({ key, type: "mega" }));
 
   const navItemsHtml = navItems.map(item => {
-    const mega = MEGA_MENUS[item.key];
+    const mega = menusToUse[item.key];
+    if (!mega || !mega.label) return '';
     return `
       <li class="has-mega" data-mega-trigger="${item.key}">
         <button class="nav-link" type="button" aria-expanded="false">

@@ -35,6 +35,23 @@
   if (!content) return;
   window.SITE_CONTENT = content;
 
+  // Re-render header if content has megaMenus (to pick up admin changes)
+  if (typeof renderHeader === 'function' && content.megaMenus && Object.keys(content.megaMenus).length > 0) {
+    const oldHeader = document.querySelector('.header');
+    const oldBackdrop = document.querySelector('.mega-backdrop');
+    if (oldHeader) {
+      const tmp = document.createElement('div');
+      tmp.innerHTML = renderHeader();
+      const nodes = [...tmp.children];
+      oldHeader.replaceWith(...nodes.filter(n => n.classList.contains('header')));
+      if (oldBackdrop) {
+        const newBackdrop = nodes.find(n => n.classList.contains('mega-backdrop'));
+        if (newBackdrop) oldBackdrop.replaceWith(newBackdrop);
+      }
+      document.dispatchEvent(new CustomEvent('nav-rendered'));
+    }
+  }
+
   // Merge into i18n translations (only Georgian — English stays fallback)
   if (window.translations?.ka) {
     const ka = window.translations.ka;

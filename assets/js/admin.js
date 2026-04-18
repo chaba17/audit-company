@@ -1614,28 +1614,120 @@
     });
   }
 
-  // --- MEGA MENU ---
+  // --- MEGA MENU (full CRUD — labels, links, spotlight) ---
   function renderMegaMenu() {
-    const m = state.content.megaMenus || {};
+    if (!state.content.megaMenus) state.content.megaMenus = {};
+    const menus = state.content.megaMenus;
+    const entries = Object.entries(menus);
+
     return `
       <div class="page-header">
-        <div><h1>Mega Menu</h1><p>ზედა ნავიგაციის ჩამოსაშლელი მენიუების მართვა</p></div>
+        <div>
+          <h1>Mega Menu</h1>
+          <p>ზედა ნავიგაციის ტაბები, ჩამოსაშლელი მენიუები, ბმულები</p>
+        </div>
+        <div class="page-header-actions">
+          <button class="btn btn-yellow" id="add-mega-tab">+ ახალი ტაბი</button>
+        </div>
       </div>
-      ${Object.entries(m).map(([key, menu]) => `
-        <div class="card">
-          <div class="card-header">
-            <h3 class="card-title">${escapeHtml(menu.label)} (${key})</h3>
-          </div>
-          <div class="form-grid">
-            <div class="form-grid cols-2">
-              <div class="form-group"><label>Intro Title</label><input type="text" data-field="megaMenus.${key}.introTitle" value="${escapeHtml(menu.introTitle || '')}" /></div>
-              <div class="form-group"><label>CTA Text</label><input type="text" data-field="megaMenus.${key}.ctaText" value="${escapeHtml(menu.ctaText || '')}" /></div>
+
+      <div class="info-banner">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/></svg>
+        <div><strong>სტრუქტურა:</strong> ყველა ტაბს აქვს 3 ნაწილი — <strong>Intro</strong> (მარცხნივ), <strong>Links</strong> (შუაში), <strong>Spotlight</strong> (მარჯვნივ). შეცვალე label — გამოჩნდება ზედა ნავიგაციაში.</div>
+      </div>
+
+      ${entries.length === 0 ? `
+        <div class="empty-state">
+          <h3>Mega Menu არ არის</h3>
+          <p>დაამატე პირველი ტაბი</p>
+        </div>
+      ` : entries.map(([key, m]) => `
+        <div class="card" data-menu-key="${key}">
+          <div class="card-header" style="flex-direction: column; align-items: stretch; gap: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;">
+              <div style="flex: 1;">
+                <div style="font-size: 11px; color: var(--gray-500); font-family: 'JetBrains Mono', monospace; margin-bottom: 6px;">TAB #${escapeHtml(key)}</div>
+                <input type="text" data-field="megaMenus.${key}.label" value="${escapeHtml(m.label || '')}"
+                       placeholder="ტაბის სახელი (მაგ. სერვისები)"
+                       style="font-family: 'Archivo', sans-serif; font-size: 22px; font-weight: 700; border: 1px dashed var(--gray-300); padding: 8px 12px; background: white; width: 100%; max-width: 400px;" />
+              </div>
+              <button class="btn btn-outline btn-xs" data-remove-menu="${key}" style="color: var(--danger); border-color: var(--danger);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
+                ტაბის წაშლა
+              </button>
             </div>
-            <div class="form-group"><label>Intro Description</label><textarea data-field="megaMenus.${key}.introDesc" rows="3">${escapeHtml(menu.introDesc || '')}</textarea></div>
+          </div>
+
+          <!-- Intro -->
+          <div style="margin-top: 20px;">
+            <h4 style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gray-500); margin-bottom: 12px;">▸ Intro Block (მარცხენა მხარე)</h4>
+            <div class="form-grid cols-2">
+              <div class="form-group">
+                <label>Intro Title</label>
+                <input type="text" data-field="megaMenus.${key}.intro.title" value="${escapeHtml(m.intro?.title || '')}" />
+              </div>
+              <div class="form-group">
+                <label>CTA ღილაკის ტექსტი</label>
+                <input type="text" data-field="megaMenus.${key}.intro.ctaText" value="${escapeHtml(m.intro?.ctaText || '')}" />
+              </div>
+            </div>
             <div class="form-group">
-              <label>Spotlight Items (თითო ხაზზე ერთი)</label>
-              <textarea data-field="megaMenus.${key}.spotlightItems" rows="5" data-list>${(menu.spotlightItems || []).join('\n')}</textarea>
-              <small class="hint">ერთ ხაზზე — ერთი პუნქტი</small>
+              <label>აღწერა</label>
+              <textarea data-field="megaMenus.${key}.intro.desc" rows="3">${escapeHtml(m.intro?.desc || '')}</textarea>
+            </div>
+            <div class="form-group">
+              <label>CTA ღილაკის ბმული</label>
+              <input type="text" data-field="megaMenus.${key}.intro.ctaHref" value="${escapeHtml(m.intro?.ctaHref || '')}" placeholder="services.html" style="font-family: 'JetBrains Mono', monospace; font-size: 13px;" />
+            </div>
+          </div>
+
+          <!-- Links -->
+          <div style="margin-top: 24px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <h4 style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gray-500); margin: 0;">▸ Links (შუა სვეტი) — ${(m.links || []).length} ცალი</h4>
+              <button class="btn btn-outline btn-xs" data-add-link="${key}">+ ბმული</button>
+            </div>
+            <div class="features-editor" id="menu-links-${key}">
+              ${(m.links || []).map((link, i) => `
+                <div class="feature-row" style="grid-template-columns: auto 1fr 1fr auto;">
+                  <span class="feature-handle">≡</span>
+                  <input type="text" placeholder="დასახელება" value="${escapeHtml(link.title || '')}"
+                         data-link-menu="${key}" data-link-idx="${i}" data-link-prop="title" />
+                  <input type="text" placeholder="href" value="${escapeHtml(link.href || '')}"
+                         data-link-menu="${key}" data-link-idx="${i}" data-link-prop="href"
+                         style="font-family: 'JetBrains Mono', monospace; font-size: 12px;" />
+                  <button class="icon-btn danger" data-remove-link="${key}-${i}">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
+                  </button>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Spotlight -->
+          <div style="margin-top: 24px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <h4 style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gray-500); margin: 0;">▸ Spotlight (მარჯვენა მხარე) — ${(m.spotlight?.items || []).length} ცალი</h4>
+              <button class="btn btn-outline btn-xs" data-add-spot="${key}">+ Spotlight Item</button>
+            </div>
+            <div class="form-group" style="max-width: 320px; margin-bottom: 12px;">
+              <label>Spotlight Title (სათაური)</label>
+              <input type="text" data-field="megaMenus.${key}.spotlight.title" value="${escapeHtml(m.spotlight?.title || 'Spotlight')}" />
+            </div>
+            <div class="features-editor" id="menu-spot-${key}">
+              ${(m.spotlight?.items || []).map((item, i) => `
+                <div class="feature-row" style="grid-template-columns: auto 1fr 1fr auto;">
+                  <span class="feature-handle">≡</span>
+                  <input type="text" placeholder="დასახელება" value="${escapeHtml(item.title || '')}"
+                         data-spot-menu="${key}" data-spot-idx="${i}" data-spot-prop="title" />
+                  <input type="text" placeholder="href" value="${escapeHtml(item.href || '')}"
+                         data-spot-menu="${key}" data-spot-idx="${i}" data-spot-prop="href"
+                         style="font-family: 'JetBrains Mono', monospace; font-size: 12px;" />
+                  <button class="icon-btn danger" data-remove-spot="${key}-${i}">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
+                  </button>
+                </div>
+              `).join('')}
             </div>
           </div>
         </div>
@@ -1645,6 +1737,108 @@
 
   function attachMegaMenu() {
     attachFieldListeners();
+
+    // Add new tab
+    $('#add-mega-tab')?.addEventListener('click', () => {
+      const key = prompt('ტაბის ID (ინგლისურად, უნიკალური, მაგ. "products"):');
+      if (!key) return;
+      const cleanKey = key.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+      if (!cleanKey) { toast('ID უნდა იყოს ლათინური ასოები/ციფრები', 'error'); return; }
+      if (state.content.megaMenus[cleanKey]) { toast('ეს ID უკვე არსებობს', 'error'); return; }
+      state.content.megaMenus[cleanKey] = {
+        label: 'ახალი ტაბი',
+        intro: { title: 'სათაური', desc: 'აღწერა', ctaText: 'გაეცანი', ctaHref: '#' },
+        links: [],
+        spotlight: { title: 'Spotlight', items: [] }
+      };
+      markDirty();
+      renderSection('megamenu');
+      logActivity('create', `Mega menu tab: ${cleanKey}`, 'megamenu');
+      toast('ტაბი დაემატა', 'success');
+    });
+
+    // Remove tab
+    $$('[data-remove-menu]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const key = btn.dataset.removeMenu;
+        if (!confirm(`წაიშალოს "${state.content.megaMenus[key]?.label || key}" ტაბი?`)) return;
+        delete state.content.megaMenus[key];
+        markDirty();
+        renderSection('megamenu');
+        logActivity('delete', `Mega menu: ${key}`, 'megamenu');
+        toast('ტაბი წაიშალა', 'warning');
+      });
+    });
+
+    // Link inputs — update state on change
+    $$('[data-link-menu]').forEach(input => {
+      input.addEventListener('input', () => {
+        const key = input.dataset.linkMenu;
+        const idx = parseInt(input.dataset.linkIdx);
+        const prop = input.dataset.linkProp;
+        if (!state.content.megaMenus[key].links) state.content.megaMenus[key].links = [];
+        if (!state.content.megaMenus[key].links[idx]) state.content.megaMenus[key].links[idx] = {};
+        state.content.megaMenus[key].links[idx][prop] = input.value;
+        markDirty();
+      });
+    });
+
+    // Add link
+    $$('[data-add-link]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const key = btn.dataset.addLink;
+        if (!state.content.megaMenus[key].links) state.content.megaMenus[key].links = [];
+        state.content.megaMenus[key].links.push({ title: '', href: '' });
+        markDirty();
+        renderSection('megamenu');
+      });
+    });
+
+    // Remove link
+    $$('[data-remove-link]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const [key, idx] = btn.dataset.removeLink.split('-');
+        state.content.megaMenus[key].links.splice(parseInt(idx), 1);
+        markDirty();
+        renderSection('megamenu');
+      });
+    });
+
+    // Spotlight inputs
+    $$('[data-spot-menu]').forEach(input => {
+      input.addEventListener('input', () => {
+        const key = input.dataset.spotMenu;
+        const idx = parseInt(input.dataset.spotIdx);
+        const prop = input.dataset.spotProp;
+        if (!state.content.megaMenus[key].spotlight) state.content.megaMenus[key].spotlight = { items: [] };
+        if (!state.content.megaMenus[key].spotlight.items) state.content.megaMenus[key].spotlight.items = [];
+        if (!state.content.megaMenus[key].spotlight.items[idx]) state.content.megaMenus[key].spotlight.items[idx] = {};
+        state.content.megaMenus[key].spotlight.items[idx][prop] = input.value;
+        markDirty();
+      });
+    });
+
+    // Add spotlight
+    $$('[data-add-spot]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const key = btn.dataset.addSpot;
+        if (!state.content.megaMenus[key].spotlight) state.content.megaMenus[key].spotlight = { title: 'Spotlight', items: [] };
+        if (!state.content.megaMenus[key].spotlight.items) state.content.megaMenus[key].spotlight.items = [];
+        state.content.megaMenus[key].spotlight.items.push({ title: '', href: '' });
+        markDirty();
+        renderSection('megamenu');
+      });
+    });
+
+    // Remove spotlight
+    $$('[data-remove-spot]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const [key, idx] = btn.dataset.removeSpot.split('-');
+        state.content.megaMenus[key].spotlight.items.splice(parseInt(idx), 1);
+        markDirty();
+        renderSection('megamenu');
+      });
+    });
   }
 
   // --- FOOTER ---

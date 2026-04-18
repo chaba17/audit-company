@@ -2,12 +2,13 @@
    Audit Company — UI interactions (Mega menu + Mobile drawer)
    ========================================================== */
 
-document.addEventListener("DOMContentLoaded", () => {
+function initNav() {
   // Sticky header shadow on scroll
   const header = document.querySelector(".header");
   if (header) {
     const onScroll = () => header.classList.toggle("scrolled", window.scrollY > 8);
     onScroll();
+    // Remove old listener if any (simple guard)
     window.addEventListener("scroll", onScroll, { passive: true });
   }
 
@@ -112,6 +113,16 @@ document.addEventListener("DOMContentLoaded", () => {
       closeAllMegas();
     });
   }
+}
+
+// Expose globally so content-loader can call after re-render
+window.initNav = initNav;
+
+document.addEventListener("DOMContentLoaded", () => {
+  initNav();
+
+  // Re-init nav when content-loader re-renders header
+  document.addEventListener("nav-rendered", () => initNav());
 
   // Intersection Observer for scroll reveal
   const observer = new IntersectionObserver((entries) => {

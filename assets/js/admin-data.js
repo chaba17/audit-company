@@ -442,34 +442,143 @@ window.DEFAULT_CONTENT = {
     ]
   },
 
-  // ====== MEGA MENU (reference — synced with site) ======
+  // ====== MEGA MENU (header navigation tabs) ======
   megaMenus: {
     services: {
       label: "სერვისები",
-      introTitle: "სერვისები",
-      introDesc: "Audit კლიენტებს ეხმარება შექმნან გრძელვადიანი ღირებულება. ჩვენი მომსახურება მოიცავს ბუღალტერიას, საგადასახადო დეკლარაციებს, აუდიტს და სტრატეგიულ კონსულტაციას.",
-      ctaText: "გაეცანი",
-      ctaHref: "services.html",
-      spotlightTitle: "Spotlight",
-      spotlightItems: [
-        "Artificial Intelligence (AI)",
-        "2026 საგადასახადო ცვლილებები",
-        "ვირტუალური ზონის სტატუსი",
-        "IFRS მიგრაცია"
-      ]
+      intro: {
+        title: "სერვისები",
+        desc: "Audit კლიენტებს ეხმარება შექმნან გრძელვადიანი ღირებულება. ჩვენი მომსახურება მოიცავს ბუღალტერიას, საგადასახადო დეკლარაციებს, აუდიტს და სტრატეგიულ კონსულტაციას.",
+        ctaText: "გაეცანი",
+        ctaHref: "services.html"
+      },
+      links: [
+        { title: "ბუღალტრული აღრიცხვა", href: "services/accounting.html" },
+        { title: "საგადასახადო დეკლარაციები", href: "services/tax.html" },
+        { title: "ფინანსური აუდიტი", href: "services/audit.html" },
+        { title: "ხელფასი და HR", href: "services/payroll.html" },
+        { title: "კომპანიის რეგისტრაცია", href: "services/registration.html" },
+        { title: "საგადასახადო კონსულტაცია", href: "services/consulting.html" },
+        { title: "არარეზიდენტებისთვის", href: "services/nonresident.html" },
+        { title: "მცირე ბიზნესის სტატუსი", href: "services/smallbiz.html" },
+        { title: "ვირტუალური ზონა", href: "services/virtualzone.html" }
+      ],
+      spotlight: {
+        title: "Spotlight",
+        items: [
+          { title: "Artificial Intelligence (AI)", href: "blog.html" },
+          { title: "2026 საგადასახადო ცვლილებები", href: "blog.html" },
+          { title: "ვირტუალური ზონის სტატუსი", href: "blog.html" },
+          { title: "IFRS მიგრაცია", href: "blog.html" },
+          { title: "დღგ-ის ოპტიმიზაცია", href: "blog.html" },
+          { title: "ტრანსფერ ფრაისინგი", href: "blog.html" }
+        ]
+      }
     },
     industries: {
       label: "ინდუსტრიები",
-      introTitle: "ინდუსტრიები",
-      introDesc: "ვემსახურებით საქართველოს სხვადასხვა სექტორის კომპანიებს — სპეციფიკური ექსპერტიზით თითოეული ნიშისთვის.",
-      ctaText: "ყველა ინდუსტრია",
-      ctaHref: "services.html",
-      spotlightTitle: "Spotlight",
-      spotlightItems: [
-        "Tech Startup Growth",
-        "ფინტექ რეგულაციები 2026",
-        "E-commerce დაბეგვრა"
-      ]
+      intro: {
+        title: "ინდუსტრიები",
+        desc: "ვემსახურებით საქართველოს სხვადასხვა სექტორის კომპანიებს — სპეციფიკური ექსპერტიზით თითოეული ნიშისთვის.",
+        ctaText: "ყველა ინდუსტრია",
+        ctaHref: "services.html"
+      },
+      links: [
+        { title: "Technology & IT", href: "#" },
+        { title: "ფინანსური სერვისები", href: "#" },
+        { title: "უძრავი ქონება", href: "#" },
+        { title: "საცალო & E-commerce", href: "#" },
+        { title: "ლოჯისტიკა", href: "#" },
+        { title: "HoReCa", href: "#" },
+        { title: "ჯანდაცვა & მედიცინა", href: "#" },
+        { title: "საერთაშორისო ბიზნესი", href: "#" }
+      ],
+      spotlight: {
+        title: "Spotlight",
+        items: [
+          { title: "Tech Startup Growth", href: "blog.html" },
+          { title: "ფინტექ რეგულაციები 2026", href: "blog.html" },
+          { title: "E-commerce დაბეგვრა", href: "blog.html" },
+          { title: "Real Estate Outlook", href: "blog.html" }
+        ]
+      }
+    },
+    insights: {
+      label: "Insights",
+      intro: {
+        title: "Insights & Thought Leadership",
+        desc: "საგადასახადო ანალიზი, ბიზნესის ტრენდები და ექსპერტების Insights საქართველოს ბიზნეს გარემოზე.",
+        ctaText: "წაიკითხე ყველა",
+        ctaHref: "blog.html"
+      },
+      links: [
+        { title: "საგადასახადო სიახლეები", href: "blog.html" },
+        { title: "ბიზნესის სტრატეგია", href: "blog.html" },
+        { title: "ტექნოლოგია & IT", href: "blog.html" },
+        { title: "აუდიტი & IFRS", href: "blog.html" },
+        { title: "გზამკვლევები", href: "blog.html" },
+        { title: "რეპორტები & კვლევები", href: "blog.html" },
+        { title: "ვებინარები", href: "blog.html" }
+      ],
+      spotlight: {
+        title: "Spotlight",
+        items: [
+          { title: "2026 Tax Guide", href: "blog.html" },
+          { title: "შპს vs ი/მ გზამკვლევი", href: "blog.html" },
+          { title: "Digital Transformation", href: "blog.html" },
+          { title: "ESG Reporting", href: "blog.html" }
+        ]
+      }
+    },
+    about: {
+      label: "ჩვენ შესახებ",
+      intro: {
+        title: "ჩვენ შესახებ",
+        desc: "15+ წლის გამოცდილების გუნდი. 500+ კმაყოფილი კლიენტი, სერტიფიცირებული ექსპერტები, გამჭვირვალე მიდგომა.",
+        ctaText: "გაიცანი გუნდი",
+        ctaHref: "about.html"
+      },
+      links: [
+        { title: "ჩვენი მიდგომა", href: "about.html" },
+        { title: "ჩვენი ისტორია", href: "about.html" },
+        { title: "ჩვენი გუნდი", href: "about.html" },
+        { title: "ღირებულებები", href: "about.html" },
+        { title: "დაგვიკავშირდი", href: "contact.html" },
+        { title: "პრესა & მედია", href: "#" }
+      ],
+      spotlight: {
+        title: "Spotlight",
+        items: [
+          { title: "Leadership Team", href: "about.html" },
+          { title: "2025 Impact Report", href: "blog.html" },
+          { title: "Career Opportunities", href: "#" },
+          { title: "ESG Commitment", href: "blog.html" }
+        ]
+      }
+    },
+    careers: {
+      label: "კარიერა",
+      intro: {
+        title: "კარიერა Audit-ში",
+        desc: "ვეძებთ ნიჭიერ და გატაცებულ ადამიანებს, რომლებიც მზად არიან აწარმოონ ცვლილებები.",
+        ctaText: "იხილე ვაკანსიები",
+        ctaHref: "#"
+      },
+      links: [
+        { title: "ღია ვაკანსიები", href: "#" },
+        { title: "სტუდენტები & Graduates", href: "#" },
+        { title: "სტაჟირება", href: "#" },
+        { title: "კულტურა", href: "#" },
+        { title: "ბენეფიტები", href: "#" }
+      ],
+      spotlight: {
+        title: "Spotlight",
+        items: [
+          { title: "Graduate Program 2026", href: "#" },
+          { title: "Life at Audit", href: "#" },
+          { title: "Diversity & Inclusion", href: "#" }
+        ]
+      }
     }
   }
 };
