@@ -3488,6 +3488,7 @@ ${urls.map(u => `  <url>
     updateBadges();
     setupTopbar();
     setupSidebar();
+    setupTopbarSheet();
     handleRoute();
 
     // Start auto-polling for other users' updates
@@ -3612,22 +3613,123 @@ ${urls.map(u => `  <url>
     const sidebar = $('#admin-sidebar');
     const backdrop = $('#sidebar-backdrop');
 
-    toggle.addEventListener('click', () => {
-      sidebar.classList.toggle('open');
-      backdrop.classList.toggle('active');
-    });
-    backdrop.addEventListener('click', () => {
+    const openSidebar = () => {
+      sidebar.classList.add('open');
+      backdrop.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    };
+    const closeSidebar = () => {
       sidebar.classList.remove('open');
       backdrop.classList.remove('active');
-    });
+      document.body.style.overflow = '';
+    };
 
+    toggle.addEventListener('click', () => {
+      if (sidebar.classList.contains('open')) closeSidebar(); else openSidebar();
+    });
+    backdrop.addEventListener('click', closeSidebar);
+
+    // Close sidebar when a nav link is tapped on mobile
     $$('.sidebar-link').forEach(link => {
       link.addEventListener('click', (e) => {
         const section = link.dataset.section;
         if (section) {
           location.hash = '#' + section;
         }
+        if (window.innerWidth <= 1024) closeSidebar();
       });
+    });
+
+    // Close on resize to desktop
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 1024 && sidebar.classList.contains('open')) {
+        closeSidebar();
+      }
+    });
+
+    // Escape key closes
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && sidebar.classList.contains('open')) closeSidebar();
+    });
+
+    // Swipe-left-to-close gesture on mobile
+    let touchStartX = 0;
+    let touchStartY = 0;
+    sidebar.addEventListener('touchstart', (e) => {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+    sidebar.addEventListener('touchend', (e) => {
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      const dy = Math.abs(e.changedTouches[0].clientY - touchStartY);
+      if (dx < -60 && dy < 40) closeSidebar();
+    }, { passive: true });
+  }
+
+  function setupTopbarSheet() {
+    const moreBtn = $('#topbar-more-btn');
+    const sheet = $('#topbar-sheet');
+    const sheetList = $('#topbar-sheet-list');
+    if (!moreBtn || !sheet || !sheetList) return;
+
+    // Build the sheet items mirroring topbar actions
+    const items = [
+      { id: 'sync-btn', label: 'Sync — ჩატვირთე Live-დან', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>' },
+      { id: 'preview-btn', label: 'Preview — ნახე ცვლილებები', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>' },
+      { id: 'save-btn', label: 'Save Local — შეინახე ბრაუზერში', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>' },
+      { id: 'export-btn', label: 'Export JSON — ჩამოტვირთე', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>' },
+      { id: 'publish-btn', label: 'Publish Live — გამოაქვეყნე საიტზე', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>', primary: true },
+      { id: 'logout-btn', label: 'Logout — გამოსვლა', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>', danger: true }
+    ];
+
+    sheetList.innerHTML = items.map(it => {
+      const cls = ['topbar-sheet-item'];
+      if (it.primary) cls.push('is-primary');
+      if (it.danger) cls.push('is-danger');
+      return `<button type="button" class="${cls.join(' ')}" data-target="${it.id}">${it.icon}<span>${it.label}</span></button>`;
+    }).join('');
+
+    const openSheet = () => {
+      sheet.classList.add('open');
+      sheet.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    };
+    const closeSheet = () => {
+      sheet.classList.remove('open');
+      sheet.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    };
+
+    moreBtn.addEventListener('click', openSheet);
+    sheet.querySelectorAll('[data-close-sheet]').forEach(el => el.addEventListener('click', closeSheet));
+
+    // Proxy clicks to the real topbar buttons
+    sheetList.querySelectorAll('.topbar-sheet-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const targetId = item.dataset.target;
+        closeSheet();
+        // Slight delay so the sheet animation feels responsive before the action modal appears
+        setTimeout(() => {
+          const target = document.getElementById(targetId);
+          if (target) target.click();
+        }, 150);
+      });
+    });
+
+    // Swipe-down-to-close
+    let touchY = 0;
+    const panel = sheet.querySelector('.topbar-sheet-panel');
+    if (panel) {
+      panel.addEventListener('touchstart', (e) => { touchY = e.touches[0].clientY; }, { passive: true });
+      panel.addEventListener('touchend', (e) => {
+        const dy = e.changedTouches[0].clientY - touchY;
+        if (dy > 80) closeSheet();
+      }, { passive: true });
+    }
+
+    // Escape closes
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && sheet.classList.contains('open')) closeSheet();
     });
   }
 

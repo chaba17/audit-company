@@ -53,31 +53,50 @@
       </div>
       <div class="admin-topbar-right">
         <span id="save-indicator" class="save-indicator">ყველა ცვლილება შენახული</span>
-        <button class="btn btn-outline btn-sm" id="sync-btn" title="Pull latest content from live site">
+        <button class="btn btn-outline btn-sm topbar-btn" id="sync-btn" title="Pull latest content from live site" aria-label="Sync">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>
-          Sync
+          <span class="btn-label">Sync</span>
         </button>
-        <button class="btn btn-outline btn-sm" id="preview-btn">
+        <button class="btn btn-outline btn-sm topbar-btn" id="preview-btn" aria-label="Preview">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-          Preview
+          <span class="btn-label">Preview</span>
         </button>
-        <button class="btn btn-dark btn-sm" id="export-btn">
+        <button class="btn btn-dark btn-sm topbar-btn" id="export-btn" aria-label="Export JSON">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
-          Export JSON
+          <span class="btn-label">Export JSON</span>
         </button>
-        <button class="btn btn-outline btn-sm" id="save-btn">
+        <button class="btn btn-outline btn-sm topbar-btn" id="save-btn" aria-label="Save local">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          Save Local
+          <span class="btn-label">Save Local</span>
         </button>
-        <button class="btn btn-yellow btn-sm" id="publish-btn" title="Publish to live site via GitHub">
+        <button class="btn btn-yellow btn-sm topbar-btn-primary" id="publish-btn" title="Publish to live site via GitHub" aria-label="Publish live">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-          Publish Live
+          <span class="btn-label">Publish Live</span>
         </button>
-        <button class="topbar-icon" id="logout-btn" title="Logout">
+        <button class="topbar-icon topbar-more" id="topbar-more-btn" aria-label="More actions" title="More">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
+        </button>
+        <button class="topbar-icon topbar-logout-desktop" id="logout-btn" title="Logout" aria-label="Logout">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
         </button>
       </div>
     </header>
+
+    <!-- Mobile overflow sheet (shown when "more" is tapped) -->
+    <div class="topbar-sheet" id="topbar-sheet" aria-hidden="true">
+      <div class="topbar-sheet-backdrop" data-close-sheet></div>
+      <div class="topbar-sheet-panel">
+        <div class="topbar-sheet-header">
+          <span>მოქმედებები</span>
+          <button class="topbar-sheet-close" data-close-sheet aria-label="Close">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <div class="topbar-sheet-list" id="topbar-sheet-list">
+          <!-- Dynamically populated with mirror buttons -->
+        </div>
+      </div>
+    </div>
 
     <div class="admin-layout">
       <!-- Sidebar -->
