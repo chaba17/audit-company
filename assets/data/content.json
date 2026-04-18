@@ -1,6 +1,6 @@
 {
   "_version": "1.0.0",
-  "_updated": "2026-04-18T20:52:37.702Z",
+  "_updated": "2026-04-18T20:53:50.722Z",
   "site": {
     "name": "Audit",
     "tagline": "Shape the future with confidence",
@@ -204,11 +204,13 @@
     {
       "id": "service-1776545509758",
       "title": "073",
-      "shortDesc": "",
-      "fullDesc": "",
+      "shortDesc": "ფდსფდსფ",
+      "fullDesc": "სდფსდფსდ",
       "icon": "receipt",
       "image": "",
-      "features": []
+      "features": [
+        "დფსფსდ"
+      ]
     }
   ],
   "pricing": {
