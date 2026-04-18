@@ -1,6 +1,6 @@
 {
   "_version": "1.0.0",
-  "_updated": "2026-04-18T19:03:01.991Z",
+  "_updated": "2026-04-18T19:07:17.298Z",
   "site": {
     "name": "Audit",
     "tagline": "Shape the future with confidence",
@@ -291,6 +291,13 @@
       "tag": "CPA",
       "bio": "IFRS-ის ექსპერტი, Big 4 გამოცდილებით — საერთაშორისო პროექტების ხელმძღვანელი.",
       "photo": "https://i.pravatar.cc/600?img=48"
+    },
+    {
+      "name": "მიხეილ კვირკველია",
+      "role": "CEO",
+      "tag": "",
+      "bio": "",
+      "photo": ""
     }
   ],
   "testimonials": [
