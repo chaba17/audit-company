@@ -34,7 +34,17 @@
       "Bash(python -c \"import sys, json; d = json.load\\(sys.stdin\\); print\\('API plans:', len\\(d['pricing']['plans']\\)\\); [print\\(f'  {i+1}. {p[\\\\\"name\\\\\"]} \\({p[\\\\\"currency\\\\\"]}{p[\\\\\"price\\\\\"]}\\)'\\) for i, p in enumerate\\(d['pricing']['plans']\\)]\")",
       "Bash(start \"\" \"https://audit-company-sage.vercel.app/admin.html#megamenu\")",
       "Bash(python -c ' *)",
-      "Bash(curl -s \"https://audit-company-sage.vercel.app/about.html\")"
+      "Bash(curl -s \"https://audit-company-sage.vercel.app/about.html\")",
+      "Bash(curl -s \"https://raw.githubusercontent.com/chaba17/audit-company/main/assets/data/content.json?t=$\\(date +%s\\)\")",
+      "Bash(curl -s -H \"Cache-Control: no-cache\" -H \"Pragma: no-cache\" \"https://audit-company-sage.vercel.app/api/content?nocache=$\\(date +%s%N\\)\")",
+      "Bash(curl -sI \"https://audit-company-sage.vercel.app/api/content\")",
+      "Bash(curl -s \"https://raw.githubusercontent.com/chaba17/audit-company/main/assets/data/content.json?t=$\\(date +%s%N\\)\")",
+      "Bash(curl -sI \"https://raw.githubusercontent.com/chaba17/audit-company/main/assets/data/content.json\")",
+      "Bash(start \"\" \"https://audit-company-sage.vercel.app/about.html\")",
+      "Bash(curl -sI \"https://audit-company-sage.vercel.app/about.html\")",
+      "Bash(curl -s \"https://audit-company-sage.vercel.app/about\")",
+      "Bash(curl -s \"https://audit-company-sage.vercel.app/assets/js/content-loader.js?v=1776462985\")",
+      "mcp__Claude_Preview__preview_start"
     ]
   }
 }

@@ -36,23 +36,27 @@
   window.SITE_CONTENT = content;
 
   // Re-render header if content has megaMenus (to pick up admin changes)
-  if (typeof renderHeader === 'function' && content.megaMenus && Object.keys(content.megaMenus).length > 0) {
-    const oldHeader = document.querySelector('.header');
-    const oldBackdrop = document.querySelector('.mega-backdrop');
-    if (oldHeader) {
-      const tmp = document.createElement('div');
-      tmp.innerHTML = renderHeader();
-      const nodes = [...tmp.children];
-      oldHeader.replaceWith(...nodes.filter(n => n.classList.contains('header')));
-      if (oldBackdrop) {
-        const newBackdrop = nodes.find(n => n.classList.contains('mega-backdrop'));
-        if (newBackdrop) oldBackdrop.replaceWith(newBackdrop);
+  try {
+    if (typeof renderHeader === 'function' && content.megaMenus && Object.keys(content.megaMenus).length > 0) {
+      const oldHeader = document.querySelector('.header');
+      const oldBackdrop = document.querySelector('.mega-backdrop');
+      if (oldHeader) {
+        const tmp = document.createElement('div');
+        tmp.innerHTML = renderHeader();
+        const nodes = [...tmp.children];
+        const headerNodes = nodes.filter(n => n.classList && n.classList.contains('header'));
+        if (headerNodes.length) oldHeader.replaceWith(...headerNodes);
+        if (oldBackdrop) {
+          const newBackdrop = nodes.find(n => n.classList && n.classList.contains('mega-backdrop'));
+          if (newBackdrop) oldBackdrop.replaceWith(newBackdrop);
+        }
+        document.dispatchEvent(new CustomEvent('nav-rendered'));
       }
-      document.dispatchEvent(new CustomEvent('nav-rendered'));
     }
-  }
+  } catch (e) { console.warn('Header re-render failed:', e); }
 
   // Merge into i18n translations (only Georgian — English stays fallback)
+  try {
   if (window.translations?.ka) {
     const ka = window.translations.ka;
 
@@ -105,6 +109,7 @@
     if (content.site?.hours) ka.footer.hours = content.site.hours;
     if (content.site?.copyright) ka.footer.copyright = content.site.copyright;
   }
+  } catch (e) { console.warn('i18n merge failed:', e); }
 
   // Fire event so pages can re-render if needed
   document.dispatchEvent(new CustomEvent('content-loaded', { detail: content }));

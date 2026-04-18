@@ -193,18 +193,39 @@ const MEGA_MENUS = {
 };
 
 function renderMegaMenu(key, data) {
-  const linksHtml = data.links.map(link => `
-    <a href="${basePath}${link.href}" class="mega-link-item">
-      <span>${link.title}</span>
+  if (!data) return '';
+
+  // Support both new schema (intro: {...}, links: [...], spotlight: {items: [...]})
+  // AND old flat schema (introTitle, introDesc, ctaText, ctaHref, spotlightItems: [strings])
+  const intro = data.intro || {
+    title: data.introTitle || data.label || '',
+    desc: data.introDesc || '',
+    ctaText: data.ctaText || '',
+    ctaHref: data.ctaHref || '#'
+  };
+
+  const links = Array.isArray(data.links) ? data.links : [];
+
+  let spotlight = data.spotlight;
+  if (!spotlight && Array.isArray(data.spotlightItems)) {
+    spotlight = {
+      title: data.spotlightTitle || 'Spotlight',
+      items: data.spotlightItems.map(s => typeof s === 'string' ? { title: s, href: '#' } : s)
+    };
+  }
+
+  const linksHtml = links.map(link => `
+    <a href="${basePath}${link?.href || '#'}" class="mega-link-item">
+      <span>${link?.title || ''}</span>
       <span class="mega-arrow">→</span>
     </a>
   `).join("");
 
-  const spotlightHtml = data.spotlight ? `
+  const spotlightHtml = (spotlight && Array.isArray(spotlight.items) && spotlight.items.length) ? `
     <div class="mega-spotlight">
-      <h4>${data.spotlight.title}</h4>
+      <h4>${spotlight.title || 'Spotlight'}</h4>
       <div class="mega-spotlight-list">
-        ${data.spotlight.items.map(s => `<a href="${basePath}${s.href}">${s.title}</a>`).join("")}
+        ${spotlight.items.map(s => `<a href="${basePath}${s?.href || '#'}">${s?.title || ''}</a>`).join("")}
       </div>
     </div>
   ` : "";
@@ -213,9 +234,9 @@ function renderMegaMenu(key, data) {
     <div class="mega-menu" data-mega="${key}">
       <div class="mega-inner">
         <div class="mega-intro">
-          <h3>${data.intro.title}</h3>
-          <p>${data.intro.desc}</p>
-          <a href="${basePath}${data.intro.ctaHref}" class="mega-explore-btn">${data.intro.ctaText}</a>
+          <h3>${intro.title || ''}</h3>
+          <p>${intro.desc || ''}</p>
+          ${intro.ctaText ? `<a href="${basePath}${intro.ctaHref || '#'}" class="mega-explore-btn">${intro.ctaText}</a>` : ''}
         </div>
         <div class="mega-links">
           ${linksHtml}
