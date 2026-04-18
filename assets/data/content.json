@@ -1,6 +1,6 @@
 {
   "_version": "1.0.0",
-  "_updated": "2026-04-18T21:08:14.489Z",
+  "_updated": "2026-04-18T21:13:08.205Z",
   "site": {
     "name": "Audit",
     "tagline": "Shape the future with confidence",
@@ -224,6 +224,24 @@
     {
       "id": "service-1776546483638",
       "title": "ლამაზო ",
+      "shortDesc": "",
+      "fullDesc": "",
+      "icon": "book-open",
+      "image": "",
+      "features": []
+    },
+    {
+      "id": "service-1776537672659",
+      "title": "მიშიკო",
+      "shortDesc": "111",
+      "fullDesc": "",
+      "icon": "book-open",
+      "image": "",
+      "features": []
+    },
+    {
+      "id": "service-1776546756529",
+      "title": "Qqqqqqw",
       "shortDesc": "",
       "fullDesc": "",
       "icon": "book-open",
