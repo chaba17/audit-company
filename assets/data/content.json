@@ -1,6 +1,6 @@
 {
   "_version": "1.0.0",
-  "_updated": "2026-04-18T20:40:28.872Z",
+  "_updated": "2026-04-18T19:42:11.043131Z",
   "site": {
     "name": "Audit",
     "tagline": "Shape the future with confidence",
@@ -200,15 +200,6 @@
         "მუდმივი მხარდაჭერა",
         "საერთაშორისო დაბეგვრის კონსულტაცია"
       ]
-    },
-    {
-      "id": "service-1776544632636",
-      "title": "073",
-      "shortDesc": "",
-      "fullDesc": "",
-      "icon": "users",
-      "image": "",
-      "features": []
     }
   ],
   "pricing": {
@@ -314,13 +305,6 @@
       "tag": "MBA",
       "bio": "Audit-ის დამფუძნებელი და ლიდერი. 10+ წლის გამოცდილება საფინანსო სტრატეგიაში.",
       "photo": "https://i.pravatar.cc/600?img=60"
-    },
-    {
-      "name": "გია გიუშააა",
-      "role": "დირქტორი",
-      "tag": "",
-      "bio": "",
-      "photo": ""
     }
   ],
   "testimonials": [

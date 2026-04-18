@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&family=Noto+Sans+Georgian:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css?v=1776544406" />
+  <link rel="stylesheet" href="assets/css/style.css?v=1776545191" />
 </head>
 <body>
 
@@ -354,10 +354,10 @@
 
   <div id="site-footer"></div>
 
-  <script src="assets/js/i18n.js?v=1776544406"></script>
-  <script src="assets/js/partials.js?v=1776544406"></script>
-  <script src="assets/js/main.js?v=1776544406"></script>
-  <script src="assets/js/content-loader.js?v=1776544406"></script>
+  <script src="assets/js/i18n.js?v=1776545191"></script>
+  <script src="assets/js/partials.js?v=1776545191"></script>
+  <script src="assets/js/main.js?v=1776545191"></script>
+  <script src="assets/js/content-loader.js?v=1776545191"></script>
   <script>
     function renderDynamicSections() {
       const lang = localStorage.getItem("lang") || "ka";
@@ -370,7 +370,7 @@
           servicesEl.innerHTML = window.SERVICES.slice(0, 6).map((s, i) => {
             const [, key] = s.key.split(".");
             return `
-              <div class="service-card reveal">
+              <div class="service-card reveal visible">
                 <div class="service-number">0${i + 1} / ${String(window.SERVICES.slice(0,6).length).padStart(2,'0')}</div>
                 <div class="service-icon">${window.ICONS[s.icon]}</div>
                 <h3 data-i18n="services.${key}.title"></h3>
@@ -402,7 +402,7 @@
               </li>
             `).join("");
             return `
-              <div class="price-card ${featured} reveal">
+              <div class="price-card ${featured} reveal visible">
                 ${badgeHtml}
                 <h3 class="price-title" data-i18n="pricing.plans.${i}.name"></h3>
                 <p class="price-desc" data-i18n="pricing.plans.${i}.desc"></p>
@@ -427,7 +427,7 @@
             "https://i.pravatar.cc/100?img=53"
           ];
           testEl.innerHTML = t.testimonials.items.map((_, i) => `
-            <div class="testimonial reveal">
+            <div class="testimonial reveal visible">
               <p class="testimonial-text" data-i18n="testimonials.items.${i}.quote"></p>
               <div class="testimonial-author">
                 <img src="${avatars[i]}" alt="" />
@@ -444,7 +444,7 @@
         const faqEl = document.getElementById("faq");
         if (faqEl) {
           faqEl.innerHTML = t.faq.items.map((_, i) => `
-            <details class="faq-item reveal">
+            <details class="faq-item reveal visible">
               <summary data-i18n="faq.items.${i}.q"></summary>
               <p data-i18n="faq.items.${i}.a"></p>
             </details>
