@@ -184,7 +184,7 @@
     const teamSection = document.querySelector('.section.bg-soft .insights-grid');
     if (teamSection) {
       teamSection.innerHTML = content.team.map((m, i) => `
-        <div class="insight-card reveal ${i > 0 ? 'delay-' + Math.min(i, 3) : ''}">
+        <div class="insight-card reveal visible ${i > 0 ? 'delay-' + Math.min(i, 3) : ''}">
           <div class="insight-img"><img src="${m.photo || ''}" alt="${m.name || ''}" /></div>
           <div class="insight-meta">
             <span class="tag">${(m.role || '').toUpperCase()}</span>
@@ -223,7 +223,7 @@
 
       // Render rest in grid
       blogGrid.innerHTML = rest.map((b, i) => `
-        <a href="#" class="insight-card reveal ${i > 0 ? 'delay-' + Math.min(i, 3) : ''}">
+        <a href="#" class="insight-card reveal visible ${i > 0 ? 'delay-' + Math.min(i, 3) : ''}">
           <div class="insight-img"><img src="${b.image || ''}" alt="${b.title || ''}" /></div>
           <div class="insight-meta">
             <span class="tag">${(b.category || '').toUpperCase()}</span>
@@ -242,7 +242,7 @@
     const indGrid = document.querySelector('.industries-grid');
     if (indGrid) {
       indGrid.innerHTML = content.industries.map((ind, i) => `
-        <div class="industry-card reveal ${i > 0 ? 'delay-' + Math.min(i % 4, 3) : ''}">
+        <div class="industry-card reveal visible ${i > 0 ? 'delay-' + Math.min(i % 4, 3) : ''}">
           <svg class="industry-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect width="16" height="16" x="4" y="4" rx="2"/></svg>
           <h4>${ind.title || ''}</h4>
           <p>${ind.description || ''}</p>
