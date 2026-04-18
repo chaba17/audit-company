@@ -27,8 +27,8 @@ export default async function handler(req, res) {
     }
     const data = await ghRes.json();
 
-    // Short cache (10s on CDN, revalidate after) — fresh but not DDoSed
-    res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=10, stale-while-revalidate=30');
+    // Very short cache — fresh updates within 3s, but protect from DDoS
+    res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=3, stale-while-revalidate=5');
     res.setHeader('Access-Control-Allow-Origin', '*');
     return res.status(200).json(data);
   } catch (err) {

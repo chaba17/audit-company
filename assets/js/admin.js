@@ -499,22 +499,83 @@
     return deepClone(window.DEFAULT_CONTENT);
   }
 
-  async function syncFromLive() {
+  async function syncFromLive(opts = {}) {
     try {
       const res = await fetch('/api/content?t=' + Date.now(), { cache: 'no-store' });
       if (!res.ok) throw new Error('API failed');
       const live = await res.json();
-      const merged = fillMissingDefaults(live);
-      state.content = merged;
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
-      setBaseline(merged); // baseline = live on sync
-      markClean();
+      const liveFilled = fillMissingDefaults(live);
+
+      const baseline = getBaseline();
+      const hasLocalChanges = state.content && baseline && JSON.stringify(state.content) !== JSON.stringify(baseline);
+
+      let newState;
+      if (hasLocalChanges && !opts.force) {
+        // User has unsaved changes — merge live into state, keep user's work
+        newState = mergeContent(baseline, state.content, liveFilled);
+        opts.onMerged?.(newState);
+      } else {
+        // No unsaved changes (or forced) — use live as-is
+        newState = liveFilled;
+      }
+
+      state.content = newState;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(newState));
+      setBaseline(liveFilled); // baseline always = what live had at sync time
+      if (!hasLocalChanges) markClean();
       updateBadges();
-      return true;
+      return { success: true, hadLocalChanges: hasLocalChanges, liveUpdated: live._updated };
     } catch (e) {
       console.error('Sync failed:', e);
-      return false;
+      return { success: false, error: e.message };
     }
+  }
+
+  // ====== AUTO-POLLING (check for others' updates every 15s) ======
+  let lastKnownUpdate = null;
+  let pollInterval = null;
+  function startAutoPolling() {
+    if (pollInterval) clearInterval(pollInterval);
+    pollInterval = setInterval(async () => {
+      if (document.hidden) return; // don't poll if tab not visible
+      try {
+        const res = await fetch('/api/content?t=' + Date.now(), { cache: 'no-store' });
+        if (!res.ok) return;
+        const live = await res.json();
+        if (!lastKnownUpdate) {
+          lastKnownUpdate = live._updated;
+          return;
+        }
+        if (live._updated && live._updated !== lastKnownUpdate) {
+          lastKnownUpdate = live._updated;
+          showUpdateBanner(live);
+        }
+      } catch {}
+    }, 15000); // 15 seconds
+  }
+
+  function showUpdateBanner(live) {
+    let banner = document.getElementById('update-banner');
+    if (banner) return; // already showing
+    banner = document.createElement('div');
+    banner.id = 'update-banner';
+    banner.innerHTML = `
+      <div style="position: fixed; top: 64px; left: 50%; transform: translateX(-50%); z-index: 150; background: var(--ink); color: white; padding: 12px 20px; border-left: 3px solid var(--yellow); display: flex; align-items: center; gap: 14px; font-size: 13px; box-shadow: 0 8px 24px rgba(0,0,0,0.3); max-width: 90vw;">
+        <span>🔄 სხვა user-მა გააკეთა ცვლილება. Live content განახლდა.</span>
+        <button class="btn btn-yellow btn-xs" id="apply-sync">Sync</button>
+        <button style="background: none; color: rgba(255,255,255,0.6); padding: 4px;" id="dismiss-banner">✕</button>
+      </div>
+    `;
+    document.body.appendChild(banner);
+    $('#apply-sync').onclick = async () => {
+      banner.remove();
+      const res = await syncFromLive();
+      if (res.success) {
+        toast(res.hadLocalChanges ? '✅ Sync + შენი ცვლილებები შენარჩუნდა' : '✅ Live content ჩამოიტვირთა', 'success');
+        renderSection(state.currentSection);
+      }
+    };
+    $('#dismiss-banner').onclick = () => banner.remove();
   }
 
   function saveContent() {
@@ -3391,19 +3452,29 @@ ${urls.map(u => `  <url>
     $('#admin-app').classList.remove('hidden');
     state.content = loadContent();
 
-    // On first load (no localStorage yet), try to sync from live to prevent overwriting
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (!saved || Object.keys(JSON.parse(saved).megaMenus || {}).length < 3) {
-      const synced = await syncFromLive();
-      if (synced) {
-        toast('📥 Live content სინქრონიზდა. ცვლილებები უსაფრთხოა.', 'info', 4000);
+    // ALWAYS sync from live on admin load — get latest state (preserving local changes)
+    const res = await syncFromLive();
+    if (res.success) {
+      lastKnownUpdate = res.liveUpdated;
+      if (res.hadLocalChanges) {
+        toast('📥 Live sync + შენი ცვლილებები შენარჩუნდა', 'success', 4000);
+      } else {
+        toast('📥 Live content სინქრონიზდა', 'info', 3000);
       }
+    } else {
+      // Sync failed — ensure baseline exists at least
+      if (!getBaseline()) setBaseline(deepClone(state.content));
+      toast('⚠️ Live სინქრონიზაცია ვერ მოხერხდა. ოფლაინ რეჟიმი.', 'warning', 4000);
     }
 
     updateBadges();
     setupTopbar();
     setupSidebar();
     handleRoute();
+
+    // Start auto-polling for other users' updates
+    startAutoPolling();
+
     window.addEventListener('hashchange', handleRoute);
     window.addEventListener('beforeunload', (e) => {
       if (state.isDirty) {
@@ -3422,17 +3493,23 @@ ${urls.map(u => `  <url>
     $('#export-btn').addEventListener('click', exportJSON);
     $('#preview-btn').addEventListener('click', () => window.open('index.html', '_blank'));
     $('#sync-btn')?.addEventListener('click', async () => {
-      if (state.isDirty && !confirm('გაქვს უნახავი ცვლილებები. Sync-ი გადაწერს. გააგრძელო?')) return;
       const btn = $('#sync-btn');
       const orig = btn.innerHTML;
       btn.disabled = true;
       btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin"><path d="M21 12a9 9 0 1 1-6.22-8.56"/></svg> Sync...';
-      const ok = await syncFromLive();
+      const res = await syncFromLive();
       btn.disabled = false;
       btn.innerHTML = orig;
-      if (ok) {
-        toast('✅ Live content ჩამოიტვირთა', 'success');
+      if (res.success) {
+        if (res.hadLocalChanges) {
+          toast('✅ Sync + შენი ცვლილებები შენარჩუნდა', 'success');
+        } else {
+          toast('✅ Live content ჩამოიტვირთა', 'success');
+        }
         renderSection(state.currentSection);
+        lastKnownUpdate = res.liveUpdated;
+        // Dismiss banner if any
+        document.getElementById('update-banner')?.remove();
       } else {
         toast('❌ Sync ვერ მოხერხდა', 'error');
       }
