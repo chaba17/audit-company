@@ -713,8 +713,11 @@ function resolveKey(keyPath, lang) {
   return undefined;
 }
 
+let __currentLang = null; // internal tracker — distinguishes initial load from user switch
+
 function applyTranslations(lang) {
   if (!translations[lang]) lang = 'ka';
+  const isSameLang = __currentLang === lang;
   document.documentElement.lang = lang;
 
   const langMeta = SUPPORTED_LANGUAGES.find(l => l.code === lang) || SUPPORTED_LANGUAGES[0];
@@ -756,7 +759,11 @@ function applyTranslations(lang) {
   });
 
   // Let page scripts react (e.g. re-render cards in the new language)
-  document.dispatchEvent(new CustomEvent("lang-changed", { detail: { lang } }));
+  // Only fire when lang actually changed — prevents infinite-reload loops.
+  if (!isSameLang && __currentLang !== null) {
+    document.dispatchEvent(new CustomEvent("lang-changed", { detail: { lang, previous: __currentLang } }));
+  }
+  __currentLang = lang;
 }
 
 // Initialize on load

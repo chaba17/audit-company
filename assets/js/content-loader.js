@@ -55,12 +55,14 @@
   window.SITE_CONTENT_RAW = JSON.parse(JSON.stringify(content));
   applyItemI18n();
 
-  // Listen for language changes (from nav switcher) and re-apply overlays + re-render
-  document.addEventListener('lang-changed', () => {
+  // Listen for language changes (from nav switcher) and re-apply overlays + re-render.
+  // Only reload when previous lang is defined (meaning an actual user-initiated switch, not initial load).
+  document.addEventListener('lang-changed', (e) => {
+    const previous = e?.detail?.previous;
+    const current = e?.detail?.lang;
+    // Guard: only reload if this is a genuine change (previous existed and differs).
+    if (!previous || previous === current) return;
     applyItemI18n();
-    // Simple way to apply: reload page state without full reload would require re-running many renderers.
-    // For reliability across all pages (hero, services grid, mega menu, footer, etc.), trigger a soft reload.
-    // To preserve scroll position, use hash. To fully refresh content, reload.
     location.reload();
   });
 
