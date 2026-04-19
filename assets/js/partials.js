@@ -355,7 +355,7 @@ function renderFooter() {
           </div>
 
           <div>
-            <h5>Services</h5>
+            <h5 data-i18n="footer.services">Services</h5>
             <div class="footer-links">
               <a href="${basePath}services/audit.html" data-i18n="services.audit.title"></a>
               <a href="${basePath}services/tax.html" data-i18n="services.tax.title"></a>
@@ -366,31 +366,31 @@ function renderFooter() {
           </div>
 
           <div>
-            <h5>Industries</h5>
+            <h5 data-i18n="footer.industries">Industries</h5>
             <div class="footer-links">
-              <a href="#">Technology & IT</a>
-              <a href="#">ფინანსური სერვისები</a>
-              <a href="#">უძრავი ქონება</a>
-              <a href="#">საცალო ვაჭრობა</a>
-              <a href="#">ლოჯისტიკა</a>
+              <a href="#" data-i18n="footer.ind_tech">Technology & IT</a>
+              <a href="#" data-i18n="footer.ind_finance">ფინანსური სერვისები</a>
+              <a href="#" data-i18n="footer.ind_realestate">უძრავი ქონება</a>
+              <a href="#" data-i18n="footer.ind_retail">საცალო ვაჭრობა</a>
+              <a href="#" data-i18n="footer.ind_logistics">ლოჯისტიკა</a>
             </div>
           </div>
 
           <div>
-            <h5>Insights</h5>
+            <h5 data-i18n="footer.insights">Insights</h5>
             <div class="footer-links">
-              <a href="${basePath}blog.html">საგადასახადო სიახლეები</a>
-              <a href="${basePath}blog.html">კვლევები</a>
-              <a href="${basePath}blog.html">რეპორტები</a>
-              <a href="${basePath}blog.html">ვებინარები</a>
+              <a href="${basePath}blog.html" data-i18n="footer.ins_tax">საგადასახადო სიახლეები</a>
+              <a href="${basePath}blog.html" data-i18n="footer.ins_research">კვლევები</a>
+              <a href="${basePath}blog.html" data-i18n="footer.ins_reports">რეპორტები</a>
+              <a href="${basePath}blog.html" data-i18n="footer.ins_webinars">ვებინარები</a>
             </div>
           </div>
 
           <div>
-            <h5>About</h5>
+            <h5 data-i18n="footer.about_col">About</h5>
             <div class="footer-links">
               <a href="${basePath}about.html" data-i18n="nav.about"></a>
-              <a href="#">Careers</a>
+              <a href="#" data-i18n="footer.careers">Careers</a>
               <a href="${basePath}contact.html" data-i18n="nav.contact"></a>
               <a href="#" data-i18n="footer.privacy"></a>
               <a href="#" data-i18n="footer.terms"></a>
@@ -401,7 +401,7 @@ function renderFooter() {
         <div class="footer-bottom">
           <div class="left">
             <span data-i18n="footer.copyright"></span>
-            <a href="#">Accessibility</a>
+            <a href="#" data-i18n="footer.accessibility">Accessibility</a>
             <a href="#" data-i18n="footer.privacy"></a>
             <a href="#" data-i18n="footer.terms"></a>
           </div>

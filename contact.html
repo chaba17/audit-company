@@ -7,16 +7,16 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&family=Noto+Sans+Georgian:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css?v=1776641843" />
+  <link rel="stylesheet" href="assets/css/style.css?v=1776642967" />
 </head>
 <body>
   <div id="site-header"></div>
 
   <section class="page-header">
     <div class="container">
-      <span class="eyebrow">კონტაქტი · 01</span>
-      <h1>დავიწყოთ <span class="highlight">საუბარი</span>.</h1>
-      <p>გვიპასუხეთ კითხვაზე 24 საათში — რომელი კომუნიკაციის ფორმატი უფრო კომფორტულია?</p>
+      <span class="eyebrow" data-i18n="contact_page.eyebrow">კონტაქტი · 01</span>
+      <h1><span data-i18n="contact_page.title_pre">დავიწყოთ</span> <span class="highlight" data-i18n="contact_page.title_highlight">საუბარი.</span></h1>
+      <p data-i18n="contact_page.subtitle">გვიპასუხეთ კითხვაზე 24 საათში — რომელი კომუნიკაციის ფორმატი უფრო კომფორტულია?</p>
     </div>
   </section>
 
@@ -25,9 +25,9 @@
       <div style="display: grid; grid-template-columns: 1fr 1.3fr; gap: 64px; align-items: start;" class="contact-grid">
         <!-- Left: Info -->
         <div class="reveal">
-          <span class="eyebrow">კომუნიკაციის არხები · 02</span>
-          <h2 class="display">ყველაზე მოსახერხებელი <span class="highlight">შეარჩიე</span>.</h2>
-          <p class="lead" style="margin-top: 20px;">ჩვენი გუნდი გიპასუხებთ 24 საათში სამუშაო დღეებში.</p>
+          <span class="eyebrow" data-i18n="contact_page.left_eyebrow">კომუნიკაციის არხები · 02</span>
+          <h2 class="display"><span data-i18n="contact_page.left_title_pre">ყველაზე მოსახერხებელი</span> <span class="highlight" data-i18n="contact_page.left_title_highlight">შეარჩიე.</span></h2>
+          <p class="lead" style="margin-top: 20px;" data-i18n="contact_page.left_intro">ჩვენი გუნდი გიპასუხებთ 24 საათში სამუშაო დღეებში.</p>
 
           <div style="display: flex; flex-direction: column; margin-top: 32px;">
             <a id="contact-phone-link" href="tel:+995322000000" style="display: flex; gap: 16px; padding: 24px 0; border-top: 2px solid var(--color-ink); border-bottom: 1px solid var(--color-line); transition: all var(--t);" onmouseover="this.style.paddingLeft='12px'; this.style.background='var(--color-gray-50)'" onmouseout="this.style.paddingLeft='0'; this.style.background='transparent'">
@@ -35,7 +35,7 @@
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
               </div>
               <div>
-                <div style="font-size: 11px; color: var(--color-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px;">ტელეფონი</div>
+                <div data-i18n="contact_page.label_phone" style="font-size: 11px; color: var(--color-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px;">ტელეფონი</div>
                 <div id="contact-phone-text" style="font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--color-ink);">+995 32 2 00 00 00</div>
               </div>
             </a>
@@ -45,7 +45,7 @@
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
               </div>
               <div>
-                <div style="font-size: 11px; color: var(--color-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px;">ელ.ფოსტა</div>
+                <div data-i18n="contact_page.label_email" style="font-size: 11px; color: var(--color-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px;">ელ.ფოსტა</div>
                 <div id="contact-email-text" style="font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--color-ink);">info@gubermangeo.com</div>
               </div>
             </a>
@@ -55,8 +55,8 @@
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
               </div>
               <div>
-                <div style="font-size: 11px; color: var(--color-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px;">ოფისი</div>
-                <div style="font-family: var(--font-display); font-size: 16px; font-weight: 600; color: var(--color-ink); line-height: 1.4;">თბილისი, ვაჟა-ფშაველას გამზ. 71<br>Business Hub, მე-4 სართული</div>
+                <div data-i18n="contact_page.label_office" style="font-size: 11px; color: var(--color-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px;">ოფისი</div>
+                <div style="font-family: var(--font-display); font-size: 16px; font-weight: 600; color: var(--color-ink); line-height: 1.4;"><span data-i18n="contact_page.office_line1">თბილისი, ვაჟა-ფშაველას გამზ. 71</span><br><span data-i18n="contact_page.office_line2">Business Hub, მე-4 სართული</span></div>
               </div>
             </div>
 
@@ -65,8 +65,8 @@
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
               </div>
               <div>
-                <div style="font-size: 11px; color: var(--color-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px;">სამუშაო საათები</div>
-                <div style="font-family: var(--font-display); font-size: 16px; font-weight: 600; color: var(--color-ink); line-height: 1.4;">ორშ - პარ: 09:00 - 19:00<br>შაბათი: 10:00 - 15:00</div>
+                <div data-i18n="contact_page.label_hours" style="font-size: 11px; color: var(--color-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px;">სამუშაო საათები</div>
+                <div style="font-family: var(--font-display); font-size: 16px; font-weight: 600; color: var(--color-ink); line-height: 1.4;"><span data-i18n="contact_page.hours_line1">ორშ - პარ: 09:00 - 19:00</span><br><span data-i18n="contact_page.hours_line2">შაბათი: 10:00 - 15:00</span></div>
               </div>
             </div>
           </div>
@@ -74,8 +74,8 @@
 
         <!-- Right: Form -->
         <div class="reveal delay-1" style="background: var(--color-gray-50); border-top: 4px solid var(--color-yellow); padding: 48px;">
-          <span class="eyebrow">გაგვიგზავნე შეტყობინება · 03</span>
-          <h2 class="display" style="font-size: 32px; margin-bottom: 32px;">გვიამბე თქვენი <span class="highlight">ამოცანის</span> შესახებ.</h2>
+          <span class="eyebrow" data-i18n="contact_page.form_eyebrow">გაგვიგზავნე შეტყობინება · 03</span>
+          <h2 class="display" style="font-size: 32px; margin-bottom: 32px;"><span data-i18n="contact_page.form_title_pre">გვიამბე თქვენი</span> <span class="highlight" data-i18n="contact_page.form_title_highlight">ამოცანის</span><span data-i18n="contact_page.form_title_post"> შესახებ.</span></h2>
 
           <form id="contact-form" novalidate>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
@@ -149,9 +149,9 @@
   </style>
 
   <div id="site-footer"></div>
-  <script src="assets/js/i18n.js?v=1776641843"></script>
-  <script src="assets/js/partials.js?v=1776641843"></script>
-  <script src="assets/js/main.js?v=1776641843"></script>
-  <script src="assets/js/content-loader.js?v=1776641843"></script>
+  <script src="assets/js/i18n.js?v=1776642967"></script>
+  <script src="assets/js/partials.js?v=1776642967"></script>
+  <script src="assets/js/main.js?v=1776642967"></script>
+  <script src="assets/js/content-loader.js?v=1776642967"></script>
 </body>
 </html>

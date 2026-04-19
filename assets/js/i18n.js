@@ -1,11 +1,14 @@
 /* ==========================================================
-   i18n — Georgian / English translations
+   i18n — KA / EN / RU / HE translations
    Usage: add data-i18n="key.path" to any text element
    ========================================================== */
 
 const translations = {
+
+  // ====================================================================
+  // ქართული (Georgian) — base language
+  // ====================================================================
   ka: {
-    // Navigation
     nav: {
       home: "მთავარი",
       about: "ჩვენ შესახებ",
@@ -14,11 +17,248 @@ const translations = {
       blog: "ბლოგი",
       contact: "კონტაქტი",
       faq: "FAQ",
+      careers: "კარიერა",
+      insights: "Insights",
+      industries: "ინდუსტრიები",
       cta: "მიიღე შეთავაზება",
-      menu: "მენიუ"
+      menu: "მენიუ",
+      search: "ძიება"
     },
 
-    // Services list (used in dropdown + pages)
+    common: {
+      learn_more: "გაიგე მეტი",
+      read_more: "წაიკითხე მეტი",
+      view_all: "ყველას ნახვა",
+      start_free: "დაიწყე უფასოდ",
+      get_consultation: "მიიღე კონსულტაცია",
+      contact_us: "დაგვიკავშირდი",
+      view_pricing: "ფასების ნახვა",
+      our_services: "ჩვენი სერვისები"
+    },
+
+    hero: {
+      tag: "Shape your future · 2026",
+      title_pre: "შენ გააფორმებ",
+      title_highlight: "მომავალს",
+      title_post: "თუ მომავალი გააფორმებს შენ?",
+      subtitle: "გაიცანი რას მიიღებ ერთ-ერთი საქართველოში წამყვანი საბუღალტრო და საგადასახადო ფირმისგან — ბუღალტერიიდან აუდიტამდე, შპს-ის რეგისტრაციიდან ვირტუალური ზონის სტატუსამდე.",
+      cta_primary: "გაიცანი როგორ დაგეხმარებით",
+      cta_secondary: "ჩვენი სერვისები"
+    },
+
+    callout: {
+      text: "შექმენი შენი ბიზნესის ნდობა — ერთ-ერთ საქართველოში წამყვან პროფესიულ ფირმასთან.",
+      cta: "დაიწყე დღესვე"
+    },
+
+    stats: {
+      clients_label: "კლიენტი, რომლებიც გვენდობიან საქართველოში",
+      years_label: "წლის გამოცდილება Big 4-ის დონეზე",
+      saved_label: "დაზოგილი გადასახადი კლიენტებისთვის",
+      satisfaction_label: "კლიენტის კმაყოფილება წლიური შეფასებით"
+    },
+
+    services_home: {
+      eyebrow: "სერვისები · 01",
+      title_pre: "როგორ",
+      title_highlight: "დაგეხმარებით",
+      title_post: "შენი ბიზნესის ზრდაში.",
+      cta: "ყველა სერვისი"
+    },
+
+    industries_home: {
+      eyebrow: "ინდუსტრიები · 02",
+      title_pre: "ვიცნობთ თქვენს",
+      title_highlight: "სექტორს.",
+      subtitle: "ვემსახურებით სხვადასხვა ინდუსტრიის კომპანიებს — სპეციფიკური ექსპერტიზით თითოეული ნიშისთვის."
+    },
+
+    industries_cards: {
+      tech_title: "Technology & IT",
+      tech_desc: "ვირტუალური ზონის სტატუსი, SaaS კომპანიები, AI/Blockchain სტარტაპები.",
+      finance_title: "ფინანსური სერვისები",
+      finance_desc: "ბანკები, სადაზღვევო, საინვესტიციო ფონდები, ფინტექ სტარტაპები.",
+      realestate_title: "უძრავი ქონება",
+      realestate_desc: "დეველოპმენტი, უძრავი ქონების მართვა, მშენებლობა.",
+      retail_title: "საცალო & E-commerce",
+      retail_desc: "ონლაინ მაღაზიები, საცალო ქსელები, FMCG კომპანიები.",
+      logistics_title: "ლოჯისტიკა",
+      logistics_desc: "ტრანსპორტი, დისტრიბუცია, საბაჟო ოპერაციები.",
+      horeca_title: "HoReCa",
+      horeca_desc: "სასტუმროები, რესტორნები, კაფე-ბარები, ტურისტული ოპერატორები.",
+      healthcare_title: "ჯანდაცვა & მედიცინა",
+      healthcare_desc: "კლინიკები, ფარმაცევტული კომპანიები, მედ-ცენტრები.",
+      intl_title: "საერთაშორისო ბიზნესი",
+      intl_desc: "ექსპორტი/იმპორტი, არარეზიდენტი ინვესტორები, ჰოლდინგები."
+    },
+
+    agenda: {
+      eyebrow: "C-Suite Agenda · 03",
+      title_pre: "დღის წესრიგი",
+      title_highlight: "ინდივიდუალურია",
+      subtitle: "სპეციალიზირებული პროგრამები თითოეული მენეჯერული როლისთვის",
+      cfo_title: "CFO Agenda",
+      cfo_desc: "ფინანსური დირექტორების პრიორიტეტები: ლიკვიდობა, ფასების სტრატეგია, ინვესტიციები.",
+      ceo_title: "CEO Agenda",
+      ceo_desc: "აღმასრულებლების ფოკუსი: ბაზრის პოზიცია, ორგანიზაციული გამრჯებელობა.",
+      cio_title: "CIO Agenda",
+      cio_desc: "ტექნოლოგიური ხედვა: ციფრული ტრანსფორმაცია, კიბერ-დაცვა, AI."
+    },
+
+    insights_home: {
+      eyebrow: "Insights · 04",
+      title_pre: "უახლესი",
+      title_highlight: "Insights",
+      title_post: "და ანალიზი"
+    },
+
+    why_home: {
+      eyebrow: "რატომ ჩვენ · 05",
+      title_pre: "სანდოობა",
+      title_highlight: "თაობებით.",
+      subtitle: "ის, რაც ჩვენს კლიენტებს ყველაზე მნიშვნელოვნად მიაჩნიათ",
+      item1: "Big 4-ის გამოცდილება — ქართული ბაზრის ცოდნით",
+      item2: "500+ კლიენტი სხვადასხვა ინდუსტრიიდან",
+      item3: "100% ონლაინ პროცესი — სახლიდან გამოსვლის გარეშე",
+      item4: "პერსონალური ბუღალტერი ყოველ კომპანიაზე",
+      item5: "დროული ანგარიშგება და ჯარიმების ნულოვანი რისკი",
+      cta: "გაიცანი ჩვენი გუნდი"
+    },
+
+    pricing_home: {
+      eyebrow: "ფასები · 06",
+      title_pre: "გამჭვირვალე ფასები,",
+      title_highlight: "ფარული ხარჯების გარეშე.",
+      subtitle: "სამი ძირითადი პაკეტი შენი ბიზნესის ზომის მიხედვით"
+    },
+
+    client_voices: {
+      eyebrow: "Client Voices · 07",
+      title_pre: "რას ამბობენ",
+      title_highlight: "ჩვენი კლიენტები."
+    },
+
+    faq_home: {
+      eyebrow: "ხშირი კითხვები · 08",
+      title_pre: "პასუხები, რომლებიც",
+      title_highlight: "მნიშვნელოვანია."
+    },
+
+    cta_final: {
+      title_pre: "შექმენი შენი",
+      title_highlight: "ფინანსური მომავალი",
+      subtitle: "ჩვენი გუნდი მზადაა დაგეხმაროს ზრდაში — ბუღალტერიიდან სტრატეგიულ კონსულტაციამდე.",
+      cta: "დაიწყე უფასო კონსულტაცია"
+    },
+
+    services_page: {
+      eyebrow: "ჩვენი სერვისები",
+      title_pre: "როგორ",
+      title_highlight: "დაგეხმარებით",
+      title_post: "შენი ბიზნესის ზრდაში.",
+      process_eyebrow: "როგორ ვმუშაობთ · 02",
+      process_title_pre: "დაიწყე",
+      process_title_highlight: "4 მარტივ",
+      process_title_post: "ნაბიჯში.",
+      step1_title: "უფასო კონსულტაცია",
+      step1_desc: "30 წუთიანი საუბარი თქვენი მოთხოვნების გასაგებად — სრულიად უფასოდ.",
+      step2_title: "პერსონალური შეთავაზება",
+      step2_desc: "მორგებული ფასი 24 საათში — ფარული ხარჯების გარეშე.",
+      step3_title: "ციფრული ხელშეკრულება",
+      step3_desc: "ხელმოწერა სახლიდან ამოუსვლელად — სრულიად ციფრულად.",
+      step4_title: "ვიწყებთ მუშაობას",
+      step4_desc: "1-3 დღეში აქტიურდება ონლაინ პორტალი, იწყება თანამშრომლობა.",
+      cta_title_pre: "მზად ხარ",
+      cta_title_highlight: "დავიწყოთ?",
+      cta_subtitle: "აირჩიე სერვისი და დაიწყე უფასო კონსულტაცია დღესვე."
+    },
+
+    pricing_page: {
+      eyebrow: "ფასები · 01",
+      title_pre: "გამჭვირვალე",
+      title_highlight: "ფასები,",
+      title_post: "ფარული ხარჯების გარეშე.",
+      compare_eyebrow: "შედარება · 02",
+      compare_title_pre: "რა შედის",
+      compare_title_highlight: "თითოეულ პაკეტში.",
+      feature_col: "მახასიათებელი",
+      cta_title_pre: "მზად ხარ",
+      cta_title_highlight: "დაიწყო?",
+      cta_subtitle: "აირჩიე პაკეტი და დაიწყე უფასო კონსულტაცია დღესვე."
+    },
+
+    about_page: {
+      eyebrow: "ჩვენ შესახებ · 01",
+      title_pre: "15 წელი",
+      title_highlight: "საქართველოს ბიზნესთან ერთად.",
+      subtitle: "Big 4-ის გამოცდილების გუნდი, რომელმაც 500+ კომპანია მიიყვანა წარმატებამდე.",
+      mission_eyebrow: "ჩვენი მისია · 02",
+      mission_title_pre: "ბუღალტერია არ უნდა იყოს",
+      mission_title_highlight: "ტვირთი.",
+      mission_text: "ვაქციოთ ბუღალტერია და გადასახადები უხილავად ყოველდღიური ბიზნესისთვის. გამჭვირვალე პროცესით, პროფესიონალური გუნდით და თანამედროვე ტექნოლოგიებით ვეხმარებით მეწარმეებს ფოკუსირდნენ მნიშვნელოვანზე — ბიზნესის ზრდაზე.",
+      history_eyebrow: "ჩვენი ისტორია · 03",
+      history_title_pre: "15 წელი",
+      history_title_highlight: "წარმატების",
+      values_eyebrow: "ჩვენი ღირებულებები · 04",
+      values_title_pre: "პრინციპები, რომლითაც",
+      values_title_highlight: "ვცხოვრობთ.",
+      team_eyebrow: "ჩვენი გუნდი · 05",
+      team_title_pre: "ექსპერტები, რომელთაც",
+      team_title_highlight: "ენდობა.",
+      cta_title_pre: "გახდი",
+      cta_title_highlight: "500+ კომპანიის",
+      cta_title_post: "წევრი, ვინც გვენდობა",
+      cta_subtitle: "დაიწყე უფასო კონსულტაცია — 30 წუთში გაიცნობ საუკეთესო ვარიანტს.",
+      cta_btn: "დაიწყე ახლავე"
+    },
+
+    blog_page: {
+      eyebrow: "Insights & Thought Leadership",
+      title_pre: "იდეები, რომელიც",
+      title_highlight: "ქმნის სიმბოლოს.",
+      subtitle: "საგადასახადო ანალიზი, ბიზნესის ტრენდები და ექსპერტების Insights საქართველოს ბიზნეს გარემოზე.",
+      featured_tag: "FEATURED",
+      read_article: "წაიკითხე ანგარიში",
+      categories: "კატეგორიები:",
+      all: "ყველა",
+      more: "მეტი სტატიის ნახვა",
+      newsletter_title: "გამოიწერე Insights Newsletter",
+      newsletter_subtitle: "ყოველ კვირაში ერთხელ — უახლესი ცვლილებები, გზამკვლევები და ანალიზები.",
+      newsletter_placeholder: "შენი ელ.ფოსტა",
+      newsletter_cta: "გამოწერა"
+    },
+
+    contact_page: {
+      eyebrow: "კონტაქტი · 01",
+      title_pre: "დავიწყოთ",
+      title_highlight: "საუბარი.",
+      subtitle: "გვიპასუხეთ კითხვაზე 24 საათში — რომელი კომუნიკაციის ფორმატი უფრო კომფორტულია?",
+      left_eyebrow: "კომუნიკაციის არხები · 02",
+      left_title_pre: "ყველაზე მოსახერხებელი",
+      left_title_highlight: "შეარჩიე.",
+      left_intro: "ჩვენი გუნდი გიპასუხებთ 24 საათში სამუშაო დღეებში.",
+      label_phone: "ტელეფონი",
+      label_email: "ელ.ფოსტა",
+      label_office: "ოფისი",
+      label_hours: "სამუშაო საათები",
+      office_line1: "თბილისი, ვაჟა-ფშაველას გამზ. 71",
+      office_line2: "Business Hub, მე-4 სართული",
+      hours_line1: "ორშ - პარ: 09:00 - 19:00",
+      hours_line2: "შაბათი: 10:00 - 15:00",
+      form_eyebrow: "გაგვიგზავნე შეტყობინება · 03",
+      form_title_pre: "გვიამბე თქვენი",
+      form_title_highlight: "ამოცანის",
+      form_title_post: "შესახებ.",
+      name: "სახელი",
+      email: "ელ.ფოსტა",
+      phone: "ტელეფონი",
+      company: "კომპანია",
+      service: "სასურველი სერვისი",
+      message: "შეტყობინება",
+      select_service: "აირჩიე...",
+      submit: "გაგზავნა"
+    },
+
     services: {
       accounting: { title: "ბუღალტრული აღრიცხვა", desc: "სრული ბუღალტერია თვეში ფიქსირებული ფასით" },
       tax: { title: "საგადასახადო დეკლარაციები", desc: "დღგ, საშემოსავლო, მოგების გადასახადი" },
@@ -31,662 +271,850 @@ const translations = {
       virtualzone: { title: "ვირტუალური ზონა", desc: "IT კომპანიების სტატუსი — 0% მოგება" }
     },
 
-    // Hero
-    hero: {
-      badge: "ნდობა — 500+ კლიენტი საქართველოში",
-      title_1: "საბუღალტრო და საგადასახადო",
-      title_highlight: "გადაწყვეტა",
-      title_2: "თქვენი ბიზნესისთვის",
-      lead: "ვემსახურებით საქართველოში რეგისტრირებულ კომპანიებს, ინდივიდუალურ მეწარმეებს და ფიზიკურ პირებს — რეზიდენტებსა და არარეზიდენტებს.",
-      cta_primary: "დაიწყე უფასო კონსულტაცია",
-      cta_secondary: "ფასების ნახვა",
-      trust: "500+ კმაყოფილი კლიენტი • 4.9 / 5"
-    },
-
-    // Stats
-    stats: {
-      clients: "კლიენტი",
-      years: "წლიანი გამოცდილება",
-      services: "სერვისი",
-      satisfaction: "კლიენტის კმაყოფილება"
-    },
-
-    // Services section
-    services_section: {
-      eyebrow: "ჩვენი სერვისები",
-      title: "ყველაფერი ერთ სივრცეში",
-      subtitle: "ბუღალტერია, გადასახადები, ხელფასი, რეგისტრაცია და კონსულტაცია — პროფესიონალებისგან",
-      cta: "ყველა სერვისი",
-      learn_more: "გაიგე მეტი"
-    },
-
-    // Features / Why choose us
-    why: {
-      eyebrow: "რატომ ჩვენ",
-      title: "გაყიდული ფასი და 100% გამჭვირვალობა",
-      subtitle: "ვმუშაობთ თვიური ფიქსირებული ფასებით და გვერდის ქცევა-გამჭვირვალე, გარანტირებული შედეგებით",
-      items: [
-        { title: "ფიქსირებული ფასი", desc: "თვიური გადასახადი წინასწარ იცით — ფარული საკომისიოების გარეშე" },
-        { title: "პერსონალური ბუღალტერი", desc: "თქვენი კომპანიისთვის გამოყოფილი ექსპერტი — ერთი კონტაქტი ყველაფერისთვის" },
-        { title: "ონლაინ პლატფორმა", desc: "დოკუმენტები, ანგარიშგება და კომუნიკაცია ერთ სივრცეში" },
-        { title: "დროული ანგარიშგება", desc: "ყველა დეკლარაცია დროულად — ჯარიმების რისკის გარეშე" }
-      ]
-    },
-
-    // Process steps
-    process: {
-      eyebrow: "როგორ ვმუშაობთ",
-      title: "4 მარტივი ნაბიჯი",
-      subtitle: "გაერკვიეთ თუ როგორ გავხდებით თქვენი პარტნიორი",
-      steps: [
-        { title: "დაგვიკავშირდით", desc: "შეავსეთ ფორმა ან დაგვირეკეთ უფასო კონსულტაციისთვის" },
-        { title: "ინდივიდუალური შეთავაზება", desc: "გავაანალიზებთ თქვენს მოთხოვნას და ფასს" },
-        { title: "ხელშეკრულება", desc: "ხელმოწერა სახლიდან ან ოფისში — ყველაფერი ციფრულად" },
-        { title: "ვიწყებთ მუშაობას", desc: "მოცულობისა და გუნდის მიხედვით — 1-3 დღეში" }
-      ]
-    },
-
-    // Pricing
     pricing: {
       eyebrow: "ფასები",
       title: "აირჩიე შენზე მორგებული პაკეტი",
       subtitle: "ფიქსირებული თვიური გადასახადი, ფარული საკომისიოების გარეშე",
       monthly: "/ თვეში",
-      popular: "პოპულარული",
+      popular: "POPULAR",
       cta_start: "დაიწყე ახლა",
-      plans: [
-        {
-          name: "სტარტერი",
-          desc: "ახალი ინდმეწარმისთვის და მცირე ბიზნესისთვის",
-          price: "150",
-          currency: "₾",
-          features: [
-            "30-მდე ოპერაცია თვეში",
-            "მცირე ბიზნესის დეკლარაცია",
-            "საბანკო ამონაწერების დამუშავება",
-            "საგადასახადო კონსულტაცია",
-            "ელ.ფოსტით მხარდაჭერა"
-          ]
-        },
-        {
-          name: "ბიზნესი",
-          desc: "შპს-სთვის აქტიური ოპერაციებით",
-          price: "350",
-          currency: "₾",
-          badge: "პოპულარული",
-          features: [
-            "150-მდე ოპერაცია თვეში",
-            "დღგ-ის და მოგების დეკლარაცია",
-            "ხელფასის დარიცხვა (5 თანამშრომლამდე)",
-            "ყოველთვიური ფინანსური ანგარიშგება",
-            "პერსონალური ბუღალტერი",
-            "ტელეფონით და ონლაინ მხარდაჭერა"
-          ]
-        },
-        {
-          name: "კორპორაციული",
-          desc: "დიდი ოპერაციული მოცულობის კომპანიებისთვის",
-          price: "750",
-          currency: "₾",
-          features: [
-            "შეუზღუდავი ოპერაციები",
-            "სრული საგადასახადო მომსახურება",
-            "ხელფასის დარიცხვა (შეუზღუდავი)",
-            "IFRS ანგარიშგება",
-            "თვიური აუდიტის მიმოხილვა",
-            "პრიორიტეტული მხარდაჭერა 24/7",
-            "საფინანსო დირექტორის კონსულტაცია"
-          ]
-        }
-      ]
+      plans: []
     },
+    testimonials: { eyebrow: "Client Voices", title: "რას ამბობენ ჩვენი კლიენტები", items: [] },
+    faq: { eyebrow: "FAQ", title: "ხშირი კითხვები", items: [] },
 
-    // Testimonials
-    testimonials: {
-      eyebrow: "გამოხმაურებები",
-      title: "რას ამბობენ ჩვენი კლიენტები",
-      subtitle: "500-ზე მეტი კომპანია საქართველოს სხვადასხვა სექტორიდან გვენდობა ყოველთვიურ ბუღალტერიას",
-      items: [
-        {
-          quote: "ერთ წელზე მეტია ვთანამშრომლობთ და აბსოლუტურად კმაყოფილი ვარ. ყველა დეკლარაცია დროულად, კომუნიკაცია ძალიან სწრაფი.",
-          author: "ნინო ყიფიანი",
-          role: "Co-Founder, TechStart GE"
-        },
-        {
-          quote: "როგორც არარეზიდენტმა, საერთოდ არ ვიცოდი საიდან დამეწყო. გუნდმა ყველა საკითხი გადაწყვიტა — რეგისტრაციიდან დეკლარაციებამდე.",
-          author: "David Miller",
-          role: "CEO, Remote Ventures"
-        },
-        {
-          quote: "გადავედით უფრო დიდ პაკეტზე, რადგან ბიზნესი გავაფართოვეთ. ფინანსური ანგარიშგება ყოველთვიურად გვაქვს — მართვა გახდა გაცილებით მარტივი.",
-          author: "გიორგი ბერიძე",
-          role: "Founder, Logistics Pro"
-        }
-      ]
-    },
-
-    // FAQ
-    faq: {
-      eyebrow: "კითხვები",
-      title: "ხშირად დასმული კითხვები",
-      subtitle: "ვერ იპოვე პასუხი? დაგვიკავშირდი — პასუხს მოგცემთ 24 საათში",
-      items: [
-        {
-          q: "რამდენად სწრაფად შემიძლია დავიწყო თქვენთან მუშაობა?",
-          a: "ჩვეულებრივ, კონტრაქტის გაფორმებიდან 1-3 სამუშაო დღეში ვიწყებთ მომსახურებას. სისწრაფე დამოკიდებულია ბიზნესის მოცულობაზე და დოკუმენტაციაზე."
-        },
-        {
-          q: "ვმუშაობ არარეზიდენტი, შემიძლია თქვენი მომსახურება?",
-          a: "კი, სპეციალიზირებული პაკეტი გვაქვს არარეზიდენტებისთვის. ვეხმარებით კომპანიის რეგისტრაციაში, საგადასახადო სტატუსის მიღებასა და საბანკო ანგარიშის გახსნაში."
-        },
-        {
-          q: "მცირე ბიზნესის სტატუსი რა სარგებელს იძლევა?",
-          a: "მცირე ბიზნესის სტატუსი იძლევა 1% გადასახადს ბრუნვაზე, წლიური 500,000 ლარის ლიმიტით. გარკვეული აქტივობები შეზღუდულია — დეტალურად გაცნობებთ კონსულტაციაზე."
-        },
-        {
-          q: "შეიცავს თუ არა ფასი ყველა დეკლარაციას?",
-          a: "დიახ, ყველა სტანდარტული პაკეტი მოიცავს ყოველთვიური, კვარტალური და წლიური დეკლარაციების მომზადებასა და ჩაბარებას."
-        },
-        {
-          q: "რა მოხდება თუ არ ვიცი როდის არის დეკლარაციის ჩაბარების დრო?",
-          a: "ეს ჩვენი პასუხისმგებლობაა. თქვენ დროდადრო დაიხსომებთ შეტყობინებებს სასურველი ქმედებების შესახებ, მაგრამ ფორმალური ვადების თვალთვალი ჩვენი გუნდის ხელშია."
-        },
-        {
-          q: "შემიძლია გადავიდე მეორე პაკეტზე?",
-          a: "რა თქმა უნდა — პაკეტს შეგიძლია შეცვალო ნებისმიერ დროს. ცვლილება ძალაში შედის შემდეგი თვის პირველი რიცხვიდან."
-        }
-      ]
-    },
-
-    // CTA section
-    cta: {
-      title: "მზად ხარ, რომ გათავისუფლდე ბუღალტერიის ტვირთისგან?",
-      subtitle: "დარეგისტრირდი უფასო კონსულტაციაზე — 30 წუთში გაიცნობ საუკეთესო ვარიანტს შენი ბიზნესისთვის",
-      primary: "დაიწყე უფასო კონსულტაცია",
-      secondary: "დარეკე ახლავე"
-    },
-
-    // Blog section
-    blog: {
-      eyebrow: "ბლოგი",
-      title: "სიახლეები და სტატიები",
-      subtitle: "საგადასახადო ცვლილებები, ბიზნესის რჩევები და სიახლეები საქართველოს ბიზნეს-გარემოზე",
-      read: "წაიკითხე მეტი"
-    },
-
-    // Footer
     footer: {
       about: "ვემსახურებით საქართველოს ბიზნესს — ბუღალტერია, გადასახადები, აუდიტი და კონსულტაცია. სანდო პარტნიორი, რომელიც გიცავს ფინანსური რისკებისგან.",
-      services: "სერვისები",
-      company: "კომპანია",
-      contact: "კონტაქტი",
       address: "თბილისი, ვაჟა-ფშაველას გამზ. 71",
       hours: "ორშ-პარ: 09:00 - 19:00",
-      copyright: "© 2026 Audit Company. ყველა უფლება დაცულია.",
+      copyright: "© 2026 Guberman Group Geo. ყველა უფლება დაცულია.",
       privacy: "კონფიდენციალურობა",
-      terms: "წესები და პირობები"
+      terms: "წესები და პირობები",
+      services: "სერვისები",
+      industries: "ინდუსტრიები",
+      insights: "Insights",
+      about_col: "ჩვენ შესახებ",
+      ind_tech: "Technology & IT",
+      ind_finance: "ფინანსური სერვისები",
+      ind_realestate: "უძრავი ქონება",
+      ind_retail: "საცალო ვაჭრობა",
+      ind_logistics: "ლოჯისტიკა",
+      ins_tax: "საგადასახადო სიახლეები",
+      ins_research: "კვლევები",
+      ins_reports: "რეპორტები",
+      ins_webinars: "ვებინარები",
+      careers: "Careers",
+      accessibility: "Accessibility"
     },
 
-    // Contact page
-    contact_page: {
-      title: "დაგვიკავშირდით",
-      subtitle: "გვიპასუხეთ კითხვაზე 24 საათში — რომელი კომუნიკაციის ფორმატი უფრო კომფორტულია?",
-      form_title: "გაგვიგზავნე შეტყობინება",
-      name: "სახელი",
-      email: "ელ.ფოსტა",
-      phone: "ტელეფონი",
-      company: "კომპანია (ოფციონალური)",
-      service: "სასურველი სერვისი",
-      message: "შეტყობინება",
-      submit: "გაგზავნა",
-      select_service: "აირჩიე..."
-    },
-
-    // About page
-    about_page: {
-      title: "ჩვენ შესახებ",
-      subtitle: "15 წელზე მეტი გამოცდილების გუნდი, რომელიც საქართველოს ბიზნესს ეხმარება ზრდასა და განვითარებაში",
-      mission_title: "ჩვენი მისია",
-      mission_text: "ვაქციოთ ბუღალტერია და გადასახადები უხილავად ყოველდღიური ბიზნესისთვის. გამჭვირვალე პროცესით, პროფესიონალური გუნდით და თანამედროვე ტექნოლოგიებით ვეხმარებით მეწარმეებს ფოკუსირდნენ მნიშვნელოვანზე — ბიზნესის ზრდაზე.",
-      values_title: "ჩვენი ღირებულებები",
-      team_title: "ვებვერი გუნდი",
-      team_subtitle: "პროფესიონალები, რომელთაც ენდობა საქართველოს წამყვანი ბიზნესი"
+    mega: {
+      services_label: "სერვისები",
+      services_desc: "სრული საბუღალტრო, საგადასახადო და აუდიტის მომსახურება საქართველოში",
+      services_cta: "გაეცანი",
+      industries_label: "ინდუსტრიები",
+      industries_desc: "ვემსახურებით საქართველოს სხვადასხვა სექტორის კომპანიებს — სპეციფიკური ექსპერტიზით თითოეული ნიშისთვის.",
+      industries_cta: "ყველა ინდუსტრია",
+      insights_label: "Insights",
+      insights_desc: "საგადასახადო ანალიზი, ბიზნესის ტრენდები და ექსპერტების Insights საქართველოს ბიზნეს გარემოზე.",
+      insights_cta: "წაიკითხე ყველა",
+      about_label: "ჩვენ შესახებ",
+      about_desc: "15+ წლის გამოცდილების გუნდი. 500+ კმაყოფილი კლიენტი, სერტიფიცირებული ექსპერტები.",
+      about_cta: "გაიცანი გუნდი",
+      careers_label: "კარიერა",
+      careers_desc: "Audit-ში ვეძებთ ადამიანებს, ვინც ცვლილებებს ქმნის — მოდი ჩვენს გუნდში."
     }
   },
 
+  // ====================================================================
+  // English
+  // ====================================================================
   en: {
     nav: {
-      home: "Home",
-      about: "About",
-      services: "Services",
-      pricing: "Pricing",
-      blog: "Blog",
-      contact: "Contact",
-      faq: "FAQ",
-      cta: "Get a Quote",
-      menu: "Menu"
+      home: "Home", about: "About", services: "Services", pricing: "Pricing",
+      blog: "Blog", contact: "Contact", faq: "FAQ", careers: "Careers",
+      insights: "Insights", industries: "Industries", cta: "Get a Quote",
+      menu: "Menu", search: "Search"
     },
-
+    common: {
+      learn_more: "Learn more", read_more: "Read more", view_all: "View all",
+      start_free: "Start free", get_consultation: "Get consultation",
+      contact_us: "Contact us", view_pricing: "View pricing", our_services: "Our services"
+    },
+    hero: {
+      tag: "Shape your future · 2026",
+      title_pre: "Will you shape",
+      title_highlight: "the future,",
+      title_post: "or will the future shape you?",
+      subtitle: "See what you get from one of Georgia's leading accounting and tax firms — from bookkeeping to audits, LLC formation to Virtual Zone status.",
+      cta_primary: "See how we can help",
+      cta_secondary: "Our services"
+    },
+    callout: {
+      text: "Build your business's trust — with one of Georgia's leading professional firms.",
+      cta: "Start today"
+    },
+    stats: {
+      clients_label: "Clients who trust us across Georgia",
+      years_label: "Years of Big 4 level experience",
+      saved_label: "Taxes saved for our clients",
+      satisfaction_label: "Client satisfaction (annual review)"
+    },
+    services_home: {
+      eyebrow: "Services · 01",
+      title_pre: "How we",
+      title_highlight: "help you",
+      title_post: "grow your business.",
+      cta: "All services"
+    },
+    industries_home: {
+      eyebrow: "Industries · 02",
+      title_pre: "We know your",
+      title_highlight: "sector.",
+      subtitle: "We serve companies in a wide range of industries — with specialized expertise for each niche."
+    },
+    industries_cards: {
+      tech_title: "Technology & IT",
+      tech_desc: "Virtual Zone status, SaaS companies, AI/Blockchain startups.",
+      finance_title: "Financial Services",
+      finance_desc: "Banks, insurance, investment funds, fintech startups.",
+      realestate_title: "Real Estate",
+      realestate_desc: "Development, property management, construction.",
+      retail_title: "Retail & E-commerce",
+      retail_desc: "Online stores, retail chains, FMCG companies.",
+      logistics_title: "Logistics",
+      logistics_desc: "Transport, distribution, customs operations.",
+      horeca_title: "HoReCa",
+      horeca_desc: "Hotels, restaurants, cafes, tour operators.",
+      healthcare_title: "Healthcare & Medical",
+      healthcare_desc: "Clinics, pharmaceutical companies, medical centers.",
+      intl_title: "International Business",
+      intl_desc: "Export/import, non-resident investors, holdings."
+    },
+    agenda: {
+      eyebrow: "C-Suite Agenda · 03",
+      title_pre: "The agenda is",
+      title_highlight: "individual.",
+      subtitle: "Specialized programs for each management role",
+      cfo_title: "CFO Agenda",
+      cfo_desc: "Priorities for financial directors: liquidity, pricing strategy, investments.",
+      ceo_title: "CEO Agenda",
+      ceo_desc: "Executive focus: market position, organizational leverage.",
+      cio_title: "CIO Agenda",
+      cio_desc: "Technology vision: digital transformation, cybersecurity, AI."
+    },
+    insights_home: {
+      eyebrow: "Insights · 04",
+      title_pre: "Latest",
+      title_highlight: "Insights",
+      title_post: "and analysis"
+    },
+    why_home: {
+      eyebrow: "Why us · 05",
+      title_pre: "Trusted",
+      title_highlight: "for generations.",
+      subtitle: "What our clients value most",
+      item1: "Big 4 experience — combined with deep knowledge of the Georgian market",
+      item2: "500+ clients across different industries",
+      item3: "100% online process — no need to leave your office",
+      item4: "Dedicated accountant for every company",
+      item5: "On-time filings with zero risk of penalties",
+      cta: "Meet our team"
+    },
+    pricing_home: {
+      eyebrow: "Pricing · 06",
+      title_pre: "Transparent pricing,",
+      title_highlight: "no hidden costs.",
+      subtitle: "Three core packages tailored to your business size"
+    },
+    client_voices: {
+      eyebrow: "Client Voices · 07",
+      title_pre: "What our",
+      title_highlight: "clients say."
+    },
+    faq_home: {
+      eyebrow: "FAQ · 08",
+      title_pre: "The answers that",
+      title_highlight: "matter."
+    },
+    cta_final: {
+      title_pre: "Shape your",
+      title_highlight: "financial future",
+      subtitle: "Our team is ready to help you grow — from bookkeeping to strategic consulting.",
+      cta: "Start free consultation"
+    },
+    services_page: {
+      eyebrow: "Our services",
+      title_pre: "How we",
+      title_highlight: "help you",
+      title_post: "grow your business.",
+      process_eyebrow: "How we work · 02",
+      process_title_pre: "Start in",
+      process_title_highlight: "4 simple",
+      process_title_post: "steps.",
+      step1_title: "Free consultation",
+      step1_desc: "A 30-minute call to understand your needs — completely free.",
+      step2_title: "Custom proposal",
+      step2_desc: "A tailored quote within 24 hours — no hidden fees.",
+      step3_title: "Digital contract",
+      step3_desc: "Sign from home — fully digital.",
+      step4_title: "We start working",
+      step4_desc: "Onboarded in 1-3 days depending on volume and team.",
+      cta_title_pre: "Ready to",
+      cta_title_highlight: "get started?",
+      cta_subtitle: "Pick a service and start a free consultation today."
+    },
+    pricing_page: {
+      eyebrow: "Pricing · 01",
+      title_pre: "Transparent",
+      title_highlight: "pricing,",
+      title_post: "no hidden costs.",
+      compare_eyebrow: "Compare · 02",
+      compare_title_pre: "What's included",
+      compare_title_highlight: "in each plan.",
+      feature_col: "Feature",
+      cta_title_pre: "Ready to",
+      cta_title_highlight: "begin?",
+      cta_subtitle: "Pick a plan and start a free consultation today."
+    },
+    about_page: {
+      eyebrow: "About · 01",
+      title_pre: "15 years",
+      title_highlight: "with Georgian businesses.",
+      subtitle: "A team with Big 4 experience that has helped 500+ companies reach success.",
+      mission_eyebrow: "Our mission · 02",
+      mission_title_pre: "Accounting shouldn't be a",
+      mission_title_highlight: "burden.",
+      mission_text: "Make accounting and taxes invisible for day-to-day business. With transparent processes, a professional team and modern technology we help entrepreneurs focus on what matters — growth.",
+      history_eyebrow: "Our story · 03",
+      history_title_pre: "15 years",
+      history_title_highlight: "of success",
+      values_eyebrow: "Our values · 04",
+      values_title_pre: "The principles we",
+      values_title_highlight: "live by.",
+      team_eyebrow: "Our team · 05",
+      team_title_pre: "Experts",
+      team_title_highlight: "you can trust.",
+      cta_title_pre: "Join",
+      cta_title_highlight: "500+ companies",
+      cta_title_post: "that trust us",
+      cta_subtitle: "Start a free consultation — in 30 minutes you'll know your best option.",
+      cta_btn: "Start now"
+    },
+    blog_page: {
+      eyebrow: "Insights & Thought Leadership",
+      title_pre: "Ideas that",
+      title_highlight: "make an impact.",
+      subtitle: "Tax analysis, business trends and expert insights on the Georgian business environment.",
+      featured_tag: "FEATURED",
+      read_article: "Read article",
+      categories: "Categories:",
+      all: "All",
+      more: "See more articles",
+      newsletter_title: "Subscribe to our Insights Newsletter",
+      newsletter_subtitle: "Once a week — latest changes, guides and analysis.",
+      newsletter_placeholder: "Your email",
+      newsletter_cta: "Subscribe"
+    },
+    contact_page: {
+      eyebrow: "Contact · 01",
+      title_pre: "Let's start",
+      title_highlight: "a conversation.",
+      subtitle: "We'll respond within 24 hours — which communication channel works best for you?",
+      left_eyebrow: "Channels · 02",
+      left_title_pre: "Pick the",
+      left_title_highlight: "most convenient.",
+      left_intro: "Our team replies within 24 hours on business days.",
+      label_phone: "Phone",
+      label_email: "Email",
+      label_office: "Office",
+      label_hours: "Business hours",
+      office_line1: "Tbilisi, 71 Vazha-Pshavela Ave.",
+      office_line2: "Business Hub, 4th floor",
+      hours_line1: "Mon - Fri: 09:00 - 19:00",
+      hours_line2: "Saturday: 10:00 - 15:00",
+      form_eyebrow: "Send us a message · 03",
+      form_title_pre: "Tell us about your",
+      form_title_highlight: "challenge",
+      form_title_post: ".",
+      name: "Full name",
+      email: "Email",
+      phone: "Phone",
+      company: "Company",
+      service: "Service you need",
+      message: "Message",
+      select_service: "Select...",
+      submit: "Send"
+    },
     services: {
       accounting: { title: "Accounting", desc: "Complete monthly bookkeeping at a fixed price" },
       tax: { title: "Tax Returns", desc: "VAT, Income Tax, Corporate Tax filings" },
       payroll: { title: "Payroll & HR", desc: "Employee records and salary processing" },
-      registration: { title: "Company Formation", desc: "LLC, Sole Proprietor, Branch — 1 day" },
+      registration: { title: "Company Formation", desc: "LLC, Sole Proprietor, Branch — in 1 day" },
       audit: { title: "Financial Audit", desc: "Financial statement review and audit" },
       consulting: { title: "Tax Consulting", desc: "Expert advice from certified professionals" },
       nonresident: { title: "Non-residents", desc: "Tax services for foreigners in Georgia" },
       smallbiz: { title: "Small Business Status", desc: "Apply for and maintain tax status" },
       virtualzone: { title: "Virtual Zone", desc: "IT company status — 0% profit tax" }
     },
-
-    hero: {
-      badge: "Trusted by 500+ clients across Georgia",
-      title_1: "Accounting & Tax",
-      title_highlight: "solutions",
-      title_2: "for your business",
-      lead: "We serve companies, sole proprietors and individuals registered in Georgia — both residents and non-residents.",
-      cta_primary: "Start Free Consultation",
-      cta_secondary: "See Pricing",
-      trust: "500+ happy clients • 4.9 / 5"
-    },
-
-    stats: {
-      clients: "Clients",
-      years: "Years Experience",
-      services: "Services",
-      satisfaction: "Client Satisfaction"
-    },
-
-    services_section: {
-      eyebrow: "Our Services",
-      title: "Everything in one place",
-      subtitle: "Accounting, tax, payroll, registration and consulting — delivered by certified professionals",
-      cta: "All Services",
-      learn_more: "Learn more"
-    },
-
-    why: {
-      eyebrow: "Why Us",
-      title: "Fixed pricing and 100% transparency",
-      subtitle: "We work on flat monthly fees with transparent pricing and guaranteed delivery",
-      items: [
-        { title: "Fixed Pricing", desc: "Know your monthly fee upfront — no hidden charges ever" },
-        { title: "Dedicated Accountant", desc: "One expert assigned to your business — single point of contact" },
-        { title: "Online Platform", desc: "Documents, reports, and communication in one place" },
-        { title: "On-time Filing", desc: "All returns filed on time — zero risk of penalties" }
-      ]
-    },
-
-    process: {
-      eyebrow: "How it works",
-      title: "4 simple steps",
-      subtitle: "Discover how we become your trusted financial partner",
-      steps: [
-        { title: "Contact Us", desc: "Fill out the form or call us for a free consultation" },
-        { title: "Custom Proposal", desc: "We analyze your needs and send a tailored quote" },
-        { title: "Sign Contract", desc: "Digital signing from home or in office — all paperless" },
-        { title: "We Start Working", desc: "Onboarded in 1-3 days depending on volume and team" }
-      ]
-    },
-
-    pricing: {
-      eyebrow: "Pricing",
-      title: "Choose a plan that fits you",
-      subtitle: "Flat monthly fees, no hidden charges",
-      monthly: "/ month",
-      popular: "Most Popular",
-      cta_start: "Get Started",
-      plans: [
-        {
-          name: "Starter",
-          desc: "For new sole proprietors and small businesses",
-          price: "150",
-          currency: "GEL",
-          features: [
-            "Up to 30 transactions / month",
-            "Small business tax return",
-            "Bank statement processing",
-            "Tax consultation",
-            "Email support"
-          ]
-        },
-        {
-          name: "Business",
-          desc: "For active LLCs with regular operations",
-          price: "350",
-          currency: "GEL",
-          badge: "Most Popular",
-          features: [
-            "Up to 150 transactions / month",
-            "VAT and Profit Tax returns",
-            "Payroll (up to 5 employees)",
-            "Monthly financial report",
-            "Dedicated accountant",
-            "Phone and online support"
-          ]
-        },
-        {
-          name: "Corporate",
-          desc: "For large operations and enterprises",
-          price: "750",
-          currency: "GEL",
-          features: [
-            "Unlimited transactions",
-            "Full tax compliance service",
-            "Payroll (unlimited)",
-            "IFRS reporting",
-            "Monthly audit review",
-            "Priority support 24/7",
-            "CFO-level consulting"
-          ]
-        }
-      ]
-    },
-
-    testimonials: {
-      eyebrow: "Testimonials",
-      title: "What our clients say",
-      subtitle: "Over 500 companies across different sectors in Georgia trust us with their monthly accounting",
-      items: [
-        {
-          quote: "We've been working together for over a year and I'm absolutely satisfied. All returns filed on time, communication is very fast.",
-          author: "Nino Kipiani",
-          role: "Co-Founder, TechStart GE"
-        },
-        {
-          quote: "As a non-resident, I had no idea where to start. The team handled everything — from company registration to tax filings.",
-          author: "David Miller",
-          role: "CEO, Remote Ventures"
-        },
-        {
-          quote: "We upgraded to a bigger package as we expanded. Monthly financial reports have made management so much simpler.",
-          author: "Giorgi Beridze",
-          role: "Founder, Logistics Pro"
-        }
-      ]
-    },
-
-    faq: {
-      eyebrow: "FAQ",
-      title: "Frequently asked questions",
-      subtitle: "Didn't find your answer? Contact us — we'll reply within 24 hours",
-      items: [
-        {
-          q: "How fast can I start working with you?",
-          a: "Typically we onboard within 1-3 business days of signing. The timeline depends on business volume and documentation readiness."
-        },
-        {
-          q: "I'm a non-resident — can I use your services?",
-          a: "Yes, we have a dedicated package for non-residents. We help with company registration, tax status applications, and bank account opening."
-        },
-        {
-          q: "What benefits does Small Business Status give?",
-          a: "Small Business Status offers a 1% turnover tax, with an annual limit of GEL 500,000. Some activities are restricted — we'll explain details during consultation."
-        },
-        {
-          q: "Does the price include all tax returns?",
-          a: "Yes, every standard package includes preparation and filing of all monthly, quarterly and annual tax returns."
-        },
-        {
-          q: "What if I don't know tax deadlines?",
-          a: "That's our responsibility. You'll get occasional reminders for actions we need from you, but the formal deadline tracking is on our team."
-        },
-        {
-          q: "Can I upgrade or change my plan later?",
-          a: "Absolutely — you can change plans at any time. Changes take effect from the 1st of the following month."
-        }
-      ]
-    },
-
-    cta: {
-      title: "Ready to offload the accounting burden?",
-      subtitle: "Book a free consultation — in 30 minutes you'll know the best option for your business",
-      primary: "Start Free Consultation",
-      secondary: "Call Us Now"
-    },
-
-    blog: {
-      eyebrow: "Blog",
-      title: "News & articles",
-      subtitle: "Tax updates, business tips, and news on Georgia's business environment",
-      read: "Read more"
-    },
-
+    pricing: { eyebrow: "Pricing", title: "Choose the right package", subtitle: "Fixed monthly fee, no hidden charges", monthly: "/ month", popular: "POPULAR", cta_start: "Get started", plans: [] },
+    testimonials: { eyebrow: "Client Voices", title: "What our clients say", items: [] },
+    faq: { eyebrow: "FAQ", title: "Frequently asked questions", items: [] },
     footer: {
-      about: "Serving businesses in Georgia — accounting, tax, audit and consulting. A reliable partner that protects you from financial risks.",
-      services: "Services",
-      company: "Company",
-      contact: "Contact",
-      address: "71 Vazha-Pshavela Ave, Tbilisi",
+      about: "We serve Georgian business — accounting, taxes, audit, consulting. A trusted partner who protects you from financial risks.",
+      address: "Tbilisi, 71 Vazha-Pshavela Ave.",
       hours: "Mon-Fri: 09:00 - 19:00",
-      copyright: "© 2026 Audit Company. All rights reserved.",
-      privacy: "Privacy",
-      terms: "Terms & Conditions"
+      copyright: "© 2026 Guberman Group Geo. All rights reserved.",
+      privacy: "Privacy policy",
+      terms: "Terms & conditions",
+      services: "Services",
+      industries: "Industries",
+      insights: "Insights",
+      about_col: "About",
+      ind_tech: "Technology & IT",
+      ind_finance: "Financial Services",
+      ind_realestate: "Real Estate",
+      ind_retail: "Retail",
+      ind_logistics: "Logistics",
+      ins_tax: "Tax news",
+      ins_research: "Research",
+      ins_reports: "Reports",
+      ins_webinars: "Webinars",
+      careers: "Careers",
+      accessibility: "Accessibility"
     },
-
-    contact_page: {
-      title: "Contact Us",
-      subtitle: "We respond to every inquiry within 24 hours — pick the channel that works best for you",
-      form_title: "Send us a message",
-      name: "Name",
-      email: "Email",
-      phone: "Phone",
-      company: "Company (optional)",
-      service: "Service of interest",
-      message: "Message",
-      submit: "Send",
-      select_service: "Select..."
-    },
-
-    about_page: {
-      title: "About Us",
-      subtitle: "A team with over 15 years of experience helping Georgian businesses grow and thrive",
-      mission_title: "Our Mission",
-      mission_text: "To make accounting and taxes invisible for day-to-day business. With transparent processes, professional people and modern technology, we help entrepreneurs focus on what matters — growth.",
-      values_title: "Our Values",
-      team_title: "Our Team",
-      team_subtitle: "Professionals trusted by leading Georgian businesses"
+    mega: {
+      services_label: "Services",
+      services_desc: "Full accounting, tax and audit services in Georgia",
+      services_cta: "Explore",
+      industries_label: "Industries",
+      industries_desc: "We serve companies across many sectors of the Georgian economy — with specialized expertise for each niche.",
+      industries_cta: "All industries",
+      insights_label: "Insights",
+      insights_desc: "Tax analysis, business trends and expert insights on the Georgian business environment.",
+      insights_cta: "Read all",
+      about_label: "About",
+      about_desc: "A team with 15+ years of experience. 500+ satisfied clients, certified experts.",
+      about_cta: "Meet the team",
+      careers_label: "Careers",
+      careers_desc: "We're looking for people who make change happen — come join our team."
     }
   },
 
-  // ====== RUSSIAN ======
+  // ====================================================================
+  // Русский (Russian)
+  // ====================================================================
   ru: {
     nav: {
-      home: "Главная",
-      about: "О нас",
-      services: "Услуги",
-      pricing: "Цены",
-      blog: "Блог",
-      contact: "Контакты",
-      faq: "FAQ",
-      cta: "Получить предложение",
-      menu: "Меню"
+      home: "Главная", about: "О нас", services: "Услуги", pricing: "Цены",
+      blog: "Блог", contact: "Контакты", faq: "FAQ", careers: "Карьера",
+      insights: "Аналитика", industries: "Индустрии", cta: "Получить предложение",
+      menu: "Меню", search: "Поиск"
     },
-    services: {
-      accounting: { title: "Бухгалтерия", desc: "Полное ежемесячное бухгалтерское сопровождение по фиксированной цене" },
-      tax: { title: "Налоговые декларации", desc: "НДС, подоходный, налог на прибыль и другие отчёты" },
-      payroll: { title: "Зарплата и HR", desc: "Кадровый учёт и расчёт зарплаты" },
-      registration: { title: "Регистрация компании", desc: "ООО, ИП, филиал — за 1 день" },
-      audit: { title: "Финансовый аудит", desc: "Проверка и аудит финансовой отчётности" },
-      consulting: { title: "Налоговые консультации", desc: "Экспертные советы сертифицированных специалистов" },
-      nonresident: { title: "Нерезидентам", desc: "Налоговое обслуживание иностранцев в Грузии" },
-      smallbiz: { title: "Статус малого бизнеса", desc: "Получение и поддержка налогового статуса" },
-      virtualzone: { title: "Виртуальная зона", desc: "Статус IT-компании — 0% налог на прибыль" }
+    common: {
+      learn_more: "Подробнее", read_more: "Читать далее", view_all: "Смотреть все",
+      start_free: "Начать бесплатно", get_consultation: "Получить консультацию",
+      contact_us: "Связаться", view_pricing: "Посмотреть цены", our_services: "Наши услуги"
     },
     hero: {
-      badge: "Нам доверяют 500+ клиентов по всей Грузии",
-      title_1: "Бухгалтерия и налоги",
-      title_highlight: "решения",
-      title_2: "для вашего бизнеса",
-      lead: "Мы обслуживаем компании, индивидуальных предпринимателей и физических лиц, зарегистрированных в Грузии — резидентов и нерезидентов.",
-      cta_primary: "Бесплатная консультация",
-      cta_secondary: "Посмотреть цены",
-      trust: "500+ довольных клиентов • 4.9 / 5"
+      tag: "Shape your future · 2026",
+      title_pre: "Вы формируете",
+      title_highlight: "будущее,",
+      title_post: "или будущее формирует вас?",
+      subtitle: "Узнайте, что вы получите от одной из ведущих бухгалтерских и налоговых фирм Грузии — от бухгалтерии до аудита, от регистрации ООО до статуса Виртуальной Зоны.",
+      cta_primary: "Посмотреть, чем мы полезны",
+      cta_secondary: "Наши услуги"
     },
-    stats: { clients: "Клиентов", years: "Лет опыта", services: "Услуг", satisfaction: "Удовлетворённость клиентов" },
-    services_section: {
+    callout: {
+      text: "Создайте доверие к вашему бизнесу — с одной из ведущих профессиональных фирм Грузии.",
+      cta: "Начать сегодня"
+    },
+    stats: {
+      clients_label: "Клиентов, доверяющих нам в Грузии",
+      years_label: "Лет опыта уровня Big 4",
+      saved_label: "Налогов сэкономлено для клиентов",
+      satisfaction_label: "Удовлетворённость клиентов (ежегодная оценка)"
+    },
+    services_home: {
+      eyebrow: "Услуги · 01", title_pre: "Как мы", title_highlight: "помогаем вам", title_post: "развивать бизнес.", cta: "Все услуги"
+    },
+    industries_home: {
+      eyebrow: "Индустрии · 02",
+      title_pre: "Мы знаем ваш",
+      title_highlight: "сектор.",
+      subtitle: "Мы обслуживаем компании в разных отраслях — со специализированной экспертизой в каждой нише."
+    },
+    industries_cards: {
+      tech_title: "Технологии и IT",
+      tech_desc: "Статус Виртуальной Зоны, SaaS-компании, AI/Blockchain стартапы.",
+      finance_title: "Финансовые услуги",
+      finance_desc: "Банки, страхование, инвестфонды, финтех-стартапы.",
+      realestate_title: "Недвижимость",
+      realestate_desc: "Девелопмент, управление недвижимостью, строительство.",
+      retail_title: "Ритейл и E-commerce",
+      retail_desc: "Онлайн-магазины, розничные сети, FMCG.",
+      logistics_title: "Логистика",
+      logistics_desc: "Транспорт, дистрибуция, таможенные операции.",
+      horeca_title: "HoReCa",
+      horeca_desc: "Отели, рестораны, кафе, туроператоры.",
+      healthcare_title: "Здравоохранение",
+      healthcare_desc: "Клиники, фармкомпании, медцентры.",
+      intl_title: "Международный бизнес",
+      intl_desc: "Экспорт/импорт, инвесторы-нерезиденты, холдинги."
+    },
+    agenda: {
+      eyebrow: "Повестка C-Suite · 03",
+      title_pre: "Повестка",
+      title_highlight: "индивидуальна",
+      subtitle: "Специализированные программы для каждой управленческой роли",
+      cfo_title: "CFO Agenda",
+      cfo_desc: "Приоритеты финансовых директоров: ликвидность, ценовая стратегия, инвестиции.",
+      ceo_title: "CEO Agenda",
+      ceo_desc: "Фокус руководителя: позиция на рынке, организационный рычаг.",
+      cio_title: "CIO Agenda",
+      cio_desc: "Технологическое видение: цифровая трансформация, кибербезопасность, AI."
+    },
+    insights_home: { eyebrow: "Insights · 04", title_pre: "Последние", title_highlight: "материалы", title_post: "и анализ" },
+    why_home: {
+      eyebrow: "Почему мы · 05",
+      title_pre: "Надёжность",
+      title_highlight: "поколениями.",
+      subtitle: "Что больше всего ценят наши клиенты",
+      item1: "Опыт уровня Big 4 — в сочетании со знанием грузинского рынка",
+      item2: "500+ клиентов в разных отраслях",
+      item3: "100% онлайн-процесс — без необходимости выходить из офиса",
+      item4: "Персональный бухгалтер для каждой компании",
+      item5: "Своевременная отчётность — нулевой риск штрафов",
+      cta: "Познакомиться с командой"
+    },
+    pricing_home: {
+      eyebrow: "Цены · 06",
+      title_pre: "Прозрачные цены,",
+      title_highlight: "без скрытых расходов.",
+      subtitle: "Три основных пакета под размер вашего бизнеса"
+    },
+    client_voices: { eyebrow: "Отзывы · 07", title_pre: "Что говорят", title_highlight: "наши клиенты." },
+    faq_home: { eyebrow: "FAQ · 08", title_pre: "Ответы, которые", title_highlight: "важны." },
+    cta_final: {
+      title_pre: "Сформируйте ваше",
+      title_highlight: "финансовое будущее",
+      subtitle: "Наша команда готова помочь вам расти — от бухгалтерии до стратегического консалтинга.",
+      cta: "Бесплатная консультация"
+    },
+    services_page: {
       eyebrow: "Наши услуги",
-      title: "Всё в одном месте",
-      subtitle: "Бухгалтерия, налоги, зарплата, регистрация и консалтинг — от сертифицированных специалистов",
-      cta: "Все услуги",
-      learn_more: "Подробнее"
+      title_pre: "Как мы",
+      title_highlight: "помогаем вам",
+      title_post: "развивать бизнес.",
+      process_eyebrow: "Как мы работаем · 02",
+      process_title_pre: "Начните за",
+      process_title_highlight: "4 простых",
+      process_title_post: "шага.",
+      step1_title: "Бесплатная консультация",
+      step1_desc: "30-минутный разговор для понимания ваших потребностей — абсолютно бесплатно.",
+      step2_title: "Персональное предложение",
+      step2_desc: "Индивидуальная цена за 24 часа — без скрытых платежей.",
+      step3_title: "Цифровой договор",
+      step3_desc: "Подпись из дома — полностью онлайн.",
+      step4_title: "Начинаем работать",
+      step4_desc: "Запуск за 1-3 дня в зависимости от объёма.",
+      cta_title_pre: "Готовы",
+      cta_title_highlight: "начать?",
+      cta_subtitle: "Выберите услугу и начните бесплатную консультацию сегодня."
     },
-    pricing: {
-      eyebrow: "Цены · 04",
-      title_1: "Прозрачные цены.",
-      title_highlight: "Без сюрпризов",
-      title_2: "",
-      subtitle: "Выберите пакет, соответствующий размеру вашего бизнеса. Все тарифы — фиксированный ежемесячный платёж.",
-      monthly: "/ мес",
-      popular: "САМЫЙ ПОПУЛЯРНЫЙ",
-      cta_start: "Начать"
+    pricing_page: {
+      eyebrow: "Цены · 01",
+      title_pre: "Прозрачные",
+      title_highlight: "цены,",
+      title_post: "без скрытых расходов.",
+      compare_eyebrow: "Сравнение · 02",
+      compare_title_pre: "Что входит",
+      compare_title_highlight: "в каждый пакет.",
+      feature_col: "Возможность",
+      cta_title_pre: "Готовы",
+      cta_title_highlight: "начать?",
+      cta_subtitle: "Выберите пакет и начните бесплатную консультацию сегодня."
     },
-    testimonials: { eyebrow: "Отзывы · 05", title_1: "Клиенты", title_highlight: "доверяют нам", title_2: "", items: [] },
-    faq: { eyebrow: "Вопросы · 06", title_1: "Часто задаваемые", title_highlight: "вопросы", title_2: "", items: [] },
-    footer: {
-      about: "Ведущая бухгалтерская, налоговая и аудиторская фирма в Грузии. Обслуживаем 500+ клиентов с 2010 года.",
-      address: "Тбилиси, пр. Важе-Пшавела 71, Business Hub, 4 этаж",
-      copyright: "© 2026 Guberman Group Geo. Все права защищены.",
-      privacy: "Политика конфиденциальности",
-      terms: "Условия использования"
+    about_page: {
+      eyebrow: "О нас · 01",
+      title_pre: "15 лет",
+      title_highlight: "с грузинским бизнесом.",
+      subtitle: "Команда с опытом Big 4, которая привела 500+ компаний к успеху.",
+      mission_eyebrow: "Наша миссия · 02",
+      mission_title_pre: "Бухгалтерия не должна быть",
+      mission_title_highlight: "обузой.",
+      mission_text: "Сделать бухгалтерию и налоги невидимыми для повседневного бизнеса. С прозрачными процессами, профессиональной командой и современными технологиями мы помогаем предпринимателям сосредоточиться на главном — росте.",
+      history_eyebrow: "Наша история · 03",
+      history_title_pre: "15 лет",
+      history_title_highlight: "успеха",
+      values_eyebrow: "Наши ценности · 04",
+      values_title_pre: "Принципы, которыми мы",
+      values_title_highlight: "живём.",
+      team_eyebrow: "Наша команда · 05",
+      team_title_pre: "Эксперты,",
+      team_title_highlight: "которым доверяют.",
+      cta_title_pre: "Станьте частью",
+      cta_title_highlight: "500+ компаний,",
+      cta_title_post: "которые доверяют нам",
+      cta_subtitle: "Начните бесплатную консультацию — за 30 минут узнаете лучший вариант.",
+      cta_btn: "Начать сейчас"
+    },
+    blog_page: {
+      eyebrow: "Insights & Thought Leadership",
+      title_pre: "Идеи, которые",
+      title_highlight: "создают эффект.",
+      subtitle: "Налоговая аналитика, бизнес-тренды и экспертные insights о бизнес-среде Грузии.",
+      featured_tag: "FEATURED",
+      read_article: "Читать статью",
+      categories: "Категории:",
+      all: "Все",
+      more: "Больше статей",
+      newsletter_title: "Подпишитесь на Insights Newsletter",
+      newsletter_subtitle: "Раз в неделю — последние изменения, гайды и аналитика.",
+      newsletter_placeholder: "Ваш email",
+      newsletter_cta: "Подписаться"
     },
     contact_page: {
-      title: "Свяжитесь с нами",
-      subtitle: "Ответим в течение 24 часов. Бесплатная первичная консультация.",
+      eyebrow: "Контакты · 01",
+      title_pre: "Давайте",
+      title_highlight: "поговорим.",
+      subtitle: "Ответим в течение 24 часов — какой формат общения удобнее?",
+      left_eyebrow: "Каналы связи · 02",
+      left_title_pre: "Выберите",
+      left_title_highlight: "удобный.",
+      left_intro: "Наша команда отвечает в течение 24 часов в рабочие дни.",
+      label_phone: "Телефон",
+      label_email: "Эл. почта",
+      label_office: "Офис",
+      label_hours: "Часы работы",
+      office_line1: "Тбилиси, пр. Важа-Пшавела 71",
+      office_line2: "Business Hub, 4 этаж",
+      hours_line1: "Пн - Пт: 09:00 - 19:00",
+      hours_line2: "Суббота: 10:00 - 15:00",
+      form_eyebrow: "Напишите нам · 03",
+      form_title_pre: "Расскажите о вашей",
+      form_title_highlight: "задаче",
+      form_title_post: ".",
       name: "Имя и фамилия",
-      email: "Электронная почта",
+      email: "Эл. почта",
       phone: "Телефон",
       company: "Компания",
       service: "Нужная услуга",
       message: "Сообщение",
-      select_service: "-- Выберите услугу --",
-      submit: "Отправить",
-      info_title: "Контактная информация",
-      hours_label: "Часы работы"
+      select_service: "Выберите...",
+      submit: "Отправить"
     },
-    services_page: {
-      title: "Наши услуги",
-      subtitle: "Профессиональная бухгалтерская и налоговая поддержка, адаптированная к вашему бизнесу"
+    services: {
+      accounting: { title: "Бухгалтерия", desc: "Полное ежемесячное ведение учёта по фиксированной цене" },
+      tax: { title: "Налоговые декларации", desc: "НДС, подоходный, налог на прибыль" },
+      payroll: { title: "Зарплата и HR", desc: "Кадровый учёт и расчёт зарплаты" },
+      registration: { title: "Регистрация компании", desc: "ООО, ИП, филиал — за 1 день" },
+      audit: { title: "Финансовый аудит", desc: "Проверка и аудит отчётности" },
+      consulting: { title: "Налоговые консультации", desc: "Советы сертифицированных экспертов" },
+      nonresident: { title: "Нерезидентам", desc: "Налоговое обслуживание иностранцев" },
+      smallbiz: { title: "Статус малого бизнеса", desc: "Получение и поддержка статуса" },
+      virtualzone: { title: "Виртуальная зона", desc: "Статус IT-компании — 0% налог на прибыль" }
     },
-    pricing_page: {
-      title: "Цены",
-      subtitle: "Прозрачные ежемесячные пакеты — без скрытых комиссий"
+    pricing: { eyebrow: "Цены", title: "Выберите подходящий пакет", subtitle: "Фиксированный ежемесячный платёж, без скрытых комиссий", monthly: "/ мес", popular: "ПОПУЛЯРНЫЙ", cta_start: "Начать", plans: [] },
+    testimonials: { eyebrow: "Отзывы", title: "Что говорят наши клиенты", items: [] },
+    faq: { eyebrow: "FAQ", title: "Часто задаваемые вопросы", items: [] },
+    footer: {
+      about: "Обслуживаем бизнес в Грузии — бухгалтерия, налоги, аудит, консалтинг. Надёжный партнёр, который защищает от финансовых рисков.",
+      address: "Тбилиси, пр. Важа-Пшавела 71",
+      hours: "Пн-Пт: 09:00 - 19:00",
+      copyright: "© 2026 Guberman Group Geo. Все права защищены.",
+      privacy: "Политика конфиденциальности",
+      terms: "Условия использования",
+      services: "Услуги",
+      industries: "Индустрии",
+      insights: "Insights",
+      about_col: "О нас",
+      ind_tech: "Технологии и IT",
+      ind_finance: "Финансы",
+      ind_realestate: "Недвижимость",
+      ind_retail: "Ритейл",
+      ind_logistics: "Логистика",
+      ins_tax: "Налоговые новости",
+      ins_research: "Исследования",
+      ins_reports: "Отчёты",
+      ins_webinars: "Вебинары",
+      careers: "Карьера",
+      accessibility: "Доступность"
     },
-    blog_page: {
-      title: "Блог и статьи",
-      subtitle: "Новости налогового законодательства, руководства и аналитика для бизнеса в Грузии"
-    },
-    about_page: {
-      title: "О нас",
-      subtitle: "Команда с 15+ летним опытом помощи грузинскому бизнесу в развитии и росте",
-      mission_title: "Наша миссия",
-      mission_text: "Сделать бухгалтерию и налоги незаметными для бизнеса. С прозрачными процессами и профессиональной командой мы помогаем предпринимателям сосредоточиться на главном — росте.",
-      values_title: "Наши ценности",
-      team_title: "Наша команда",
-      team_subtitle: "Профессионалы, которым доверяет ведущий бизнес Грузии"
+    mega: {
+      services_label: "Услуги",
+      services_desc: "Полное бухгалтерское, налоговое и аудиторское обслуживание в Грузии",
+      services_cta: "Узнать",
+      industries_label: "Индустрии",
+      industries_desc: "Мы обслуживаем компании из многих секторов грузинской экономики — со специализированной экспертизой в каждой нише.",
+      industries_cta: "Все индустрии",
+      insights_label: "Insights",
+      insights_desc: "Налоговая аналитика, бизнес-тренды и экспертные insights о деловой среде Грузии.",
+      insights_cta: "Читать все",
+      about_label: "О нас",
+      about_desc: "Команда с 15+ летним опытом. 500+ довольных клиентов, сертифицированные эксперты.",
+      about_cta: "Познакомиться с командой",
+      careers_label: "Карьера",
+      careers_desc: "Мы ищем людей, которые меняют мир — присоединяйтесь к нам."
     }
   },
 
-  // ====== HEBREW (Right-to-Left) ======
+  // ====================================================================
+  // עברית (Hebrew) — RTL
+  // ====================================================================
   he: {
     nav: {
-      home: "בית",
-      about: "אודות",
-      services: "שירותים",
-      pricing: "מחירים",
-      blog: "בלוג",
-      contact: "צור קשר",
-      faq: "שאלות נפוצות",
-      cta: "קבל הצעת מחיר",
-      menu: "תפריט"
+      home: "בית", about: "אודות", services: "שירותים", pricing: "מחירים",
+      blog: "בלוג", contact: "צור קשר", faq: "שאלות נפוצות", careers: "קריירה",
+      insights: "תובנות", industries: "תעשיות", cta: "קבל הצעת מחיר",
+      menu: "תפריט", search: "חיפוש"
     },
-    services: {
-      accounting: { title: "הנהלת חשבונות", desc: "ניהול חשבונות חודשי מלא במחיר קבוע" },
-      tax: { title: "דוחות מס", desc: "מע\"מ, מס הכנסה, מס חברות ודוחות נוספים" },
-      payroll: { title: "שכר ומשאבי אנוש", desc: "ניהול עובדים והכנת משכורות" },
-      registration: { title: "רישום חברה", desc: "בע\"מ, עצמאי, סניף — ביום אחד" },
-      audit: { title: "ביקורת פיננסית", desc: "ביקורת וסקירת דוחות פיננסיים" },
-      consulting: { title: "ייעוץ מיסים", desc: "ייעוץ מקצועי ממומחים מוסמכים" },
-      nonresident: { title: "תושבי חוץ", desc: "שירותי מס לזרים בגאורגיה" },
-      smallbiz: { title: "מעמד עסק קטן", desc: "רישום ושימור מעמד מס" },
-      virtualzone: { title: "אזור וירטואלי", desc: "מעמד חברת IT — 0% מס רווחים" }
+    common: {
+      learn_more: "קרא עוד", read_more: "המשך קריאה", view_all: "ראה הכל",
+      start_free: "התחל בחינם", get_consultation: "קבל ייעוץ",
+      contact_us: "צור קשר", view_pricing: "ראה מחירים", our_services: "השירותים שלנו"
     },
     hero: {
-      badge: "500+ לקוחות סומכים עלינו ברחבי גאורגיה",
-      title_1: "הנהלת חשבונות ומיסים",
-      title_highlight: "פתרונות",
-      title_2: "לעסק שלך",
-      lead: "אנו משרתים חברות, עצמאים ויחידים הרשומים בגאורגיה — תושבים ותושבי חוץ כאחד.",
-      cta_primary: "התחל ייעוץ חינם",
-      cta_secondary: "ראה מחירים",
-      trust: "500+ לקוחות מרוצים • 4.9 / 5"
+      tag: "Shape your future · 2026",
+      title_pre: "האם אתה תעצב",
+      title_highlight: "את העתיד,",
+      title_post: "או שהעתיד יעצב אותך?",
+      subtitle: "גלה מה תקבל מאחת מפירמות הנהלת החשבונות והמיסים המובילות בגאורגיה — מהנהלת חשבונות ועד ביקורת, מרישום חברה ועד מעמד אזור וירטואלי.",
+      cta_primary: "ראה כיצד נוכל לעזור",
+      cta_secondary: "השירותים שלנו"
     },
-    stats: { clients: "לקוחות", years: "שנות ניסיון", services: "שירותים", satisfaction: "שביעות רצון" },
-    services_section: {
+    callout: {
+      text: "בנה את האמון של העסק שלך — עם אחת מהפירמות המקצועיות המובילות בגאורגיה.",
+      cta: "התחל היום"
+    },
+    stats: {
+      clients_label: "לקוחות שסומכים עלינו בכל גאורגיה",
+      years_label: "שנות ניסיון ברמת Big 4",
+      saved_label: "מיסים שנחסכו ללקוחות שלנו",
+      satisfaction_label: "שביעות רצון לקוחות (שנתי)"
+    },
+    services_home: { eyebrow: "שירותים · 01", title_pre: "כיצד אנו", title_highlight: "עוזרים לך", title_post: "להצמיח את העסק.", cta: "כל השירותים" },
+    industries_home: {
+      eyebrow: "תעשיות · 02",
+      title_pre: "אנו מכירים את",
+      title_highlight: "המגזר שלך.",
+      subtitle: "אנו משרתים חברות במגוון תעשיות — עם מומחיות ייעודית לכל נישה."
+    },
+    industries_cards: {
+      tech_title: "טכנולוגיה ו-IT",
+      tech_desc: "מעמד אזור וירטואלי, חברות SaaS, סטארטאפים AI/בלוקצ'יין.",
+      finance_title: "שירותים פיננסיים",
+      finance_desc: "בנקים, ביטוח, קרנות השקעה, סטארטאפי פינטק.",
+      realestate_title: "נדל\"ן",
+      realestate_desc: "ייזום, ניהול נכסים, בנייה.",
+      retail_title: "קמעונאות ו-E-commerce",
+      retail_desc: "חנויות מקוונות, רשתות קמעונאיות, חברות FMCG.",
+      logistics_title: "לוגיסטיקה",
+      logistics_desc: "תחבורה, הפצה, פעולות מכס.",
+      horeca_title: "HoReCa",
+      horeca_desc: "מלונות, מסעדות, בתי קפה, מפעילי תיירות.",
+      healthcare_title: "בריאות ורפואה",
+      healthcare_desc: "מרפאות, חברות פארמה, מרכזים רפואיים.",
+      intl_title: "עסקים בינלאומיים",
+      intl_desc: "יצוא/יבוא, משקיעים תושבי חוץ, אחזקות."
+    },
+    agenda: {
+      eyebrow: "אג'נדת C-Suite · 03",
+      title_pre: "האג'נדה",
+      title_highlight: "אינדיבידואלית",
+      subtitle: "תוכניות מיוחדות לכל תפקיד ניהולי",
+      cfo_title: "CFO Agenda",
+      cfo_desc: "עדיפויות של מנהלים פיננסיים: נזילות, אסטרטגיית מחירים, השקעות.",
+      ceo_title: "CEO Agenda",
+      ceo_desc: "פוקוס המנכ\"ל: מיקום בשוק, מינוף ארגוני.",
+      cio_title: "CIO Agenda",
+      cio_desc: "חזון טכנולוגי: טרנספורמציה דיגיטלית, אבטחת סייבר, AI."
+    },
+    insights_home: { eyebrow: "תובנות · 04", title_pre: "תובנות", title_highlight: "ואנליזה", title_post: "עדכניות" },
+    why_home: {
+      eyebrow: "למה אנחנו · 05",
+      title_pre: "אמינות",
+      title_highlight: "לאורך דורות.",
+      subtitle: "מה שהלקוחות שלנו מעריכים ביותר",
+      item1: "ניסיון ברמת Big 4 — בשילוב עם ידע עמוק בשוק הגאורגי",
+      item2: "500+ לקוחות בתעשיות שונות",
+      item3: "תהליך מקוון ב-100% — ללא צורך לצאת מהמשרד",
+      item4: "רואה חשבון אישי לכל חברה",
+      item5: "דיווחים בזמן — אפס סיכון לקנסות",
+      cta: "הכר את הצוות"
+    },
+    pricing_home: {
+      eyebrow: "מחירים · 06",
+      title_pre: "מחירים שקופים,",
+      title_highlight: "ללא עלויות נסתרות.",
+      subtitle: "שלוש חבילות בסיסיות בהתאמה לגודל העסק שלך"
+    },
+    client_voices: { eyebrow: "קולות לקוחות · 07", title_pre: "מה אומרים", title_highlight: "הלקוחות שלנו." },
+    faq_home: { eyebrow: "שאלות נפוצות · 08", title_pre: "התשובות", title_highlight: "שחשובות." },
+    cta_final: {
+      title_pre: "עצב את",
+      title_highlight: "העתיד הפיננסי שלך",
+      subtitle: "הצוות שלנו מוכן לעזור לך לצמוח — מהנהלת חשבונות ועד ייעוץ אסטרטגי.",
+      cta: "התחל ייעוץ חינם"
+    },
+    services_page: {
       eyebrow: "השירותים שלנו",
-      title: "הכל במקום אחד",
-      subtitle: "הנהלת חשבונות, מיסים, שכר, רישום וייעוץ — על ידי אנשי מקצוע מוסמכים",
-      cta: "כל השירותים",
-      learn_more: "קרא עוד"
+      title_pre: "כיצד אנו",
+      title_highlight: "עוזרים לך",
+      title_post: "להצמיח את העסק.",
+      process_eyebrow: "איך אנחנו עובדים · 02",
+      process_title_pre: "התחל ב-",
+      process_title_highlight: "4 שלבים",
+      process_title_post: "פשוטים.",
+      step1_title: "ייעוץ חינם",
+      step1_desc: "שיחה של 30 דקות להבנת הצרכים שלך — חינם לחלוטין.",
+      step2_title: "הצעה אישית",
+      step2_desc: "מחיר מותאם תוך 24 שעות — ללא עמלות נסתרות.",
+      step3_title: "חוזה דיגיטלי",
+      step3_desc: "חתום מהבית — דיגיטלי לגמרי.",
+      step4_title: "מתחילים לעבוד",
+      step4_desc: "הפעלה תוך 1-3 ימים בהתאם לנפח.",
+      cta_title_pre: "מוכן",
+      cta_title_highlight: "להתחיל?",
+      cta_subtitle: "בחר שירות והתחל ייעוץ חינם היום."
     },
-    pricing: {
-      eyebrow: "מחירים · 04",
-      title_1: "מחירים שקופים.",
-      title_highlight: "ללא הפתעות",
-      title_2: "",
-      subtitle: "בחר חבילה המתאימה לגודל העסק שלך. כל המחירים הם תשלום חודשי קבוע.",
-      monthly: "/ חודש",
-      popular: "הפופולרי ביותר",
-      cta_start: "התחל"
+    pricing_page: {
+      eyebrow: "מחירים · 01",
+      title_pre: "מחירים",
+      title_highlight: "שקופים,",
+      title_post: "ללא עלויות נסתרות.",
+      compare_eyebrow: "השוואה · 02",
+      compare_title_pre: "מה כלול",
+      compare_title_highlight: "בכל חבילה.",
+      feature_col: "מאפיין",
+      cta_title_pre: "מוכן",
+      cta_title_highlight: "להתחיל?",
+      cta_subtitle: "בחר חבילה והתחל ייעוץ חינם היום."
     },
-    testimonials: { eyebrow: "המלצות · 05", title_1: "לקוחות", title_highlight: "סומכים עלינו", title_2: "", items: [] },
-    faq: { eyebrow: "שאלות · 06", title_1: "שאלות", title_highlight: "נפוצות", title_2: "", items: [] },
-    footer: {
-      about: "פירמת הנהלת חשבונות, מיסים וביקורת מובילה בגאורגיה. משרתת 500+ לקוחות מאז 2010.",
-      address: "טביליסי, שדרות ואז'ה-פשבלה 71, Business Hub, קומה 4",
-      copyright: "© 2026 Guberman Group Geo. כל הזכויות שמורות.",
-      privacy: "מדיניות פרטיות",
-      terms: "תנאי שימוש"
+    about_page: {
+      eyebrow: "אודות · 01",
+      title_pre: "15 שנה",
+      title_highlight: "עם עסקים בגאורגיה.",
+      subtitle: "צוות עם ניסיון של Big 4 שעזר ל-500+ חברות להצליח.",
+      mission_eyebrow: "המשימה שלנו · 02",
+      mission_title_pre: "הנהלת חשבונות לא צריכה להיות",
+      mission_title_highlight: "עול.",
+      mission_text: "להפוך הנהלת חשבונות ומיסים לבלתי נראים עבור העסק היומיומי. עם תהליכים שקופים, צוות מקצועי וטכנולוגיה מודרנית, אנו עוזרים ליזמים להתמקד בחשוב — צמיחה.",
+      history_eyebrow: "הסיפור שלנו · 03",
+      history_title_pre: "15 שנות",
+      history_title_highlight: "הצלחה",
+      values_eyebrow: "הערכים שלנו · 04",
+      values_title_pre: "העקרונות שלפיהם אנו",
+      values_title_highlight: "חיים.",
+      team_eyebrow: "הצוות שלנו · 05",
+      team_title_pre: "מומחים",
+      team_title_highlight: "שאפשר לסמוך עליהם.",
+      cta_title_pre: "הצטרף ל-",
+      cta_title_highlight: "500+ חברות",
+      cta_title_post: "שסומכות עלינו",
+      cta_subtitle: "התחל ייעוץ חינם — תוך 30 דקות תדע את האפשרות הטובה ביותר.",
+      cta_btn: "התחל עכשיו"
+    },
+    blog_page: {
+      eyebrow: "Insights & Thought Leadership",
+      title_pre: "רעיונות",
+      title_highlight: "שיוצרים השפעה.",
+      subtitle: "אנליזה מיסויית, מגמות עסקיות ותובנות מומחים על סביבת העסקים בגאורגיה.",
+      featured_tag: "FEATURED",
+      read_article: "קרא מאמר",
+      categories: "קטגוריות:",
+      all: "הכל",
+      more: "עוד מאמרים",
+      newsletter_title: "הירשם ל-Insights Newsletter",
+      newsletter_subtitle: "פעם בשבוע — העדכונים האחרונים, מדריכים וניתוחים.",
+      newsletter_placeholder: "הדוא\"ל שלך",
+      newsletter_cta: "הירשם"
     },
     contact_page: {
-      title: "צור קשר",
-      subtitle: "נחזור אליך תוך 24 שעות. ייעוץ ראשוני חינם.",
+      eyebrow: "צור קשר · 01",
+      title_pre: "בוא",
+      title_highlight: "נדבר.",
+      subtitle: "נחזור אליך תוך 24 שעות — איזה אמצעי תקשורת נוח לך יותר?",
+      left_eyebrow: "ערוצי תקשורת · 02",
+      left_title_pre: "בחר את",
+      left_title_highlight: "הנוח ביותר.",
+      left_intro: "הצוות שלנו עונה תוך 24 שעות בימי עבודה.",
+      label_phone: "טלפון",
+      label_email: "דוא\"ל",
+      label_office: "משרד",
+      label_hours: "שעות עבודה",
+      office_line1: "טביליסי, שד' ואז'ה-פשבלה 71",
+      office_line2: "Business Hub, קומה 4",
+      hours_line1: "ב' - ו': 09:00 - 19:00",
+      hours_line2: "שבת: 10:00 - 15:00",
+      form_eyebrow: "שלח לנו הודעה · 03",
+      form_title_pre: "ספר לנו על",
+      form_title_highlight: "האתגר שלך",
+      form_title_post: ".",
       name: "שם מלא",
       email: "דוא\"ל",
       phone: "טלפון",
       company: "חברה",
-      service: "השירות הרצוי",
+      service: "השירות הנדרש",
       message: "הודעה",
-      select_service: "-- בחר שירות --",
-      submit: "שלח",
-      info_title: "פרטי יצירת קשר",
-      hours_label: "שעות עבודה"
+      select_service: "בחר...",
+      submit: "שלח"
     },
-    services_page: {
-      title: "השירותים שלנו",
-      subtitle: "תמיכה מקצועית בהנהלת חשבונות ומיסים, מותאמת לעסק שלך"
+    services: {
+      accounting: { title: "הנהלת חשבונות", desc: "ניהול חשבונות חודשי מלא במחיר קבוע" },
+      tax: { title: "דוחות מס", desc: "מע\"מ, מס הכנסה, מס חברות" },
+      payroll: { title: "שכר ומשאבי אנוש", desc: "ניהול עובדים והכנת משכורות" },
+      registration: { title: "רישום חברה", desc: "בע\"מ, עצמאי, סניף — ביום אחד" },
+      audit: { title: "ביקורת פיננסית", desc: "ביקורת וסקירת דוחות" },
+      consulting: { title: "ייעוץ מיסים", desc: "ייעוץ מומחים מוסמכים" },
+      nonresident: { title: "תושבי חוץ", desc: "שירותי מס לזרים" },
+      smallbiz: { title: "מעמד עסק קטן", desc: "רישום ושימור מעמד" },
+      virtualzone: { title: "אזור וירטואלי", desc: "מעמד חברת IT — 0% מס רווחים" }
     },
-    pricing_page: {
-      title: "מחירים",
-      subtitle: "חבילות חודשיות שקופות — ללא עמלות נסתרות"
+    pricing: { eyebrow: "מחירים", title: "בחר חבילה מתאימה", subtitle: "תשלום חודשי קבוע, ללא עמלות נסתרות", monthly: "/ חודש", popular: "הפופולרי ביותר", cta_start: "התחל", plans: [] },
+    testimonials: { eyebrow: "קולות לקוחות", title: "מה אומרים הלקוחות שלנו", items: [] },
+    faq: { eyebrow: "שאלות נפוצות", title: "שאלות נפוצות", items: [] },
+    footer: {
+      about: "משרתים את העסקים בגאורגיה — הנהלת חשבונות, מיסים, ביקורת, ייעוץ. שותף אמין שמגן מפני סיכונים פיננסיים.",
+      address: "טביליסי, שד' ואז'ה-פשבלה 71",
+      hours: "ב'-ו': 09:00 - 19:00",
+      copyright: "© 2026 Guberman Group Geo. כל הזכויות שמורות.",
+      privacy: "מדיניות פרטיות",
+      terms: "תנאי שימוש",
+      services: "שירותים",
+      industries: "תעשיות",
+      insights: "Insights",
+      about_col: "אודות",
+      ind_tech: "טכנולוגיה ו-IT",
+      ind_finance: "שירותים פיננסיים",
+      ind_realestate: "נדל\"ן",
+      ind_retail: "קמעונאות",
+      ind_logistics: "לוגיסטיקה",
+      ins_tax: "חדשות מיסים",
+      ins_research: "מחקרים",
+      ins_reports: "דוחות",
+      ins_webinars: "וובינרים",
+      careers: "קריירה",
+      accessibility: "נגישות"
     },
-    blog_page: {
-      title: "בלוג ומאמרים",
-      subtitle: "חדשות חקיקת מיסים, מדריכים וניתוחים עבור עסקים בגאורגיה"
-    },
-    about_page: {
-      title: "אודותינו",
-      subtitle: "צוות עם ניסיון של 15+ שנה בסיוע לעסקים גאורגיים לצמוח ולשגשג",
-      mission_title: "המשימה שלנו",
-      mission_text: "להפוך את הנהלת החשבונות והמיסים לבלתי נראים עבור העסק היומיומי. עם תהליכים שקופים וצוות מקצועי, אנו עוזרים ליזמים להתמקד במה שחשוב — צמיחה.",
-      values_title: "הערכים שלנו",
-      team_title: "הצוות שלנו",
-      team_subtitle: "אנשי מקצוע שהעסקים המובילים בגאורגיה סומכים עליהם"
+    mega: {
+      services_label: "שירותים",
+      services_desc: "שירותי הנהלת חשבונות, מיסים וביקורת מלאים בגאורגיה",
+      services_cta: "גלה",
+      industries_label: "תעשיות",
+      industries_desc: "אנו משרתים חברות ממגזרים רבים של הכלכלה הגאורגית — עם מומחיות ייעודית לכל נישה.",
+      industries_cta: "כל התעשיות",
+      insights_label: "Insights",
+      insights_desc: "אנליזה מיסויית, מגמות עסקיות ותובנות מומחים על סביבת העסקים בגאורגיה.",
+      insights_cta: "קרא הכל",
+      about_label: "אודות",
+      about_desc: "צוות עם ניסיון של 15+ שנה. 500+ לקוחות מרוצים, מומחים מוסמכים.",
+      about_cta: "הכר את הצוות",
+      careers_label: "קריירה",
+      careers_desc: "אנו מחפשים אנשים שיוצרים שינוי — בואו להצטרף לצוות שלנו."
     }
   }
 };
 
-// Apply translation
 // ========================================================
 // Language metadata
 // ========================================================
@@ -758,7 +1186,6 @@ function applyTranslations(lang) {
     btn.classList.toggle("active", btn.getAttribute("data-locale-option") === lang);
   });
 
-  // Let page scripts react (e.g. re-render cards in the new language)
   // Only fire when lang actually changed — prevents infinite-reload loops.
   if (!isSameLang && __currentLang !== null) {
     document.dispatchEvent(new CustomEvent("lang-changed", { detail: { lang, previous: __currentLang } }));
@@ -788,8 +1215,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // i18n content-item resolver — returns a merged view of an item with language overrides applied.
-// Items use pattern: { title: "ka-text", i18n: { en: { title: "english" }, ... } }
-// resolveItemI18n(item, 'en') returns { ...item, title: 'english', i18n: {...} } so other code works unchanged.
 function resolveItemI18n(item, lang) {
   if (!item || typeof item !== 'object') return item;
   if (!lang || lang === 'ka' || !item.i18n || !item.i18n[lang]) return item;
