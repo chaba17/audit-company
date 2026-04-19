@@ -156,7 +156,8 @@
       "Bash(grep -n \"content\\\\\\\\.services\\\\|content\\\\\\\\.hero\\\\|content\\\\\\\\.stats\" \"D:\\\\Ai_Agents\\\\Audit website\\\\assets\\\\js\\\\content-loader.js\")",
       "Bash(curl -s \"https://gubermangeo.com/api/content?t=$\\(date +%s\\)\")",
       "Bash(node -e \"let d='';process.stdin.on\\('data',c=>d+=c\\);process.stdin.on\\('end',\\(\\)=>{const c=JSON.parse\\(d\\);console.log\\('services:',c.services?.length\\);console.log\\('seo pages:',Object.keys\\(c.seo?.pages||{}\\).join\\(','\\)\\);console.log\\('email:',c.site?.email\\);}\\);\")",
-      "Bash(curl -s \"https://gubermangeo.com/assets/js/content-loader.js\")"
+      "Bash(curl -s \"https://gubermangeo.com/assets/js/content-loader.js\")",
+      "Bash(curl -s \"https://gubermangeo.com/\")"
     ]
   }
 }

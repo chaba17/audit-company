@@ -297,11 +297,19 @@ function renderHeader() {
               ${ICONS["mail"]}
               <span data-i18n="nav.contact">კონტაქტი</span>
             </a>
-            <button class="nav-action-item nav-locale" type="button">
-              ${ICONS["globe-sm"]}
-              <span class="nav-locale-text">Georgia <strong>ქართული</strong></span>
-              ${ICONS["chevron-down"]}
-            </button>
+            <div class="nav-locale-wrap" style="position: relative;">
+              <button class="nav-action-item nav-locale" type="button" aria-haspopup="true" aria-expanded="false">
+                ${ICONS["globe-sm"]}
+                <span class="nav-locale-text"><strong data-current-lang-label>ქართული</strong></span>
+                ${ICONS["chevron-down"]}
+              </button>
+              <div class="nav-locale-dropdown" role="menu">
+                <button type="button" data-locale-option="ka" role="menuitem">🇬🇪 &nbsp;ქართული</button>
+                <button type="button" data-locale-option="en" role="menuitem">🇬🇧 &nbsp;English</button>
+                <button type="button" data-locale-option="ru" role="menuitem">🇷🇺 &nbsp;Русский</button>
+                <button type="button" data-locale-option="he" role="menuitem">🇮🇱 &nbsp;עברית</button>
+              </div>
+            </div>
             <button class="nav-toggle" type="button" aria-label="Menu" aria-expanded="false">
               <span class="nav-toggle-icon-open">${ICONS["menu"]}</span>
               <span class="nav-toggle-icon-close">${ICONS["close"]}</span>

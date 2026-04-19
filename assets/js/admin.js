@@ -1260,21 +1260,32 @@
     const isEdit = index !== null;
     const s = isEdit ? deepClone(state.content.services[index]) : {
       id: 'service-' + Date.now(),
-      title: '', subtitle: '', shortDesc: '', fullDesc: '', icon: 'book-open', image: '', features: [], faq: []
+      title: '', subtitle: '', shortDesc: '', fullDesc: '', icon: 'book-open', image: '', features: [], faq: [],
+      i18n: {}
     };
+    s.i18n = s.i18n || {};
     // Normalize FAQ items (accept {q,a} or {question,answer})
     s.faq = (s.faq || []).map(f => ({ q: f.q || f.question || '', a: f.a || f.answer || '' }));
     const ICONS = ['book-open', 'receipt', 'users', 'building', 'shield-check', 'message-circle', 'globe', 'briefcase', 'cpu'];
+    const LANGS = ['ka', 'en', 'ru', 'he'];
+    const LANG_LABELS = { ka: '🇬🇪 ქართული', en: '🇬🇧 English', ru: '🇷🇺 Русский', he: '🇮🇱 עברית' };
 
     openModal(isEdit ? 'სერვისის რედაქტირება' : 'ახალი სერვისი', `
+      <!-- Language tabs -->
+      <div class="lang-tabs" style="display: flex; gap: 4px; margin-bottom: 16px; border-bottom: 1px solid var(--gray-200); padding: 0;">
+        ${LANGS.map(l => `
+          <button type="button" class="lang-tab ${l === 'ka' ? 'active' : ''}" data-lang-tab="${l}" style="padding: 10px 14px; background: ${l === 'ka' ? 'var(--gray-100)' : 'transparent'}; border: none; border-bottom: 3px solid ${l === 'ka' ? 'var(--yellow)' : 'transparent'}; font-weight: 600; cursor: pointer; font-family: inherit; font-size: 13px; color: ${l === 'ka' ? 'var(--ink)' : 'var(--gray-500)'}; margin-bottom: -1px;">${LANG_LABELS[l]}</button>
+        `).join('')}
+      </div>
+
       <div class="form-grid">
         <div class="form-group">
-          <label>სათაური <span class="required">*</span></label>
+          <label>სათაური <span class="required">*</span> <span class="lang-hint" style="color: var(--gray-500); font-weight: 400; font-size: 12px;">(<span class="current-lang-label">KA</span>)</span></label>
           <input type="text" id="svc-title" value="${escapeHtml(s.title)}" required />
         </div>
         <div class="form-group">
-          <label>ID (URL slug)</label>
-          <input type="text" id="svc-id" value="${escapeHtml(s.id)}" />
+          <label>ID (URL slug) — <span style="color: var(--gray-500); font-weight: 400;">ყველა ენისთვის საერთოა</span></label>
+          <input type="text" id="svc-id" value="${escapeHtml(s.id)}" data-lang-neutral />
           <small class="hint">გამოიყენება URL-ში, მაგ. services/accounting.html. ♻ სასურველია მხოლოდ ლათინური ასოები და ტირეები (a-z, 0-9, -).</small>
         </div>
         <div class="form-grid cols-2">
@@ -1291,17 +1302,17 @@
           </div>
         </div>
         <div class="form-group">
-          <label>მოკლე აღწერა (ბარათებისთვის)</label>
+          <label>მოკლე აღწერა (ბარათებისთვის) <span class="lang-hint" style="color: var(--gray-500); font-weight: 400; font-size: 12px;">(<span class="current-lang-label">KA</span>)</span></label>
           <input type="text" id="svc-short" value="${escapeHtml(s.shortDesc || '')}" />
           <small class="hint">ჩანს სერვისების ბადეში ყოველი ბარათის ქვეშ</small>
         </div>
         <div class="form-group">
-          <label>ქვესათაური (შიდა გვერდისთვის)</label>
+          <label>ქვესათაური (შიდა გვერდისთვის) <span class="lang-hint" style="color: var(--gray-500); font-weight: 400; font-size: 12px;">(<span class="current-lang-label">KA</span>)</span></label>
           <input type="text" id="svc-subtitle" value="${escapeHtml(s.subtitle || '')}" />
           <small class="hint">ერთ წინადადებიანი აღწერა სერვისის შიდა გვერდის ჰეროში</small>
         </div>
         <div class="form-group">
-          <label>სრული აღწერა (შიდა გვერდის ინტრო ტექსტი)</label>
+          <label>სრული აღწერა (შიდა გვერდის ინტრო ტექსტი) <span class="lang-hint" style="color: var(--gray-500); font-weight: 400; font-size: 12px;">(<span class="current-lang-label">KA</span>)</span></label>
           <textarea id="svc-full" rows="4">${escapeHtml(s.fullDesc || '')}</textarea>
         </div>
         <div class="form-group">
@@ -1410,33 +1421,131 @@
       let slugManuallyEdited = false;
       $('#svc-id')?.addEventListener('input', () => { slugManuallyEdited = true; });
       $('#svc-title')?.addEventListener('input', () => {
-        if (!slugManuallyEdited) {
+        if (!slugManuallyEdited && currentLang === 'ka') {
           const suggested = slugify($('#svc-title').value) || s.id;
           $('#svc-id').value = suggested;
         }
       });
     }
 
+    // ===== LANGUAGE TAB SWITCHING =====
+    // Fields that are per-language:
+    const LANG_FIELDS = {
+      title: '#svc-title',
+      subtitle: '#svc-subtitle',
+      shortDesc: '#svc-short',
+      fullDesc: '#svc-full'
+    };
+    // features + faq are also per-language (arrays)
+    let currentLang = 'ka';
+
+    const readCurrentLangToDraft = () => {
+      // Collect current form values into draft for the currentLang
+      const snapshot = {
+        title: $('#svc-title').value,
+        subtitle: $('#svc-subtitle').value,
+        shortDesc: $('#svc-short').value,
+        fullDesc: $('#svc-full').value,
+        features: $$('#svc-features .feature-row input').map(i => i.value).filter(Boolean),
+        faq: $$('#svc-faq-editor .faq-row').map(row => ({
+          q: row.querySelector('.svc-faq-q')?.value.trim() || '',
+          a: row.querySelector('.svc-faq-a')?.value.trim() || ''
+        })).filter(f => f.q || f.a)
+      };
+      if (currentLang === 'ka') {
+        Object.assign(s, snapshot);
+      } else {
+        s.i18n[currentLang] = snapshot;
+      }
+    };
+
+    const loadLangToForm = (lang) => {
+      const source = lang === 'ka' ? s : (s.i18n[lang] || {});
+      $('#svc-title').value = source.title || '';
+      $('#svc-subtitle').value = source.subtitle || '';
+      $('#svc-short').value = source.shortDesc || '';
+      $('#svc-full').value = source.fullDesc || '';
+      // features
+      const featuresHtml = (source.features || []).map((f, i) => `
+        <div class="feature-row" data-i="${i}">
+          <span class="feature-handle">≡</span>
+          <input type="text" value="${escapeHtml(f)}" />
+          <button class="icon-btn danger" data-remove-feature="${i}" type="button"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/></svg></button>
+        </div>
+      `).join('');
+      $('#svc-features').innerHTML = featuresHtml;
+      bindFeatureRemoves();
+      // faq
+      const faqHtml = (source.faq || []).map((f, i) => `
+        <div class="faq-row" data-i="${i}" style="border: 1px solid var(--gray-200); padding: 12px; margin-bottom: 8px; background: var(--gray-50);">
+          <input type="text" placeholder="კითხვა" class="svc-faq-q" value="${escapeHtml(f.q || '')}" style="margin-bottom: 6px;" />
+          <textarea rows="2" placeholder="პასუხი" class="svc-faq-a">${escapeHtml(f.a || '')}</textarea>
+          <div style="display: flex; justify-content: flex-end; margin-top: 6px;">
+            <button class="icon-btn danger" data-remove-faq="${i}" type="button"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/></svg></button>
+          </div>
+        </div>
+      `).join('');
+      $('#svc-faq-editor').innerHTML = faqHtml;
+      bindFaqRemoves();
+
+      // Update visual hint for per-language fields
+      document.querySelectorAll('.current-lang-label').forEach(el => {
+        el.textContent = lang.toUpperCase();
+      });
+
+      // Hebrew RTL inside modal
+      $('#svc-title').dir = lang === 'he' ? 'rtl' : 'ltr';
+      $('#svc-subtitle').dir = lang === 'he' ? 'rtl' : 'ltr';
+      $('#svc-short').dir = lang === 'he' ? 'rtl' : 'ltr';
+      $('#svc-full').dir = lang === 'he' ? 'rtl' : 'ltr';
+    };
+
+    document.querySelectorAll('.lang-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        readCurrentLangToDraft();
+        currentLang = btn.getAttribute('data-lang-tab');
+        // Update visual state
+        document.querySelectorAll('.lang-tab').forEach(b => {
+          const isActive = b === btn;
+          b.classList.toggle('active', isActive);
+          b.style.background = isActive ? 'var(--gray-100)' : 'transparent';
+          b.style.borderBottomColor = isActive ? 'var(--yellow)' : 'transparent';
+          b.style.color = isActive ? 'var(--ink)' : 'var(--gray-500)';
+        });
+        loadLangToForm(currentLang);
+      });
+    });
+
     $('#svc-save').addEventListener('click', () => {
-      const faqRows = $$('#svc-faq-editor .faq-row').map(row => ({
-        q: row.querySelector('.svc-faq-q')?.value.trim() || '',
-        a: row.querySelector('.svc-faq-a')?.value.trim() || ''
-      })).filter(f => f.q || f.a);
+      // Capture current tab into draft before saving
+      readCurrentLangToDraft();
       // Always slugify the final id — prevents spaces/special chars breaking URLs
       const rawId = $('#svc-id').value || '';
       const cleanId = slugify(rawId) || 'service-' + Date.now();
       const updated = {
         id: cleanId,
-        title: $('#svc-title').value,
-        subtitle: $('#svc-subtitle').value,
-        shortDesc: $('#svc-short').value,
-        fullDesc: $('#svc-full').value,
+        title: s.title,
+        subtitle: s.subtitle,
+        shortDesc: s.shortDesc,
+        fullDesc: s.fullDesc,
         icon: $('#svc-icon').value,
         image: $('#svc-image').value,
-        features: $$('#svc-features .feature-row input').map(i => i.value).filter(Boolean),
-        faq: faqRows
+        features: s.features || [],
+        faq: s.faq || [],
+        i18n: s.i18n || {}
       };
-      if (!updated.title) { toast('სათაური სავალდებულოა', 'error'); return; }
+      // Clean empty i18n overrides
+      Object.keys(updated.i18n).forEach(l => {
+        const o = updated.i18n[l];
+        if (!o) { delete updated.i18n[l]; return; }
+        const hasAny = ['title','subtitle','shortDesc','fullDesc'].some(k => (o[k]||'').trim()) ||
+                       (Array.isArray(o.features) && o.features.length) ||
+                       (Array.isArray(o.faq) && o.faq.length);
+        if (!hasAny) delete updated.i18n[l];
+      });
+      if (!Object.keys(updated.i18n).length) delete updated.i18n;
+
+      if (!updated.title) { toast('სათაური სავალდებულოა (ქართული ძირითადი ენაა)', 'error'); return; }
       if (isEdit) state.content.services[index] = updated;
       else state.content.services.push(updated);
       markDirty();

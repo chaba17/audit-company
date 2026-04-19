@@ -35,6 +35,35 @@
   if (!content) return;
   window.SITE_CONTENT = content;
 
+  // Apply per-item i18n overlays to ARRAYS so downstream code sees already-translated items
+  const applyItemI18n = () => {
+    const lang = localStorage.getItem('lang') || 'ka';
+    if (!window.resolveItemI18n) return; // i18n.js not loaded yet
+    ['services', 'team', 'testimonials', 'faq', 'blog', 'industries'].forEach(key => {
+      const arr = (window.SITE_CONTENT_RAW && window.SITE_CONTENT_RAW[key]) || content[key];
+      if (Array.isArray(arr)) {
+        content[key] = arr.map(item => window.resolveItemI18n(item, lang));
+      }
+    });
+    if (content.pricing && Array.isArray(content.pricing.plans)) {
+      const raw = (window.SITE_CONTENT_RAW && window.SITE_CONTENT_RAW.pricing && window.SITE_CONTENT_RAW.pricing.plans) || content.pricing.plans;
+      content.pricing.plans = raw.map(p => window.resolveItemI18n(p, lang));
+    }
+  };
+
+  // Keep a pristine copy so re-applying for a different language still has access to all overlays
+  window.SITE_CONTENT_RAW = JSON.parse(JSON.stringify(content));
+  applyItemI18n();
+
+  // Listen for language changes (from nav switcher) and re-apply overlays + re-render
+  document.addEventListener('lang-changed', () => {
+    applyItemI18n();
+    // Simple way to apply: reload page state without full reload would require re-running many renderers.
+    // For reliability across all pages (hero, services grid, mega menu, footer, etc.), trigger a soft reload.
+    // To preserve scroll position, use hash. To fully refresh content, reload.
+    location.reload();
+  });
+
   // ========================================================
   // APPLY SEO / META / OG TAGS — from content.seo.pages[pageKey]
   // ========================================================

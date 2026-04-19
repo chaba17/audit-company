@@ -113,6 +113,23 @@ function initNav() {
       closeAllMegas();
     });
   }
+
+  // ====== LANGUAGE DROPDOWN ======
+  const localeWrap = document.querySelector(".nav-locale-wrap");
+  const localeBtn = localeWrap?.querySelector(".nav-locale");
+  if (localeWrap && localeBtn) {
+    localeBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const isOpen = localeWrap.classList.toggle("open");
+      localeBtn.setAttribute("aria-expanded", String(isOpen));
+    });
+    document.addEventListener("click", (e) => {
+      if (!e.target.closest(".nav-locale-wrap")) {
+        localeWrap.classList.remove("open");
+        localeBtn.setAttribute("aria-expanded", "false");
+      }
+    });
+  }
 }
 
 // Expose globally so content-loader can call after re-render

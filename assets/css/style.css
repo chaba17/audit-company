@@ -381,7 +381,55 @@ h2.display, .display {
   font-size: 14px;
   font-weight: 500;
 }
-.nav-locale svg:last-child { opacity: 0.7; }
+.nav-locale svg:last-child { opacity: 0.7; transition: transform 0.2s; }
+.nav-locale-wrap.open .nav-locale svg:last-child { transform: rotate(180deg); }
+
+/* Language dropdown */
+.nav-locale-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  background: #14141C;
+  border: 1px solid rgba(255,255,255,0.12);
+  min-width: 180px;
+  padding: 6px 0;
+  display: none;
+  flex-direction: column;
+  z-index: 1000;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+}
+.nav-locale-wrap.open .nav-locale-dropdown { display: flex; }
+.nav-locale-dropdown button {
+  padding: 12px 18px;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.85);
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+  white-space: nowrap;
+}
+.nav-locale-dropdown button:hover {
+  background: rgba(255,230,0,0.08);
+  color: #FFE600;
+}
+.nav-locale-dropdown button.active {
+  background: rgba(255,230,0,0.12);
+  color: #FFE600;
+  font-weight: 700;
+}
+
+/* Hebrew RTL support */
+html.lang-rtl { direction: rtl; }
+html.lang-rtl .nav-menu { margin: 0 32px 0 0; }
+html.lang-rtl .nav-locale-dropdown { right: auto; left: 0; }
+html.lang-rtl .footer-top { direction: rtl; }
+html.lang-rtl .footer-bottom { direction: rtl; }
+html.lang-rtl .highlight { display: inline-block; }
+html.lang-rtl .btn-arrow { transform: scaleX(-1); display: inline-block; }
 
 /* ---------- MEGA MENU (EY Dark 3-part layout) ---------- */
 .mega-menu {
