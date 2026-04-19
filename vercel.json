@@ -2,8 +2,8 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
-    { "source": "/services/:slug\\.html", "destination": "/services/_template.html" },
-    { "source": "/services/:slug", "destination": "/services/_template.html" }
+    { "source": "/services/(.+)\\.html", "destination": "/services/_template.html" },
+    { "source": "/services/(.+)", "destination": "/services/_template.html" }
   ],
   "headers": [
     {
