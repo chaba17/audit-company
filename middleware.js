@@ -13,15 +13,9 @@ export const config = {
 
 export default function middleware(request) {
   const PORTAL_USER = process.env.PORTAL_USER || 'admin';
-  const PORTAL_PASS = process.env.PORTAL_PASS;
-
-  // If no password configured, fail closed — block access entirely
-  if (!PORTAL_PASS) {
-    return new Response('Portal access disabled. Set PORTAL_PASS env var in Vercel.', {
-      status: 503,
-      headers: { 'Content-Type': 'text/plain' }
-    });
-  }
+  // If PORTAL_PASS is not set in Vercel env vars, fall back to a temporary setup password.
+  // The user MUST change this in Vercel dashboard: Project Settings → Environment Variables.
+  const PORTAL_PASS = process.env.PORTAL_PASS || 'gbm-setup-change-me-now';
 
   const authHeader = request.headers.get('authorization') || '';
   if (authHeader.startsWith('Basic ')) {
@@ -32,7 +26,7 @@ export default function middleware(request) {
       const user = decoded.substring(0, sep);
       const pass = decoded.substring(sep + 1);
       if (user === PORTAL_USER && pass === PORTAL_PASS) {
-        // Auth OK - let the request through
+        // Auth OK - let the request through to the admin portal
         return;
       }
     } catch (_) { /* fall through */ }
