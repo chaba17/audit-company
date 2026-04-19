@@ -35,6 +35,19 @@
   if (!content) return;
   window.SITE_CONTENT = content;
 
+  // Auto-sync services mega menu links with the real services list (so admin-added services always show in the dropdown)
+  try {
+    if (Array.isArray(content.services) && content.services.length && content.megaMenus && content.megaMenus.services) {
+      const urlSafeSlug = (id) => (id || '').toString()
+        .replace(/\s+/g, '-').replace(/[\/\\?#&=]/g, '-')
+        .replace(/-+/g, '-').replace(/^-|-$/g, '');
+      content.megaMenus.services.links = content.services.map(s => ({
+        title: s.title || s.id || '',
+        href: 'services/' + (urlSafeSlug(s.id) || encodeURIComponent(s.id || '')) + '.html'
+      }));
+    }
+  } catch (e) { console.warn('Mega menu services sync failed:', e); }
+
   // Re-render header if content has megaMenus (to pick up admin changes)
   try {
     if (typeof renderHeader === 'function' && content.megaMenus && Object.keys(content.megaMenus).length > 0) {
@@ -252,7 +265,9 @@
       const icons = window.ICONS || {};
       const arrowIcon = icons['arrow-right-sm'] || '→';
       const iconHtml = icons[s.icon] || '';
-      const serviceUrl = `services/${s.slug}.html`; // Vercel cleanUrls + rewrite handles both static + dynamic
+      // Slugify URL on the fly so links stay ASCII-safe even if admin-entered id has spaces/special chars
+      const urlSlug = (s.slug || '').replace(/\s+/g, '-').replace(/[\/\\?#&=]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+      const serviceUrl = `services/${urlSlug || encodeURIComponent(s.slug)}.html`;
       const num = String(i + 1).padStart(2, '0');
       const total = String(limit).padStart(2, '0');
       return `

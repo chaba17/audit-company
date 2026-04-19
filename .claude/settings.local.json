@@ -108,7 +108,13 @@
       "Bash(curl -sI \"https://audit-company-sage.vercel.app/services/some-new-slug\")",
       "Bash(npx vercel@latest project ls)",
       "Bash(npx vercel@latest promote audit-company-4e3kn8btl-chabas-projects-c40e9f58.vercel.app)",
-      "Bash(npx vercel@latest whoami)"
+      "Bash(npx vercel@latest whoami)",
+      "Bash(curl -sI \"https://gubermangeo.com/\")",
+      "Bash(curl -sI \"https://gubermangeo.com/api/content\")",
+      "Bash(curl -sI \"https://gubermangeo.com/services/accounting\")",
+      "Bash(curl -sI \"https://gubermangeo.com/services/tax%20advisory\")",
+      "Bash(curl -s \"https://gubermangeo.com/api/content?t=$\\(date +%s\\)\" -o ./_tmp.json)",
+      "Bash(rm ./_tmp.json)"
     ]
   }
 }

@@ -387,14 +387,38 @@ function resolveServiceSlug() {
   const bodySlug = document.body.getAttribute("data-service");
   if (bodySlug) return bodySlug;
   const m = location.pathname.match(/\/services\/([^\/]+?)(?:\.html)?(?:\/)?$/i);
-  return m ? m[1] : null;
+  if (!m) return null;
+  try { return decodeURIComponent(m[1]); } catch (e) { return m[1]; }
+}
+
+// Match a service by id using multiple strategies — exact, decoded, slugified, space/dash-normalised
+function findServiceByAnyId(services, slug) {
+  if (!services || !slug) return null;
+  const norm = s => (s || '').toString().toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+  const target = norm(slug);
+  // 1) exact match
+  let found = services.find(s => s && s.id === slug);
+  if (found) return found;
+  // 2) decoded match (if slug was URL-encoded)
+  try {
+    const decoded = decodeURIComponent(slug);
+    found = services.find(s => s && s.id === decoded);
+    if (found) return found;
+  } catch (e) {}
+  // 3) normalised match (spaces ⇄ hyphens, case-insensitive)
+  found = services.find(s => s && norm(s.id) === target);
+  if (found) return found;
+  return null;
 }
 
 // ===== Merge content.json service data (editable via admin) with hardcoded SERVICE_DATA fallback =====
 function getServiceRenderData(slug, lang) {
   const content = window.SITE_CONTENT;
   const liveService = (content && Array.isArray(content.services))
-    ? content.services.find(s => s && s.id === slug)
+    ? findServiceByAnyId(content.services, slug)
     : null;
   const fallback = SERVICE_DATA[slug] ? SERVICE_DATA[slug][lang] : null;
   // If admin hasn't filled a field, fall back to SERVICE_DATA (if available)
@@ -415,7 +439,7 @@ function renderServicePage() {
 
   // If neither live nor static data exists — show a "not found" message
   const content = window.SITE_CONTENT;
-  const hasLive = content && Array.isArray(content.services) && content.services.find(s => s && s.id === slug);
+  const hasLive = content && Array.isArray(content.services) && findServiceByAnyId(content.services, slug);
   const hasStatic = !!SERVICE_DATA[slug];
   if (!hasLive && !hasStatic) {
     const titleEl = document.getElementById("svc-title");
@@ -428,8 +452,8 @@ function renderServicePage() {
   // Index: prefer live ordering, else static
   let slugIndex = 1;
   if (content && Array.isArray(content.services)) {
-    const idx = content.services.findIndex(s => s && s.id === slug);
-    if (idx >= 0) slugIndex = idx + 1;
+    const match = findServiceByAnyId(content.services, slug);
+    if (match) slugIndex = content.services.indexOf(match) + 1;
   } else {
     slugIndex = Object.keys(SERVICE_DATA).indexOf(slug) + 1;
   }
@@ -449,7 +473,19 @@ function renderServicePage() {
   if (titleEl) titleEl.textContent = d.title;
   if (crumbEl) crumbEl.textContent = d.title;
   if (subtitleEl) subtitleEl.textContent = d.subtitle;
-  if (heroImgEl && d.hero_img) heroImgEl.src = d.hero_img;
+  if (heroImgEl) {
+    if (d.hero_img) {
+      heroImgEl.src = d.hero_img;
+      heroImgEl.alt = d.title || '';
+      const wrap = heroImgEl.closest('.split-img');
+      if (wrap) wrap.style.display = '';
+    } else {
+      // No image — hide the hero image wrapper entirely (no broken image icon)
+      const wrap = heroImgEl.closest('.split-img');
+      if (wrap) wrap.style.display = 'none';
+      else heroImgEl.style.display = 'none';
+    }
+  }
   if (introEl) introEl.textContent = d.intro;
   if (numEl) numEl.textContent = "სერვისი · " + String(slugIndex).padStart(2, '0');
   document.title = d.title + " — Audit.";

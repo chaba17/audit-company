@@ -2305,7 +2305,7 @@
             2. დაამატე <code>GITHUB_TOKEN</code> = შენი personal access token<br>
             3. დაამატე <code>ADMIN_SECRET</code> = გამოიგონე პაროლი (მაგ. "auditsecret2026")<br>
             4. <strong>Redeploy</strong> (Deployments → ... → Redeploy)<br>
-            5. გაუზიარე მეგობარს: admin.html URL + ADMIN_SECRET
+            5. გაუზიარე მეგობარს: პორტალის URL + Basic Auth პაროლი + ADMIN_SECRET
           </div>
         </div>
 

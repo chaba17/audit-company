@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+# Admin / internal paths — do not index
+Disallow: /admin
+Disallow: /admin.html
+Disallow: /portal-
+Disallow: /api/
+Disallow: /_template
+Disallow: /services/_template
+
+Sitemap: https://gubermangeo.com/sitemap.xml
