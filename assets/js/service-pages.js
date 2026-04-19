@@ -381,56 +381,109 @@ const SERVICE_DATA = {
   }
 };
 
-// Render service page based on body[data-service]
-document.addEventListener("DOMContentLoaded", () => {
-  const slug = document.body.getAttribute("data-service");
-  if (!slug || !SERVICE_DATA[slug]) return;
+// ===== Slug resolution =====
+// Try data-service attribute, else derive from URL path (/services/foo.html → foo or /services/foo → foo)
+function resolveServiceSlug() {
+  const bodySlug = document.body.getAttribute("data-service");
+  if (bodySlug) return bodySlug;
+  const m = location.pathname.match(/\/services\/([^\/]+?)(?:\.html)?(?:\/)?$/i);
+  return m ? m[1] : null;
+}
 
-  const slugIndex = Object.keys(SERVICE_DATA).indexOf(slug) + 1;
-
-  const render = () => {
-    const lang = localStorage.getItem("lang") || "ka";
-    const d = SERVICE_DATA[slug][lang];
-
-    const titleEl = document.getElementById("svc-title");
-    const crumbEl = document.getElementById("svc-title-crumb");
-    const subtitleEl = document.getElementById("svc-subtitle");
-    const heroImgEl = document.getElementById("svc-hero-img");
-    const introEl = document.getElementById("svc-intro");
-    const featuresEl = document.getElementById("svc-features");
-    const faqEl = document.getElementById("svc-faq");
-    const numEl = document.getElementById("svc-num");
-
-    if (titleEl) titleEl.textContent = d.title;
-    if (crumbEl) crumbEl.textContent = d.title;
-    if (subtitleEl) subtitleEl.textContent = d.subtitle;
-    if (heroImgEl) heroImgEl.src = d.hero_img;
-    if (introEl) introEl.textContent = d.intro;
-    if (numEl) numEl.textContent = "სერვისი · 0" + slugIndex;
-    document.title = d.title + " — Audit Company";
-
-    if (featuresEl) {
-      featuresEl.innerHTML = d.features.map((f, i) => `
-        <li>
-          <span class="check-num">${String(i + 1).padStart(2, '0')}.</span>
-          <span>${f}</span>
-        </li>
-      `).join("");
-    }
-
-    if (faqEl) {
-      faqEl.innerHTML = d.faq.map(f => `
-        <details class="faq-item reveal visible">
-          <summary>${f.q}</summary>
-          <p>${f.a}</p>
-        </details>
-      `).join("");
-    }
+// ===== Merge content.json service data (editable via admin) with hardcoded SERVICE_DATA fallback =====
+function getServiceRenderData(slug, lang) {
+  const content = window.SITE_CONTENT;
+  const liveService = (content && Array.isArray(content.services))
+    ? content.services.find(s => s && s.id === slug)
+    : null;
+  const fallback = SERVICE_DATA[slug] ? SERVICE_DATA[slug][lang] : null;
+  // If admin hasn't filled a field, fall back to SERVICE_DATA (if available)
+  return {
+    title: (liveService && liveService.title) || (fallback && fallback.title) || slug,
+    subtitle: (liveService && liveService.subtitle) || (liveService && liveService.shortDesc) || (fallback && fallback.subtitle) || "",
+    hero_img: (liveService && liveService.image) || (fallback && fallback.hero_img) || "",
+    intro: (liveService && liveService.fullDesc) || (liveService && liveService.intro) || (fallback && fallback.intro) || "",
+    features: (liveService && Array.isArray(liveService.features) && liveService.features.length ? liveService.features : (fallback && fallback.features)) || [],
+    faq: (liveService && Array.isArray(liveService.faq) && liveService.faq.length ? liveService.faq.map(f => ({ q: f.q || f.question || "", a: f.a || f.answer || "" })) : (fallback && fallback.faq)) || []
   };
+}
 
-  // Render now and re-render when language changes
-  setTimeout(render, 50);
-  document.querySelectorAll(".lang-switch button").forEach(btn => {
-    btn.addEventListener("click", () => setTimeout(render, 50));
-  });
+// ===== Render page =====
+function renderServicePage() {
+  const slug = resolveServiceSlug();
+  if (!slug) return;
+
+  // If neither live nor static data exists — show a "not found" message
+  const content = window.SITE_CONTENT;
+  const hasLive = content && Array.isArray(content.services) && content.services.find(s => s && s.id === slug);
+  const hasStatic = !!SERVICE_DATA[slug];
+  if (!hasLive && !hasStatic) {
+    const titleEl = document.getElementById("svc-title");
+    if (titleEl) titleEl.textContent = "სერვისი ვერ მოიძებნა";
+    const introEl = document.getElementById("svc-intro");
+    if (introEl) introEl.textContent = "ეს სერვისი არ არსებობს ან ჯერ არ არის აღწერილი.";
+    return;
+  }
+
+  // Index: prefer live ordering, else static
+  let slugIndex = 1;
+  if (content && Array.isArray(content.services)) {
+    const idx = content.services.findIndex(s => s && s.id === slug);
+    if (idx >= 0) slugIndex = idx + 1;
+  } else {
+    slugIndex = Object.keys(SERVICE_DATA).indexOf(slug) + 1;
+  }
+
+  const lang = localStorage.getItem("lang") || "ka";
+  const d = getServiceRenderData(slug, lang);
+
+  const titleEl = document.getElementById("svc-title");
+  const crumbEl = document.getElementById("svc-title-crumb");
+  const subtitleEl = document.getElementById("svc-subtitle");
+  const heroImgEl = document.getElementById("svc-hero-img");
+  const introEl = document.getElementById("svc-intro");
+  const featuresEl = document.getElementById("svc-features");
+  const faqEl = document.getElementById("svc-faq");
+  const numEl = document.getElementById("svc-num");
+
+  if (titleEl) titleEl.textContent = d.title;
+  if (crumbEl) crumbEl.textContent = d.title;
+  if (subtitleEl) subtitleEl.textContent = d.subtitle;
+  if (heroImgEl && d.hero_img) heroImgEl.src = d.hero_img;
+  if (introEl) introEl.textContent = d.intro;
+  if (numEl) numEl.textContent = "სერვისი · " + String(slugIndex).padStart(2, '0');
+  document.title = d.title + " — Audit.";
+
+  if (featuresEl) {
+    featuresEl.innerHTML = (d.features || []).map((f, i) => `
+      <li>
+        <span class="check-num">${String(i + 1).padStart(2, '0')}.</span>
+        <span>${f}</span>
+      </li>
+    `).join("");
+  }
+
+  if (faqEl) {
+    faqEl.innerHTML = (d.faq || []).map(f => `
+      <details class="faq-item reveal visible">
+        <summary>${f.q}</summary>
+        <p>${f.a}</p>
+      </details>
+    `).join("");
+  }
+}
+
+// ===== Bootstrap: render now, and re-render when content is loaded / language changes =====
+document.addEventListener("DOMContentLoaded", () => {
+  setTimeout(renderServicePage, 50);
+});
+// Re-render when content-loader finishes fetch from /api/content
+document.addEventListener("content-loaded", () => {
+  setTimeout(renderServicePage, 20);
+});
+// Re-render on language switch
+document.addEventListener("click", (e) => {
+  if (e.target.closest && e.target.closest(".lang-switch button")) {
+    setTimeout(renderServicePage, 50);
+  }
 });

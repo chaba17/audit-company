@@ -60,7 +60,8 @@
       "Bash(node -e ' *)",
       "Bash(curl -s \"https://audit-company-sage.vercel.app/admin.html?cb=$\\(date +%s\\)\")",
       "Bash(curl -sI \"https://audit-company-sage.vercel.app/admin.html\")",
-      "Bash(curl -sL \"https://audit-company-sage.vercel.app/admin\")"
+      "Bash(curl -sL \"https://audit-company-sage.vercel.app/admin\")",
+      "Bash(node -e \"const c=require\\('./assets/data/content.json'\\); console.log\\(JSON.stringify\\(c.services[0], null, 2\\)\\); console.log\\('---NEW SERVICE---'\\); console.log\\(JSON.stringify\\(c.services[c.services.length-1], null, 2\\)\\);\")"
     ]
   }
 }

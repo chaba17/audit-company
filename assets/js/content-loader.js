@@ -252,7 +252,7 @@
       const icons = window.ICONS || {};
       const arrowIcon = icons['arrow-right-sm'] || '→';
       const iconHtml = icons[s.icon] || '';
-      const serviceUrl = `services/${s.slug}.html`;
+      const serviceUrl = `services/${s.slug}.html`; // Vercel cleanUrls + rewrite handles both static + dynamic
       const num = String(i + 1).padStart(2, '0');
       const total = String(limit).padStart(2, '0');
       return `

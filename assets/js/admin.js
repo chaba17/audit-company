@@ -1186,8 +1186,10 @@
     const isEdit = index !== null;
     const s = isEdit ? deepClone(state.content.services[index]) : {
       id: 'service-' + Date.now(),
-      title: '', shortDesc: '', fullDesc: '', icon: 'book-open', image: '', features: []
+      title: '', subtitle: '', shortDesc: '', fullDesc: '', icon: 'book-open', image: '', features: [], faq: []
     };
+    // Normalize FAQ items (accept {q,a} or {question,answer})
+    s.faq = (s.faq || []).map(f => ({ q: f.q || f.question || '', a: f.a || f.answer || '' }));
     const ICONS = ['book-open', 'receipt', 'users', 'building', 'shield-check', 'message-circle', 'globe', 'briefcase', 'cpu'];
 
     openModal(isEdit ? 'სერვისის რედაქტირება' : 'ახალი სერვისი', `
@@ -1199,7 +1201,7 @@
         <div class="form-group">
           <label>ID (URL slug)</label>
           <input type="text" id="svc-id" value="${escapeHtml(s.id)}" />
-          <small class="hint">გამოიყენება URL-ში, მაგ. services/accounting.html</small>
+          <small class="hint">გამოიყენება URL-ში, მაგ. services/accounting.html. ♻ სასურველია მხოლოდ ლათინური ასოები და ტირეები (a-z, 0-9, -).</small>
         </div>
         <div class="form-grid cols-2">
           <div class="form-group">
@@ -1209,20 +1211,27 @@
             </select>
           </div>
           <div class="form-group">
-            <label>სურათის URL</label>
+            <label>Hero სურათის URL</label>
             <input type="url" id="svc-image" value="${escapeHtml(s.image || '')}" />
+            <small class="hint">გვიდონ შიდა გვერდზე ჰერო ბლოკში</small>
           </div>
         </div>
         <div class="form-group">
-          <label>მოკლე აღწერა</label>
+          <label>მოკლე აღწერა (ბარათებისთვის)</label>
           <input type="text" id="svc-short" value="${escapeHtml(s.shortDesc || '')}" />
+          <small class="hint">ჩანს სერვისების ბადეში ყოველი ბარათის ქვეშ</small>
         </div>
         <div class="form-group">
-          <label>სრული აღწერა</label>
+          <label>ქვესათაური (შიდა გვერდისთვის)</label>
+          <input type="text" id="svc-subtitle" value="${escapeHtml(s.subtitle || '')}" />
+          <small class="hint">ერთ წინადადებიანი აღწერა სერვისის შიდა გვერდის ჰეროში</small>
+        </div>
+        <div class="form-group">
+          <label>სრული აღწერა (შიდა გვერდის ინტრო ტექსტი)</label>
           <textarea id="svc-full" rows="4">${escapeHtml(s.fullDesc || '')}</textarea>
         </div>
         <div class="form-group">
-          <label>მახასიათებლები</label>
+          <label>მახასიათებლები (შიდა გვერდზე გამოჩნდება)</label>
           <div class="features-editor" id="svc-features">
             ${(s.features || []).map((f, i) => `
               <div class="feature-row" data-i="${i}">
@@ -1234,12 +1243,51 @@
           </div>
           <button class="btn btn-outline btn-xs" id="svc-add-feature" type="button" style="margin-top: 8px;">+ მახასიათებელი</button>
         </div>
+        <div class="form-group">
+          <label>FAQ (შიდა გვერდის ქვემოთ)</label>
+          <div class="faq-editor" id="svc-faq-editor">
+            ${s.faq.map((f, i) => `
+              <div class="faq-row" data-i="${i}" style="border: 1px solid var(--gray-200); padding: 12px; margin-bottom: 8px; background: var(--gray-50);">
+                <input type="text" placeholder="კითხვა" class="svc-faq-q" value="${escapeHtml(f.q)}" style="margin-bottom: 6px;" />
+                <textarea rows="2" placeholder="პასუხი" class="svc-faq-a">${escapeHtml(f.a)}</textarea>
+                <div style="display: flex; justify-content: flex-end; margin-top: 6px;">
+                  <button class="icon-btn danger" data-remove-faq="${i}" type="button"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg></button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+          <button class="btn btn-outline btn-xs" id="svc-add-faq" type="button" style="margin-top: 8px;">+ FAQ ელემენტი</button>
+        </div>
       </div>
       <div class="form-actions">
         <button class="btn btn-outline" data-modal-cancel>გაუქმება</button>
         <button class="btn btn-yellow" id="svc-save">შენახვა</button>
       </div>
     `);
+
+    // FAQ row bindings
+    const bindFaqRemoves = () => {
+      $$('#svc-faq-editor [data-remove-faq]').forEach(btn => {
+        btn.addEventListener('click', () => btn.closest('.faq-row').remove());
+      });
+    };
+    bindFaqRemoves();
+    $('#svc-add-faq')?.addEventListener('click', () => {
+      const container = $('#svc-faq-editor');
+      const row = document.createElement('div');
+      row.className = 'faq-row';
+      row.style.cssText = 'border: 1px solid var(--gray-200); padding: 12px; margin-bottom: 8px; background: var(--gray-50);';
+      row.innerHTML = `
+        <input type="text" placeholder="კითხვა" class="svc-faq-q" value="" style="margin-bottom: 6px;" />
+        <textarea rows="2" placeholder="პასუხი" class="svc-faq-a"></textarea>
+        <div style="display: flex; justify-content: flex-end; margin-top: 6px;">
+          <button class="icon-btn danger" type="button"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg></button>
+        </div>
+      `;
+      container.appendChild(row);
+      row.querySelector('button').addEventListener('click', () => row.remove());
+      row.querySelector('input').focus();
+    });
 
     const rerenderFeatures = () => {
       const container = $('#svc-features');
@@ -1273,14 +1321,20 @@
     });
 
     $('#svc-save').addEventListener('click', () => {
+      const faqRows = $$('#svc-faq-editor .faq-row').map(row => ({
+        q: row.querySelector('.svc-faq-q')?.value.trim() || '',
+        a: row.querySelector('.svc-faq-a')?.value.trim() || ''
+      })).filter(f => f.q || f.a);
       const updated = {
         id: $('#svc-id').value || 'service-' + Date.now(),
         title: $('#svc-title').value,
+        subtitle: $('#svc-subtitle').value,
         shortDesc: $('#svc-short').value,
         fullDesc: $('#svc-full').value,
         icon: $('#svc-icon').value,
         image: $('#svc-image').value,
-        features: $$('#svc-features .feature-row input').map(i => i.value).filter(Boolean)
+        features: $$('#svc-features .feature-row input').map(i => i.value).filter(Boolean),
+        faq: faqRows
       };
       if (!updated.title) { toast('სათაური სავალდებულოა', 'error'); return; }
       if (isEdit) state.content.services[index] = updated;
