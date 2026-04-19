@@ -129,7 +129,19 @@
       "Bash(node -e \"const c=require\\('./_now.json'\\);console.log\\('Current services count:', c.services.length\\);c.services.forEach\\(\\(s,i\\)=>console.log\\(\\(i+1\\)+'. id=\\\\\"'+s.id+'\\\\\" title=\\\\\"'+s.title+'\\\\\"'\\)\\);\")",
       "Bash(rm ./_now.json)",
       "Bash(node -e \"const c=require\\('./assets/data/content.json'\\); console.log\\('Count:', c.services.length\\); c.services.forEach\\(\\(s,i\\)=>console.log\\(' '+\\(i+1\\)+'. '+s.title+' \\(id: '+s.id+'\\)'\\)\\);\")",
-      "Bash(rm -f ./_restored.json ./_tmp*.json)"
+      "Bash(rm -f ./_restored.json ./_tmp*.json)",
+      "Bash(curl -s \"https://gubermangeo.com/api/content?t=$\\(date +%s\\)\" -o ./_verify.json)",
+      "Bash(node -e \"const c=require\\('./_verify.json'\\);console.log\\('Live count:',c.services.length\\);c.services.forEach\\(\\(s,i\\)=>console.log\\(' '+\\(i+1\\)+'. '+s.title\\)\\);\")",
+      "Bash(rm ./_verify.json)",
+      "Bash(curl -s \"https://gubermangeo.com/assets/js/admin.js\")",
+      "Bash(nslookup -type=ns gubermangeo.com)",
+      "Bash(nslookup -type=mx gubermangeo.com)",
+      "Bash(nslookup -type=txt gubermangeo.com)",
+      "Bash(cat)",
+      "Bash(cat .gitignore.tmp)",
+      "Bash(awk '!seen[$0]++' .gitignore)",
+      "Bash(mv .gitignore.uniq .gitignore)",
+      "Bash(rm .gitignore.tmp)"
     ]
   }
 }

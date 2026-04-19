@@ -184,17 +184,75 @@ document.addEventListener("DOMContentLoaded", () => {
   }, { threshold: 0.3 });
   document.querySelectorAll("[data-count]").forEach(el => statObserver.observe(el));
 
-  // Contact form stub
+  // Contact form — POST to /api/send-contact (Zoho SMTP via Vercel function)
   const contactForm = document.getElementById("contact-form");
   if (contactForm) {
-    contactForm.addEventListener("submit", (e) => {
+    const feedbackEl = document.getElementById("contact-form-feedback");
+    const showFeedback = (msg, type) => {
+      if (!feedbackEl) return;
+      const colors = {
+        success: { bg: '#f0fdf4', border: '#10B981', text: '#065f46' },
+        error:   { bg: '#fef2f2', border: '#EF4444', text: '#991b1b' },
+        info:    { bg: '#eff6ff', border: '#3B82F6', text: '#1e3a8a' }
+      }[type] || { bg: '#fef9c3', border: '#FFE600', text: '#713f12' };
+      feedbackEl.style.display = 'block';
+      feedbackEl.style.background = colors.bg;
+      feedbackEl.style.borderLeftColor = colors.border;
+      feedbackEl.style.color = colors.text;
+      feedbackEl.textContent = msg;
+    };
+
+    contactForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const lang = document.documentElement.lang || "ka";
-      const msg = lang === "ka"
-        ? "მადლობა! დაგიკავშირდებით 24 საათში."
-        : "Thanks! We'll get back to you within 24 hours.";
-      alert(msg);
-      contactForm.reset();
+      const lang = localStorage.getItem("lang") || document.documentElement.lang || "ka";
+      const T = ({
+        ka: {
+          sending: "იგზავნება…",
+          success: "მადლობა! დაგიკავშირდებით 24 საათში.",
+          errorValidation: "გთხოვთ შეავსოთ სახელი და ელ.ფოსტა.",
+          errorRate: "ძალიან ბევრი მცდელობა. სცადეთ მოგვიანებით.",
+          errorGeneric: "ვერ გაიგზავნა. სცადეთ ცოტა ხანში."
+        },
+        en: {
+          sending: "Sending…",
+          success: "Thanks! We'll get back to you within 24 hours.",
+          errorValidation: "Please fill in your name and email.",
+          errorRate: "Too many attempts. Please try again later.",
+          errorGeneric: "Could not send. Please try again shortly."
+        }
+      })[lang] || {};
+
+      const data = Object.fromEntries(new FormData(contactForm).entries());
+      if (!data.name || !data.email) {
+        showFeedback(T.errorValidation, 'error');
+        return;
+      }
+
+      const submitBtn = contactForm.querySelector('button[type="submit"]');
+      const originalDisabled = submitBtn?.disabled;
+      if (submitBtn) submitBtn.disabled = true;
+      showFeedback(T.sending, 'info');
+
+      try {
+        const res = await fetch('/api/send-contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        const json = await res.json().catch(() => ({}));
+        if (res.ok && json.ok) {
+          showFeedback(T.success, 'success');
+          contactForm.reset();
+        } else if (res.status === 429) {
+          showFeedback(T.errorRate, 'error');
+        } else {
+          showFeedback(json.error || T.errorGeneric, 'error');
+        }
+      } catch (err) {
+        showFeedback(T.errorGeneric, 'error');
+      } finally {
+        if (submitBtn) submitBtn.disabled = originalDisabled || false;
+      }
     });
   }
 });

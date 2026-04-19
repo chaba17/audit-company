@@ -1,0 +1,9 @@
+{
+  "name": "audit-company",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static site + Vercel serverless functions (content API, publish, contact email)",
+  "dependencies": {
+    "nodemailer": "^6.9.16"
+  }
+}
