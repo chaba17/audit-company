@@ -156,6 +156,29 @@
       const summary = diffSummary(baseline, state.content, live);
       mergedContent = mergeContent(baseline, state.content, live);
       mergeSummary = summary;
+    } else if (live) {
+      // No baseline but live exists → safest path is to MERGE WITH live
+      // so we don't silently overwrite (e.g. a friend's additions) with state.content.
+      // Use live as baseline so the merge preserves everything in live that mine lacks.
+      mergedContent = mergeContent(live, state.content, live);
+    }
+
+    // DATA-LOSS GUARD: if merge would dramatically shrink any section vs live, block publish.
+    // User must re-sync first (or explicitly confirm the deletion).
+    if (live) {
+      const guarded = ['services', 'team', 'testimonials', 'faq', 'blog', 'industries', 'pricing.plans'];
+      const pathGet = (obj, p) => p.split('.').reduce((a, k) => (a && a[k] != null ? a[k] : null), obj);
+      for (const path of guarded) {
+        const liveArr = pathGet(live, path);
+        const mergedArr = pathGet(mergedContent, path);
+        if (Array.isArray(liveArr) && Array.isArray(mergedArr)) {
+          const lost = liveArr.length - mergedArr.length;
+          if (lost >= 3 || (liveArr.length >= 5 && mergedArr.length < liveArr.length * 0.6)) {
+            const msg = `⚠ გამოქვეყნება შეჩერებულია — "${path}" სექციაში ცოცხალი საიტი შეიცავს ${liveArr.length} ელემენტს, მაგრამ შენი პანელი ${mergedArr.length}-ს. ეს ნიშნავს, რომ სხვა პირის დამატებები წაიშლებოდა.\n\nსცადე: დააჭირე "Sync" ღილაკს, დაელოდე ცოცხალი მონაცემების ჩატვირთვას, შემდეგ სცადე ხელახლა.`;
+            throw new Error(msg);
+          }
+        }
+      }
     }
 
     mergedContent._updated = new Date().toISOString();
@@ -280,6 +303,30 @@
         mergeSummary = diffSummary(baseline, state.content, live);
         mergedContent = mergeContent(baseline, state.content, live);
         state.content = mergedContent;
+      } else if (live) {
+        mergedContent = mergeContent(live, state.content, live);
+        state.content = mergedContent;
+      }
+
+      // DATA-LOSS GUARD: block publish if a section would shrink significantly vs live
+      if (live) {
+        const guarded = ['services', 'team', 'testimonials', 'faq', 'blog', 'industries', 'pricing.plans'];
+        const pathGet = (obj, p) => p.split('.').reduce((a, k) => (a && a[k] != null ? a[k] : null), obj);
+        for (const path of guarded) {
+          const liveArr = pathGet(live, path);
+          const mergedArr = pathGet(mergedContent, path);
+          if (Array.isArray(liveArr) && Array.isArray(mergedArr)) {
+            const lost = liveArr.length - mergedArr.length;
+            if (lost >= 3 || (liveArr.length >= 5 && mergedArr.length < liveArr.length * 0.6)) {
+              toast(`⚠ გამოქვეყნება შეჩერებულია — "${path}" სექციაში live = ${liveArr.length}, შენი = ${mergedArr.length}. დააჭირე Sync და სცადე ხელახლა.`, 'error', 10000);
+              if (publishBtn) {
+                publishBtn.disabled = false;
+                publishBtn.innerHTML = originalPublishBtnHTML;
+              }
+              return;
+            }
+          }
+        }
       }
 
       // Prepare content
@@ -373,9 +420,19 @@
     const mMap = new Map(mine.map(i => [itemKey(i), i]));
     const lMap = new Map(live.map(i => [itemKey(i), i]));
 
-    // What user deleted = in baseline, not in mine
-    const userDeleted = new Set([...bMap.keys()].filter(k => !mMap.has(k)));
-    // What user added = in mine, not in baseline
+    // SAFETY NET: if user's "mine" is identical (byte-for-byte) to "baseline" AND live has
+    // items that "mine" doesn't have, this is almost certainly a localStorage-drift bug, not
+    // an intentional delete. Trust live — otherwise a stale browser tab can silently erase
+    // a friend's additions.
+    // Only way to reliably delete something: user must have loaded up-to-date data and
+    // actively deleted it (so mine ≠ baseline afterwards).
+    const liveIdsNotInMine = [...lMap.keys()].filter(k => !mMap.has(k));
+    const noUserEditsYet = JSON.stringify(mine) === JSON.stringify(baseline);
+    const safetyOverride = noUserEditsYet && liveIdsNotInMine.length > 0;
+
+    const userDeleted = safetyOverride
+      ? new Set()
+      : new Set([...bMap.keys()].filter(k => !mMap.has(k)));
     const userAdded = new Set([...mMap.keys()].filter(k => !bMap.has(k)));
 
     const result = [];
@@ -394,7 +451,7 @@
         const userModified = baseItem && JSON.stringify(mineItem) !== JSON.stringify(baseItem);
         result.push(userModified ? mineItem : item);
       } else {
-        result.push(item); // friend's addition
+        result.push(item); // friend's addition — keep it
       }
       seen.add(k);
     });
@@ -515,13 +572,20 @@
       const live = await res.json();
       const liveFilled = fillMissingDefaults(live);
 
-      // Baseline: saved baseline, or defaults as fallback
+      // FIRST-RUN SAFETY: If no localStorage STORAGE_KEY exists yet (first admin load ever
+      // for this browser), seed state directly from live. DO NOT merge defaults vs live —
+      // that path can silently drop live items the user has never seen.
+      const hadStoredContent = !!localStorage.getItem(STORAGE_KEY);
+
+      // Baseline: saved baseline, or live as fallback (NOT defaults — defaults vs live
+      // would let a fresh browser publish defaults and wipe live content).
       let baseline = getBaseline();
-      if (!baseline) baseline = deepClone(window.DEFAULT_CONTENT);
+      if (!baseline) baseline = deepClone(liveFilled);
 
       // Always run merge to safely preserve ALL user changes
       let newState;
-      if (opts.force) {
+      if (opts.force || !hadStoredContent) {
+        // Force-sync or first-ever admin load → just take live
         newState = liveFilled;
       } else {
         newState = mergeContent(baseline, state.content || liveFilled, liveFilled);

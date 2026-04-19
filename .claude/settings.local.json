@@ -114,7 +114,22 @@
       "Bash(curl -sI \"https://gubermangeo.com/services/accounting\")",
       "Bash(curl -sI \"https://gubermangeo.com/services/tax%20advisory\")",
       "Bash(curl -s \"https://gubermangeo.com/api/content?t=$\\(date +%s\\)\" -o ./_tmp.json)",
-      "Bash(rm ./_tmp.json)"
+      "Bash(rm ./_tmp.json)",
+      "Bash(curl -sI \"https://gubermangeo.com/services/tax-advisory.html\")",
+      "Bash(curl -sI \"https://gubermangeo.com/admin\")",
+      "Bash(curl -sI \"https://gubermangeo.com/portal-gbm-k7x9\")",
+      "Bash(curl -s \"https://gubermangeo.com/robots.txt\")",
+      "Bash(curl -sI -L \"https://gubermangeo.com/services/tax-advisory.html\")",
+      "Bash(curl -sI \"https://gubermangeo.com/services/tax-advisory\")",
+      "Bash(curl -s \"https://gubermangeo.com/services/tax-advisory\")",
+      "Bash(curl -sI -u \"admin:gbm-setup-change-me-now\" \"https://gubermangeo.com/portal-gbm-k7x9\")",
+      "Bash(npx vercel@latest alias ls)",
+      "Bash(npx vercel@latest alias rm audit-company-sage.vercel.app --yes)",
+      "Bash(curl -s \"https://gubermangeo.com/api/content?t=$\\(date +%s\\)\" -o ./_now.json)",
+      "Bash(node -e \"const c=require\\('./_now.json'\\);console.log\\('Current services count:', c.services.length\\);c.services.forEach\\(\\(s,i\\)=>console.log\\(\\(i+1\\)+'. id=\\\\\"'+s.id+'\\\\\" title=\\\\\"'+s.title+'\\\\\"'\\)\\);\")",
+      "Bash(rm ./_now.json)",
+      "Bash(node -e \"const c=require\\('./assets/data/content.json'\\); console.log\\('Count:', c.services.length\\); c.services.forEach\\(\\(s,i\\)=>console.log\\(' '+\\(i+1\\)+'. '+s.title+' \\(id: '+s.id+'\\)'\\)\\);\")",
+      "Bash(rm -f ./_restored.json ./_tmp*.json)"
     ]
   }
 }
