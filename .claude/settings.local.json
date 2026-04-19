@@ -153,7 +153,10 @@
       "Bash(nslookup -type=mx gubermangeo.com ns1.vercel-dns.com)",
       "Bash(curl -s -X POST -H \"Content-Type: application/json\" -d '{\"name\":\"Test User\",\"email\":\"test@example.com\",\"message\":\"Test from Claude verify\",\"phone\":\"\",\"company\":\"\",\"service\":\"\",\"website\":\"\"}' \"https://gubermangeo.com/api/send-contact\")",
       "Bash(grep -n \"content\\\\\\\\.pricing\\\\|content\\\\\\\\.testimonials\\\\|content\\\\\\\\.faq\\\\|content\\\\\\\\.blog\\\\|content\\\\\\\\.industries\\\\|content\\\\\\\\.team\\\\|content\\\\\\\\.footer\\\\|content\\\\\\\\.seo\\\\|content\\\\\\\\.theme\" \"D:\\\\Ai_Agents\\\\Audit website\\\\assets\\\\js\\\\content-loader.js\")",
-      "Bash(grep -n \"content\\\\\\\\.services\\\\|content\\\\\\\\.hero\\\\|content\\\\\\\\.stats\" \"D:\\\\Ai_Agents\\\\Audit website\\\\assets\\\\js\\\\content-loader.js\")"
+      "Bash(grep -n \"content\\\\\\\\.services\\\\|content\\\\\\\\.hero\\\\|content\\\\\\\\.stats\" \"D:\\\\Ai_Agents\\\\Audit website\\\\assets\\\\js\\\\content-loader.js\")",
+      "Bash(curl -s \"https://gubermangeo.com/api/content?t=$\\(date +%s\\)\")",
+      "Bash(node -e \"let d='';process.stdin.on\\('data',c=>d+=c\\);process.stdin.on\\('end',\\(\\)=>{const c=JSON.parse\\(d\\);console.log\\('services:',c.services?.length\\);console.log\\('seo pages:',Object.keys\\(c.seo?.pages||{}\\).join\\(','\\)\\);console.log\\('email:',c.site?.email\\);}\\);\")",
+      "Bash(curl -s \"https://gubermangeo.com/assets/js/content-loader.js\")"
     ]
   }
 }

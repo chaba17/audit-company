@@ -786,6 +786,8 @@
       blog: renderBlog,
       industries: renderIndustries,
       stats: renderStats,
+      contactPage: renderContactPage,
+      search: renderSearchSection,
       megamenu: renderMegaMenu,
       footer: renderFooter,
       translations: renderTranslations,
@@ -815,6 +817,8 @@
       blog: attachBlog,
       industries: attachIndustries,
       stats: attachStats,
+      contactPage: attachFieldListeners,
+      search: attachFieldListeners,
       megamenu: attachMegaMenu,
       footer: attachFooter,
       translations: attachTranslations,
@@ -2046,6 +2050,149 @@
     });
   }
 
+  // --- CONTACT PAGE ---
+  function renderContactPage() {
+    if (!state.content.contactPage) state.content.contactPage = {
+      eyebrow: 'კონტაქტი · 01',
+      title: 'დავიწყოთ <mark>საუბარი</mark>.',
+      subtitle: 'გვიპასუხეთ კითხვაზე 24 საათში — რომელი კომუნიკაციის ფორმატი უფრო კომფორტულია?',
+      leftEyebrow: 'კომუნიკაციის არხები · 02',
+      leftTitle: 'ყველაზე მოსახერხებელი <mark>შეარჩიე</mark>.',
+      leftIntro: 'ჩვენი გუნდი გიპასუხებთ 24 საათში სამუშაო დღეებში.',
+      formEyebrow: 'გაგვიგზავნე შეტყობინება · 03',
+      formTitle: 'გვიამბე თქვენი <mark>ამოცანის</mark> შესახებ.',
+      submitBtnText: 'გაგზავნა',
+      successMessage: 'მადლობა! დაგიკავშირდებით 24 საათში.'
+    };
+    const c = state.content.contactPage;
+    return `
+      <div class="page-header">
+        <div>
+          <h1>კონტაქტი გვერდი</h1>
+          <p>მართე /contact გვერდის ტექსტები და ფორმის შეტყობინებები</p>
+        </div>
+      </div>
+
+      <div class="info-banner" style="background: #f0fdf4; border-left-color: #10B981;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        <div><strong>ცოცხალი:</strong> კონტაქტის ფორმის მიღებული შეტყობინებები ინახება Site Info → ელ.ფოსტაზე. ფორმის ქცევა და SMTP გაგზავნა მუშაობს Zoho-ს საშუალებით.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><h3 class="card-title">📍 გვერდის ჰერო</h3></div>
+        <div class="form-grid">
+          <div class="form-group"><label>Eyebrow (პატარა ტექსტი ზევით)</label>
+            <input type="text" data-field="contactPage.eyebrow" value="${escapeHtml(c.eyebrow || '')}" />
+          </div>
+          <div class="form-group"><label>მთავარი სათაური (შეგიძლია გამოიყენო &lt;mark&gt;...&lt;/mark&gt; ყვითელი highlight-ისთვის)</label>
+            <input type="text" data-field="contactPage.title" value="${escapeHtml(c.title || '')}" />
+          </div>
+          <div class="form-group"><label>სათაურის ქვეშ ტექსტი</label>
+            <textarea data-field="contactPage.subtitle" rows="2">${escapeHtml(c.subtitle || '')}</textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><h3 class="card-title">📞 მარცხენა ბლოკი — კომუნიკაცია</h3></div>
+        <div class="form-grid">
+          <div class="form-group"><label>Eyebrow</label>
+            <input type="text" data-field="contactPage.leftEyebrow" value="${escapeHtml(c.leftEyebrow || '')}" />
+          </div>
+          <div class="form-group"><label>სათაური</label>
+            <input type="text" data-field="contactPage.leftTitle" value="${escapeHtml(c.leftTitle || '')}" />
+          </div>
+          <div class="form-group"><label>შესავალი ტექსტი</label>
+            <textarea data-field="contactPage.leftIntro" rows="2">${escapeHtml(c.leftIntro || '')}</textarea>
+          </div>
+        </div>
+        <div style="padding: 12px 14px; background: var(--gray-50); font-size: 13px; color: var(--gray-700);">
+          💡 ტელეფონი, ელ.ფოსტა, მისამართი, სამუშაო საათები იცვლება <a href="#site" onclick="location.hash='#site'" style="color: var(--ink); font-weight: 700;">Site Info</a> სექციაში.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><h3 class="card-title">📝 მარჯვენა ბლოკი — ფორმა</h3></div>
+        <div class="form-grid">
+          <div class="form-group"><label>Eyebrow</label>
+            <input type="text" data-field="contactPage.formEyebrow" value="${escapeHtml(c.formEyebrow || '')}" />
+          </div>
+          <div class="form-group"><label>ფორმის სათაური</label>
+            <input type="text" data-field="contactPage.formTitle" value="${escapeHtml(c.formTitle || '')}" />
+          </div>
+          <div class="form-grid cols-2">
+            <div class="form-group"><label>Submit ღილაკის ტექსტი</label>
+              <input type="text" data-field="contactPage.submitBtnText" value="${escapeHtml(c.submitBtnText || 'გაგზავნა')}" />
+            </div>
+            <div class="form-group"><label>წარმატების შეტყობინება</label>
+              <input type="text" data-field="contactPage.successMessage" value="${escapeHtml(c.successMessage || '')}" />
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // --- SEARCH SETTINGS ---
+  function renderSearchSection() {
+    if (!state.content.search) state.content.search = {
+      enabled: false,
+      placeholder: 'მოძებნე სერვისი ან ინფორმაცია...',
+      noResultsText: 'შედეგი ვერ მოიძებნა'
+    };
+    const s = state.content.search;
+    return `
+      <div class="page-header">
+        <div>
+          <h1>Search</h1>
+          <p>ჰედერში არსებული 🔍 ძიების ღილაკის კონფიგურაცია</p>
+        </div>
+      </div>
+
+      <div class="info-banner">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/></svg>
+        <div>
+          <strong>ძიება რას ნიშნავს:</strong> ჰედერის "Search" ღილაკი გახსნის პოპაპს, სადაც მომხმარებელს შეუძლია საიტის კონტენტის მოძებნა (სერვისები, ბლოგი, FAQ). ძიება არის <strong>client-side</strong> (JavaScript-ით, ბრაუზერში), არ ჭირდება სერვერი.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><h3 class="card-title">⚙ ძიების ფუნქცია</h3></div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="switch">
+              <input type="checkbox" data-field="search.enabled" ${s.enabled ? 'checked' : ''} />
+              <span class="switch-slider"></span>
+              <span class="switch-label">ძიება ჩართულია საიტზე</span>
+            </label>
+            <small class="hint">გათიშვისას, ჰედერის 🔍 ღილაკი იმალება</small>
+          </div>
+          <div class="form-group">
+            <label>საძიებო velvet-ის placeholder</label>
+            <input type="text" data-field="search.placeholder" value="${escapeHtml(s.placeholder || '')}" />
+          </div>
+          <div class="form-group">
+            <label>შედეგების გარეშე შეტყობინება</label>
+            <input type="text" data-field="search.noResultsText" value="${escapeHtml(s.noResultsText || '')}" />
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><h3 class="card-title">📋 რასაც იძიებს</h3></div>
+        <div style="padding: 12px 14px; background: var(--gray-50); font-size: 14px; line-height: 1.6;">
+          ავტომატურად გაიდაჭდება ძიების ინდექსი შემდეგი წყაროებიდან:
+          <ul style="margin: 8px 0 0; padding-left: 20px;">
+            <li><strong>სერვისები</strong> — ${state.content.services?.length || 0} ცალი (title + description)</li>
+            <li><strong>FAQ</strong> — ${state.content.faq?.length || 0} ცალი (question + answer)</li>
+            <li><strong>ბლოგი</strong> — ${state.content.blog?.length || 0} ცალი (title + excerpt)</li>
+            <li><strong>ინდუსტრიები</strong> — ${state.content.industries?.length || 0} ცალი (title + description)</li>
+          </ul>
+        </div>
+      </div>
+    `;
+  }
+
   // --- MEGA MENU (full CRUD — labels, links, spotlight) ---
   function renderMegaMenu() {
     if (!state.content.megaMenus) state.content.megaMenus = {};
@@ -2899,8 +3046,10 @@
 
   // ====== META TAGS EDITOR ======
   function renderMeta() {
-    if (!state.content.seo) state.content.seo = { pages: {} };
+    if (!state.content.seo) state.content.seo = { pages: {}, verification: {} };
     if (!state.content.seo.pages) state.content.seo.pages = {};
+    if (!state.content.seo.verification) state.content.seo.verification = {};
+    const v = state.content.seo.verification;
 
     const pages = [
       { name: 'მთავარი', key: 'home' },
@@ -2963,6 +3112,40 @@
           </div>
         `;
       }).join('')}
+
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">🔐 საძიებო სისტემების ვერიფიკაცია</h3>
+          <p class="card-subtitle">თითოეული search engine-ის webmaster tools-ში რეგისტრაციისას ჩაწერე აქ მიცემული კოდი — meta tag-ები ავტომატურად ჩაიდოს ყველა გვერდზე</p>
+        </div>
+        <div class="form-grid cols-2">
+          <div class="form-group">
+            <label>Google Search Console</label>
+            <input type="text" data-field="seo.verification.google" value="${escapeHtml(v.google || '')}" placeholder="xxxxxxxxxxxxxxxx" />
+            <small class="hint">გაიდი: <a href="https://search.google.com/search-console" target="_blank" style="color: var(--ink); font-weight: 700;">search.google.com/search-console</a> → Add Property → HTML tag → მიცემული content-ის მნიშვნელობა</small>
+          </div>
+          <div class="form-group">
+            <label>Bing Webmaster Tools</label>
+            <input type="text" data-field="seo.verification.bing" value="${escapeHtml(v.bing || '')}" placeholder="F8C0D3B068A2D777FC53B0FE97D3DAFA" />
+            <small class="hint">გაიდი: <a href="https://www.bing.com/webmasters" target="_blank" style="color: var(--ink); font-weight: 700;">bing.com/webmasters</a> → Add Site → HTML Meta Tag → content მნიშვნელობა</small>
+          </div>
+          <div class="form-group">
+            <label>Yandex Webmaster</label>
+            <input type="text" data-field="seo.verification.yandex" value="${escapeHtml(v.yandex || '')}" placeholder="xxxxxxxxxxxxxxxx" />
+          </div>
+          <div class="form-group">
+            <label>Pinterest domain verify</label>
+            <input type="text" data-field="seo.verification.pinterest" value="${escapeHtml(v.pinterest || '')}" placeholder="xxxxxxxxxxxxxxxx" />
+          </div>
+          <div class="form-group">
+            <label>Facebook domain verify</label>
+            <input type="text" data-field="seo.verification.facebook" value="${escapeHtml(v.facebook || '')}" placeholder="xxxxxxxxxxxxxxxx" />
+          </div>
+        </div>
+        <div style="margin-top: 16px; padding: 12px 14px; background: #f0fdf4; border-left: 3px solid #10B981; font-size: 13px;">
+          <strong>ცოცხალი:</strong> ყველა კოდი ავტომატურად ხდება <code>&lt;meta&gt;</code> ტაგი <code>&lt;head&gt;</code>-ში. Publish-ის შემდეგ Bing/Google/Yandex-ს შეუძლია ვერიფიცირება 30 წამში.
+        </div>
+      </div>
     `;
   }
 

@@ -89,6 +89,14 @@
     ensureMeta('name', 'keywords', keywords);
     ensureLink('canonical', canonicalUrl);
 
+    // Site-verification tokens (Google Search Console, Bing, Yandex, Pinterest, Facebook)
+    const verification = (globalSeo.verification) || {};
+    if (verification.google) ensureMeta('name', 'google-site-verification', verification.google);
+    if (verification.bing) ensureMeta('name', 'msvalidate.01', verification.bing);
+    if (verification.yandex) ensureMeta('name', 'yandex-verification', verification.yandex);
+    if (verification.pinterest) ensureMeta('name', 'p:domain_verify', verification.pinterest);
+    if (verification.facebook) ensureMeta('name', 'facebook-domain-verification', verification.facebook);
+
     // Open Graph (Facebook, LinkedIn, etc.)
     ensureMeta('property', 'og:site_name', siteName);
     ensureMeta('property', 'og:type', pageKey === 'blog' ? 'article' : 'website');

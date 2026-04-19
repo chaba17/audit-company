@@ -923,7 +923,10 @@
     ]
   },
   "seo": {
-    "pages": {}
+    "pages": {},
+    "verification": {
+      "bing": "F8C0D3B068A2D777FC53B0FE97D3DAFA"
+    }
   },
   "analytics": {},
   "media": {},
