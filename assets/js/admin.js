@@ -1320,13 +1320,39 @@
       row.querySelector('button').addEventListener('click', () => row.remove());
     });
 
+    // Slugify helper — URL-safe (keeps Georgian letters but strips spaces/special chars)
+    const slugify = (str) => {
+      if (!str) return '';
+      return str.toString().trim()
+        .toLowerCase()
+        .replace(/\s+/g, '-')           // spaces → hyphens
+        .replace(/[\/\\?#&=]/g, '-')    // URL-unsafe → hyphens
+        .replace(/-+/g, '-')            // collapse multiple hyphens
+        .replace(/^-|-$/g, '');         // trim leading/trailing hyphens
+    };
+
+    // Auto-fill slug from title when user is creating a new service and hasn't manually edited ID
+    if (!isEdit) {
+      let slugManuallyEdited = false;
+      $('#svc-id')?.addEventListener('input', () => { slugManuallyEdited = true; });
+      $('#svc-title')?.addEventListener('input', () => {
+        if (!slugManuallyEdited) {
+          const suggested = slugify($('#svc-title').value) || s.id;
+          $('#svc-id').value = suggested;
+        }
+      });
+    }
+
     $('#svc-save').addEventListener('click', () => {
       const faqRows = $$('#svc-faq-editor .faq-row').map(row => ({
         q: row.querySelector('.svc-faq-q')?.value.trim() || '',
         a: row.querySelector('.svc-faq-a')?.value.trim() || ''
       })).filter(f => f.q || f.a);
+      // Always slugify the final id — prevents spaces/special chars breaking URLs
+      const rawId = $('#svc-id').value || '';
+      const cleanId = slugify(rawId) || 'service-' + Date.now();
       const updated = {
-        id: $('#svc-id').value || 'service-' + Date.now(),
+        id: cleanId,
         title: $('#svc-title').value,
         subtitle: $('#svc-subtitle').value,
         shortDesc: $('#svc-short').value,
