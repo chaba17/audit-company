@@ -1,6 +1,6 @@
 {
   "_test": true,
-  "_updated": "2026-04-19T21:27:28.082Z",
+  "_updated": "2026-04-19T23:05:09.014Z",
   "megaMenus": {
     "services": {
       "label": "სერვისები",
@@ -333,8 +333,8 @@
     "tagline": "Shape the future with confidence",
     "phone": "+995 577 376 197",
     "phoneAlt": "+995 577 376 197",
-    "email": "info@auditcompany.ge",
-    "emailAlt": "support@auditcompany.ge",
+    "email": "info@gubermangeo.com",
+    "emailAlt": "info@gubermangeo.com",
     "address": "თბილისი, ვაჟა-ფშაველას გამზ. 71",
     "addressDetails": "Business Hub, მე-4 სართული",
     "hours": "ორშ - პარ: 09:00 - 19:00",
@@ -927,6 +927,8 @@
   },
   "analytics": {},
   "media": {},
-  "theme": {},
+  "theme": {
+    "ink": ""
+  },
   "_version": "1.0.0"
 }
