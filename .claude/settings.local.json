@@ -141,7 +141,16 @@
       "Bash(cat .gitignore.tmp)",
       "Bash(awk '!seen[$0]++' .gitignore)",
       "Bash(mv .gitignore.uniq .gitignore)",
-      "Bash(rm .gitignore.tmp)"
+      "Bash(rm .gitignore.tmp)",
+      "Bash(curl -s \"https://gubermangeo.com/contact\")",
+      "Bash(curl -sI -X POST -H \"Content-Type: application/json\" -d '{}' \"https://gubermangeo.com/api/send-contact\")",
+      "Bash(curl -s -X POST -H \"Content-Type: application/json\" -d '{}' \"https://gubermangeo.com/api/send-contact\")",
+      "Bash(nslookup -type=mx gubermangeo.com 8.8.8.8)",
+      "Bash(nslookup -type=txt gubermangeo.com 8.8.8.8)",
+      "Bash(nslookup -type=txt zmail._domainkey.gubermangeo.com 8.8.8.8)",
+      "Bash(nslookup -type=any gubermangeo.com 8.8.8.8)",
+      "Bash(nslookup -type=mx gubermangeo.com 1.1.1.1)",
+      "Bash(nslookup -type=mx gubermangeo.com ns1.vercel-dns.com)"
     ]
   }
 }

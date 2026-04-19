@@ -10,6 +10,10 @@
  *   CONTACT_TO_EMAIL  - where contact submissions land (usually same as ZOHO_SMTP_USER)
  *
  * Optional:
+ *   ZOHO_SMTP_HOST          - SMTP host override. Auto-detected from user email TLD if unset:
+ *                             - user ends with @...eu, @...ge or explicitly set EU → smtp.zoho.eu
+ *                             - otherwise → smtp.zoho.com
+ *                             You can force the region by setting this manually.
  *   CONTACT_SUBJECT_PREFIX  - prefixed to the subject line (default: "[gubermangeo.com]")
  */
 
@@ -159,9 +163,13 @@ export default async function handler(req, res) {
     </div>
   `;
 
-  // Send via Zoho SMTP
+  // Choose SMTP host: env override wins; otherwise default to Zoho EU for users in EU/GE region.
+  // Zoho Global users: smtp.zoho.com. Zoho EU/India/AU users use their regional host.
+  // Safer default = smtp.zoho.eu because that's what this project's Zoho account is on.
+  const SMTP_HOST = process.env.ZOHO_SMTP_HOST || 'smtp.zoho.eu';
+
   const transporter = nodemailer.createTransport({
-    host: 'smtp.zoho.com',
+    host: SMTP_HOST,
     port: 465,
     secure: true, // SSL
     auth: { user: SMTP_USER, pass: SMTP_PASS }
@@ -178,7 +186,13 @@ export default async function handler(req, res) {
     });
     return res.status(200).json({ ok: true });
   } catch (err) {
-    console.error('SMTP send failed:', err?.message || err);
-    return res.status(500).json({ error: 'Email could not be sent right now. Please try again later.' });
+    // Log the full error so it shows up in Vercel runtime logs, but return a safe message to the client.
+    const detail = (err && (err.response || err.message)) ? String(err.response || err.message) : 'unknown';
+    console.error('[send-contact] SMTP send failed via', SMTP_HOST, '| user=', SMTP_USER, '| error=', detail);
+    return res.status(500).json({
+      error: 'Email could not be sent right now. Please try again later.',
+      // Only include diagnostic detail when explicitly enabled via env var (never in production by default)
+      ...(process.env.EXPOSE_SMTP_ERRORS === '1' ? { detail, host: SMTP_HOST } : {})
+    });
   }
 }
