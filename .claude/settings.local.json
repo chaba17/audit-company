@@ -150,7 +150,10 @@
       "Bash(nslookup -type=txt zmail._domainkey.gubermangeo.com 8.8.8.8)",
       "Bash(nslookup -type=any gubermangeo.com 8.8.8.8)",
       "Bash(nslookup -type=mx gubermangeo.com 1.1.1.1)",
-      "Bash(nslookup -type=mx gubermangeo.com ns1.vercel-dns.com)"
+      "Bash(nslookup -type=mx gubermangeo.com ns1.vercel-dns.com)",
+      "Bash(curl -s -X POST -H \"Content-Type: application/json\" -d '{\"name\":\"Test User\",\"email\":\"test@example.com\",\"message\":\"Test from Claude verify\",\"phone\":\"\",\"company\":\"\",\"service\":\"\",\"website\":\"\"}' \"https://gubermangeo.com/api/send-contact\")",
+      "Bash(grep -n \"content\\\\\\\\.pricing\\\\|content\\\\\\\\.testimonials\\\\|content\\\\\\\\.faq\\\\|content\\\\\\\\.blog\\\\|content\\\\\\\\.industries\\\\|content\\\\\\\\.team\\\\|content\\\\\\\\.footer\\\\|content\\\\\\\\.seo\\\\|content\\\\\\\\.theme\" \"D:\\\\Ai_Agents\\\\Audit website\\\\assets\\\\js\\\\content-loader.js\")",
+      "Bash(grep -n \"content\\\\\\\\.services\\\\|content\\\\\\\\.hero\\\\|content\\\\\\\\.stats\" \"D:\\\\Ai_Agents\\\\Audit website\\\\assets\\\\js\\\\content-loader.js\")"
     ]
   }
 }

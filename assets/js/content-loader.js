@@ -35,6 +35,147 @@
   if (!content) return;
   window.SITE_CONTENT = content;
 
+  // ========================================================
+  // APPLY SEO / META / OG TAGS — from content.seo.pages[pageKey]
+  // ========================================================
+  try {
+    const pageKey = (() => {
+      const p = location.pathname.replace(/\/+$/, '').toLowerCase();
+      if (p === '' || p === '/index' || p.endsWith('/index.html') || p === '/') return 'home';
+      if (p.endsWith('/services') || p.endsWith('/services.html') || p.includes('/services/')) return 'services';
+      if (p.endsWith('/pricing') || p.endsWith('/pricing.html')) return 'pricing';
+      if (p.endsWith('/about') || p.endsWith('/about.html')) return 'about';
+      if (p.endsWith('/blog') || p.endsWith('/blog.html')) return 'blog';
+      if (p.endsWith('/contact') || p.endsWith('/contact.html')) return 'contact';
+      return 'home';
+    })();
+
+    const seoPages = (content.seo && content.seo.pages) || {};
+    const pageSeo = seoPages[pageKey] || {};
+    const globalSeo = content.seo || {};
+    const siteName = (content.site && content.site.name) || 'Audit';
+    const siteUrl = (globalSeo.siteUrl || 'https://gubermangeo.com').replace(/\/+$/, '');
+
+    const title = pageSeo.title || document.title;
+    const description = pageSeo.description || globalSeo.defaultDescription || '';
+    const ogImage = pageSeo.ogImage || globalSeo.defaultOgImage || '';
+    const keywords = pageSeo.keywords || globalSeo.defaultKeywords || '';
+    const canonicalUrl = siteUrl + location.pathname;
+
+    const ensureMeta = (attrName, attrValue, content) => {
+      if (!content) return;
+      let el = document.head.querySelector(`meta[${attrName}="${attrValue}"]`);
+      if (!el) {
+        el = document.createElement('meta');
+        el.setAttribute(attrName, attrValue);
+        document.head.appendChild(el);
+      }
+      el.setAttribute('content', content);
+    };
+
+    const ensureLink = (rel, href) => {
+      if (!href) return;
+      let el = document.head.querySelector(`link[rel="${rel}"]`);
+      if (!el) {
+        el = document.createElement('link');
+        el.setAttribute('rel', rel);
+        document.head.appendChild(el);
+      }
+      el.setAttribute('href', href);
+    };
+
+    if (title) document.title = title;
+    ensureMeta('name', 'description', description);
+    ensureMeta('name', 'keywords', keywords);
+    ensureLink('canonical', canonicalUrl);
+
+    // Open Graph (Facebook, LinkedIn, etc.)
+    ensureMeta('property', 'og:site_name', siteName);
+    ensureMeta('property', 'og:type', pageKey === 'blog' ? 'article' : 'website');
+    ensureMeta('property', 'og:url', canonicalUrl);
+    ensureMeta('property', 'og:title', title);
+    ensureMeta('property', 'og:description', description);
+    if (ogImage) ensureMeta('property', 'og:image', ogImage);
+    ensureMeta('property', 'og:locale', 'ka_GE');
+
+    // Twitter Card
+    ensureMeta('name', 'twitter:card', ogImage ? 'summary_large_image' : 'summary');
+    ensureMeta('name', 'twitter:title', title);
+    ensureMeta('name', 'twitter:description', description);
+    if (ogImage) ensureMeta('name', 'twitter:image', ogImage);
+
+    // JSON-LD schema.org Organization (homepage only, helps Google Knowledge Graph)
+    if (pageKey === 'home') {
+      const org = {
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        name: siteName,
+        url: siteUrl,
+        logo: (content.site && content.site.logoUrl) || siteUrl + '/assets/images/logo.png',
+        email: content.site && content.site.email,
+        telephone: content.site && content.site.phone,
+        address: {
+          '@type': 'PostalAddress',
+          streetAddress: content.site && content.site.address,
+          addressCountry: 'GE'
+        },
+        sameAs: [
+          content.site?.social?.facebook,
+          content.site?.social?.instagram,
+          content.site?.social?.linkedin,
+          content.site?.social?.youtube
+        ].filter(Boolean).filter(u => u !== '#')
+      };
+      let ld = document.head.querySelector('script[data-org-jsonld]');
+      if (!ld) {
+        ld = document.createElement('script');
+        ld.type = 'application/ld+json';
+        ld.setAttribute('data-org-jsonld', '');
+        document.head.appendChild(ld);
+      }
+      ld.textContent = JSON.stringify(org, null, 2);
+    }
+  } catch (e) { console.warn('SEO inject failed:', e); }
+
+  // ========================================================
+  // APPLY GOOGLE ANALYTICS — from content.analytics.gaId
+  // ========================================================
+  try {
+    const gaId = content.analytics && content.analytics.gaId;
+    if (gaId && /^(G-|UA-|GTM-)[A-Z0-9-]+$/i.test(gaId) && !document.querySelector('script[data-ga-snippet]')) {
+      const tag = document.createElement('script');
+      tag.async = true;
+      tag.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(gaId)}`;
+      tag.setAttribute('data-ga-snippet', '');
+      document.head.appendChild(tag);
+      const init = document.createElement('script');
+      init.setAttribute('data-ga-snippet', 'init');
+      init.textContent = `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${gaId.replace(/'/g, "\\'")}');`;
+      document.head.appendChild(init);
+    }
+  } catch (e) { console.warn('Analytics inject failed:', e); }
+
+  // ========================================================
+  // APPLY THEME — from content.theme (colors via CSS vars)
+  // ========================================================
+  try {
+    const theme = content.theme || {};
+    const vars = [];
+    if (theme.yellow) vars.push(`--color-yellow: ${theme.yellow}`);
+    if (theme.ink) vars.push(`--color-ink: ${theme.ink}`);
+    if (theme.charcoal) vars.push(`--color-charcoal: ${theme.charcoal}`);
+    if (theme.accent) vars.push(`--color-accent: ${theme.accent}`);
+    if (vars.length) {
+      let style = document.head.querySelector('style[data-theme-vars]');
+      if (!style) {
+        style = document.createElement('style');
+        style.setAttribute('data-theme-vars', '');
+        document.head.appendChild(style);
+      }
+      style.textContent = `:root { ${vars.join('; ')}; }`;
+    }
+  } catch (e) { console.warn('Theme inject failed:', e); }
+
   // Auto-sync services mega menu links with the real services list (so admin-added services always show in the dropdown)
   try {
     if (Array.isArray(content.services) && content.services.length && content.megaMenus && content.megaMenus.services) {
@@ -47,6 +188,37 @@
       }));
     }
   } catch (e) { console.warn('Mega menu services sync failed:', e); }
+
+  // Re-render footer with new site/social data (phone, email, social links)
+  try {
+    if (typeof renderFooter === 'function') {
+      const footerEl = document.querySelector('footer.footer');
+      if (footerEl) {
+        const tmp = document.createElement('div');
+        tmp.innerHTML = renderFooter();
+        const newFooter = tmp.querySelector('footer.footer');
+        if (newFooter) footerEl.replaceWith(newFooter);
+      }
+    }
+  } catch (e) { console.warn('Footer re-render failed:', e); }
+
+  // Contact page: update phone + email + address blocks from site info
+  try {
+    const site = content.site || {};
+    if (site.phone) {
+      const phoneLink = document.getElementById('contact-phone-link');
+      const phoneText = document.getElementById('contact-phone-text');
+      const telHref = 'tel:' + site.phone.replace(/[^+0-9]/g, '');
+      if (phoneLink) phoneLink.setAttribute('href', telHref);
+      if (phoneText) phoneText.textContent = site.phone;
+    }
+    if (site.email) {
+      const emailLink = document.getElementById('contact-email-link');
+      const emailText = document.getElementById('contact-email-text');
+      if (emailLink) emailLink.setAttribute('href', 'mailto:' + site.email);
+      if (emailText) emailText.textContent = site.email;
+    }
+  } catch (e) { console.warn('Contact info update failed:', e); }
 
   // Re-render header if content has megaMenus (to pick up admin changes)
   try {

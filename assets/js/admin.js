@@ -849,8 +849,14 @@
 
       <div class="info-banner">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
-        <div>
-          <strong>რჩევა:</strong> ცვლილებები ინახება შენი ბრაუზერის მეხსიერებაში. საიტზე გამოსახვისთვის გააკეთე <code>Export JSON</code> და ატვირთე ფაილი რეპოზიტორიაში.
+        <div style="flex: 1;">
+          <strong>რჩევა:</strong> ცვლილებები ავტომატურად ინახება ბრაუზერში. Live საიტზე გამოსახვისთვის დააჭირე <code>Publish Live</code> — ცვლილება 10-30 წამში ჩანს.
+          <div style="margin-top: 8px;">
+            <a href="https://gubermangeo.com/" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 600; color: var(--ink);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>
+              ცოცხალი საიტი: gubermangeo.com
+            </a>
+          </div>
         </div>
       </div>
 
@@ -2753,7 +2759,7 @@
           <p>საიტის SEO-ს ჯანმრთელობის შემოწმება და Google-ში აღმოჩენისთვის მომზადება</p>
         </div>
         <div class="page-header-actions">
-          <a href="https://pagespeed.web.dev/analysis?url=https://audit-company-sage.vercel.app" target="_blank" class="btn btn-outline">
+          <a href="https://pagespeed.web.dev/analysis?url=https://gubermangeo.com" target="_blank" class="btn btn-outline">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             PageSpeed Test
           </a>
@@ -2913,13 +2919,16 @@
         </div>
       </div>
 
-      <div class="info-banner">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+      <div class="info-banner" style="background: #f0fdf4; border-left-color: #10B981;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
         <div>
-          <strong>რჩევები:</strong><br>
-          • <strong>Title</strong>: 30-60 სიმბოლო, მთავარი საძიებო სიტყვა ტექსტის დასაწყისში<br>
-          • <strong>Description</strong>: 120-160 სიმბოლო, მოკლე და მიზიდვალი ტექსტი<br>
-          • <strong>OG Image</strong>: სოციალურ ქსელებში გამოჩენის სურათი (1200×630px)
+          <strong>ცოცხალი:</strong> ცვლილებები ავტომატურად ინერგება <code>&lt;title&gt;</code>, <code>meta description</code>, Open Graph (FB/LinkedIn), Twitter Card და canonical URL-ში ყოველ Publish-ზე.
+          <div style="margin-top: 8px; font-size: 13px; color: var(--gray-700);">
+            • <strong>Title</strong>: 30-60 სიმბოლო, მთავარი საძიებო სიტყვა დასაწყისში<br>
+            • <strong>Description</strong>: 120-160 სიმბოლო, მიზიდვალი ტექსტი რომელიც Google-ში გამოჩნდება<br>
+            • <strong>OG Image</strong>: 1200×630px, ხილულია FB/LinkedIn-ზე გაზიარების დროს<br>
+            • <strong>Keywords</strong>: ნაკლებად კრიტიკულია — Google იგნორირებს, მაგრამ Bing-ისთვის სასარგებლოა
+          </div>
         </div>
       </div>
 
@@ -2963,7 +2972,7 @@
 
   // ====== SITEMAP ======
   function renderSitemap() {
-    const baseUrl = 'https://audit-company-sage.vercel.app';
+    const baseUrl = 'https://gubermangeo.com';
     const urls = [
       { loc: baseUrl + '/', priority: '1.0', freq: 'weekly' },
       { loc: baseUrl + '/services.html', priority: '0.9', freq: 'weekly' },
@@ -3029,7 +3038,7 @@ ${urls.map(u => `  <url>
   }
 
   function attachSitemap() {
-    const baseUrl = 'https://audit-company-sage.vercel.app';
+    const baseUrl = 'https://gubermangeo.com';
 
     const generateSitemapXml = () => {
       const urls = [
@@ -3105,13 +3114,15 @@ ${urls.map(u => `  <url>
         </div>
       </div>
 
-      <div class="info-banner">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/></svg>
+      <div class="info-banner" style="background: #f0fdf4; border-left-color: #10B981;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
         <div>
-          <strong>ანალიტიკისთვის სამი უფასო ვარიანტი გაქვს:</strong><br>
-          1. <strong>Google Analytics</strong> — ყველაზე პოპულარული. ჩასვი Measurement ID ქვემოთ.<br>
-          2. <strong>Vercel Analytics</strong> — ავტომატურად Vercel-ს აქვს ჩაშენებული (უფასო Hobby გეგმაზე).<br>
-          3. <strong>Plausible</strong> — კონფიდენციალურობაზე ორიენტირებული (ფასიანი).
+          <strong>ცოცხალი:</strong> როცა Measurement ID-ს ჩაწერ (მაგ. <code>G-XXXXXXXXXX</code>), gtag.js ავტომატურად ჩაიტვირთება ყველა public გვერდზე. Publish-ის შემდეგ ანალიტიკა ამუშავდება 30 წამში.
+          <div style="margin-top: 8px; font-size: 13px;">
+            • <strong>Google Analytics 4</strong> — მიიღე Measurement ID <a href="https://analytics.google.com" target="_blank" style="color: var(--ink); font-weight: 700;">analytics.google.com</a>-დან<br>
+            • <strong>Vercel Analytics</strong> — ალტერნატივა, ავტომატურად Vercel-ს აქვს ჩაშენებული უფასო Hobby გეგმაზე<br>
+            • <strong>Plausible</strong> / <strong>Fathom</strong> — კონფიდენციალურობაზე ორიენტირებული (ფასიანი) ალტერნატივები
+          </div>
         </div>
       </div>
 
@@ -3318,7 +3329,7 @@ ${urls.map(u => `  <url>
         })
       });
 
-      const url = `https://audit-company-sage.vercel.app/${path}`;
+      const url = `https://gubermangeo.com/${path}`;
       if (!state.content.media) state.content.media = [];
       state.content.media.unshift({
         name: file.name,
@@ -3347,9 +3358,9 @@ ${urls.map(u => `  <url>
         </div>
       </div>
 
-      <div class="info-banner">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/></svg>
-        <div><strong>ყურადღება:</strong> ფერების ცვლილება დააფიქსირდება JSON-ში. საიტზე ხილვადობისთვის საჭიროა დეველოპერული ცვლილება (style.css-ში). ამჟამად მხოლოდ admin-ში ხილვადია.</div>
+      <div class="info-banner" style="background: #f0fdf4; border-left-color: #10B981;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        <div><strong>ცოცხალი:</strong> ფერების ცვლილება Publish-ის შემდეგ ავტომატურად ინერგება საიტზე (CSS variables-ით). Refresh-ის გარეშეც იმუშავებს ყველა ვიზიტორზე.</div>
       </div>
 
       <div class="card">
@@ -3358,7 +3369,7 @@ ${urls.map(u => `  <url>
           <div class="color-swatch">
             <input type="color" data-field="theme.yellow" value="${escapeHtml(theme.yellow)}" />
             <div class="color-swatch-info">
-              <div class="color-swatch-label">Primary (ყვითელი)</div>
+              <div class="color-swatch-label">Primary (ყვითელი) — CTA ღილაკები, highlights</div>
               <div class="color-swatch-value">${escapeHtml(theme.yellow)}</div>
             </div>
             <input type="text" data-field="theme.yellow" value="${escapeHtml(theme.yellow)}" />
@@ -3366,10 +3377,18 @@ ${urls.map(u => `  <url>
           <div class="color-swatch">
             <input type="color" data-field="theme.ink" value="${escapeHtml(theme.ink)}" />
             <div class="color-swatch-info">
-              <div class="color-swatch-label">Dark (ფონი)</div>
+              <div class="color-swatch-label">Dark (ფონი) — header + footer</div>
               <div class="color-swatch-value">${escapeHtml(theme.ink)}</div>
             </div>
             <input type="text" data-field="theme.ink" value="${escapeHtml(theme.ink)}" />
+          </div>
+        </div>
+        <div style="margin-top: 16px; padding: 16px; background: var(--gray-50); border-left: 3px solid ${escapeHtml(theme.yellow)};">
+          <div style="font-size: 12px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px;">Preview</div>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button style="padding: 10px 18px; background: ${escapeHtml(theme.yellow)}; color: ${escapeHtml(theme.ink)}; font-weight: 700; border: none; cursor: default;">Primary Button</button>
+            <button style="padding: 10px 18px; background: ${escapeHtml(theme.ink)}; color: ${escapeHtml(theme.yellow)}; font-weight: 700; border: none; cursor: default;">Dark Button</button>
+            <span style="padding: 10px 18px; background: white; color: ${escapeHtml(theme.ink)}; border: 2px solid ${escapeHtml(theme.ink)}; font-weight: 700;">Outline</span>
           </div>
         </div>
       </div>

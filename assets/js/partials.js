@@ -322,19 +322,26 @@ function renderHeader() {
 }
 
 function renderFooter() {
+  const site = (window.SITE_CONTENT && window.SITE_CONTENT.site) || {};
+  const phone = site.phone || '+995 32 2 00 00 00';
+  const email = site.email || 'info@gubermangeo.com';
+  const siteName = site.name || 'Audit';
+  const tagline = site.tagline || 'Shape the future<br>with confidence';
+  const social = site.social || {};
+  const socialLink = (url) => (url && url !== '#') ? url : '#';
   return `
     <footer class="footer">
       <div class="container">
         <div class="footer-top">
           <div class="footer-about">
             <a href="${basePath}index.html" class="logo">
-              <div class="logo-wrap"><span class="logo-ey">Audit</span></div>
-              <span class="logo-tagline" style="color: rgba(255,255,255,0.6);">Shape the future<br>with confidence</span>
+              <div class="logo-wrap"><span class="logo-ey">${siteName}</span></div>
+              <span class="logo-tagline" style="color: rgba(255,255,255,0.6);">${tagline}</span>
             </a>
             <p data-i18n="footer.about" style="margin-top: 20px;"></p>
             <p style="font-size: 13px; color: rgba(255,255,255,0.6);">
-              <strong style="color: white; display: block; font-size: 16px; margin-bottom: 6px;">+995 32 2 00 00 00</strong>
-              info@auditcompany.ge<br>
+              <strong style="color: white; display: block; font-size: 16px; margin-bottom: 6px;"><a href="tel:${phone.replace(/[^+0-9]/g,'')}" style="color: inherit;">${phone}</a></strong>
+              <a href="mailto:${email}" style="color: inherit;">${email}</a><br>
               <span data-i18n="footer.address"></span>
             </p>
           </div>
@@ -391,10 +398,10 @@ function renderFooter() {
             <a href="#" data-i18n="footer.terms"></a>
           </div>
           <div class="social">
-            <a href="#" aria-label="LinkedIn">${ICONS["linkedin"]}</a>
-            <a href="#" aria-label="Facebook">${ICONS["facebook"]}</a>
-            <a href="#" aria-label="Instagram">${ICONS["instagram"]}</a>
-            <a href="#" aria-label="YouTube">${ICONS["youtube"]}</a>
+            <a href="${socialLink(social.linkedin)}" target="_blank" rel="noopener" aria-label="LinkedIn">${ICONS["linkedin"]}</a>
+            <a href="${socialLink(social.facebook)}" target="_blank" rel="noopener" aria-label="Facebook">${ICONS["facebook"]}</a>
+            <a href="${socialLink(social.instagram)}" target="_blank" rel="noopener" aria-label="Instagram">${ICONS["instagram"]}</a>
+            <a href="${socialLink(social.youtube)}" target="_blank" rel="noopener" aria-label="YouTube">${ICONS["youtube"]}</a>
           </div>
         </div>
       </div>
