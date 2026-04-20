@@ -1,6 +1,6 @@
 {
   "_test": true,
-  "_updated": "2026-04-20T20:52:31.287Z",
+  "_updated": "2026-04-20T21:03:31.651Z",
   "megaMenus": {
     "services": {
       "label": "სერვისები",
@@ -933,7 +933,10 @@
       "bing": "F8C0D3B068A2D777FC53B0FE97D3DAFA"
     }
   },
-  "analytics": {},
+  "analytics": {
+    "gaId": "G-SBC2F6DM9Z",
+    "enabled": true
+  },
   "media": [
     {
       "name": "photo_2026-04-19_17-17-30.jpg",
