@@ -1128,44 +1128,47 @@
       <div class="card">
         <div class="card-header">
           <h3 class="card-title">სათაური და ტექსტი</h3>
+          <p class="card-subtitle">თარგმნე ოთხივე ენაზე — აირჩიე tab ქვემოთ</p>
         </div>
+        ${renderSectionLangTabBar('hero', 'Tag / სათაური / აღწერა')}
         <div class="form-grid">
           <div class="form-group">
-            <label>Tag (პატარა ყვითელი ლეიბლი)</label>
-            <input type="text" data-field="hero.tag" value="${escapeHtml(h.tag)}" />
+            <label>Tag (პატარა ყვითელი ლეიბლი) <span class="lang-hint-badge" style="color: var(--gray-500); font-weight: 400; font-size: 12px;">KA</span></label>
+            <input type="text" data-lang-field="tag" value="" />
           </div>
           <div class="form-group">
-            <label>მთავარი სათაური <span class="required">*</span></label>
-            <textarea data-field="hero.title" rows="3">${escapeHtml(h.title)}</textarea>
+            <label>მთავარი სათაური <span class="required">*</span> <span class="lang-hint-badge" style="color: var(--gray-500); font-weight: 400; font-size: 12px;">KA</span></label>
+            <textarea data-lang-field="title" rows="3"></textarea>
             <small class="hint">HTML-ის გამოყენება შესაძლებელია. <code>&lt;mark&gt;სიტყვა&lt;/mark&gt;</code> — ყვითელი highlight</small>
           </div>
           <div class="form-group">
-            <label>აღწერა</label>
-            <textarea data-field="hero.subtitle" rows="3">${escapeHtml(h.subtitle)}</textarea>
+            <label>აღწერა <span class="lang-hint-badge" style="color: var(--gray-500); font-weight: 400; font-size: 12px;">KA</span></label>
+            <textarea data-lang-field="subtitle" rows="3"></textarea>
           </div>
         </div>
       </div>
 
       <div class="card">
         <div class="card-header">
-          <h3 class="card-title">ღილაკები (CTA)</h3>
+          <h3 class="card-title">ღილაკები (CTA) — თარგმანი</h3>
         </div>
+        ${renderSectionLangTabBar('hero', 'ღილაკების ტექსტი')}
         <div class="form-grid cols-2">
           <div class="form-group">
-            <label>Primary ღილაკი — ტექსტი</label>
-            <input type="text" data-field="hero.primaryCta.text" value="${escapeHtml(h.primaryCta.text)}" />
+            <label>Primary ღილაკი — ტექსტი <span class="lang-hint-badge" style="color: var(--gray-500); font-weight: 400; font-size: 12px;">KA</span></label>
+            <input type="text" data-lang-field="primaryCta.text" value="" />
           </div>
           <div class="form-group">
-            <label>Primary ღილაკი — URL</label>
-            <input type="text" data-field="hero.primaryCta.href" value="${escapeHtml(h.primaryCta.href)}" />
+            <label>Primary ღილაკი — URL (საერთო)</label>
+            <input type="text" data-field="hero.primaryCta.href" value="${escapeHtml(h.primaryCta?.href || '')}" />
           </div>
           <div class="form-group">
-            <label>Secondary ღილაკი — ტექსტი</label>
-            <input type="text" data-field="hero.secondaryCta.text" value="${escapeHtml(h.secondaryCta.text)}" />
+            <label>Secondary ღილაკი — ტექსტი <span class="lang-hint-badge" style="color: var(--gray-500); font-weight: 400; font-size: 12px;">KA</span></label>
+            <input type="text" data-lang-field="secondaryCta.text" value="" />
           </div>
           <div class="form-group">
-            <label>Secondary ღილაკი — URL</label>
-            <input type="text" data-field="hero.secondaryCta.href" value="${escapeHtml(h.secondaryCta.href)}" />
+            <label>Secondary ღილაკი — URL (საერთო)</label>
+            <input type="text" data-field="hero.secondaryCta.href" value="${escapeHtml(h.secondaryCta?.href || '')}" />
           </div>
         </div>
       </div>
@@ -1191,13 +1194,9 @@
   }
 
   function attachHero() {
+    attachSectionLangTabs();
     attachFieldListeners();
     attachImagePreview();
-    // Rich text editor on subtitle
-    const sub = document.querySelector('[data-field="hero.subtitle"]');
-    if (sub && sub.tagName === 'TEXTAREA') {
-      makeRichEditor(sub);
-    }
   }
 
   // --- SERVICES ---
@@ -1815,26 +1814,30 @@
 
   function openTeamModal(index = null) {
     const isEdit = index !== null;
-    const m = isEdit ? deepClone(state.content.team[index]) : { name: '', role: '', tag: '', bio: '', photo: '' };
+    const m = isEdit ? deepClone(state.content.team[index]) : { name: '', role: '', tag: '', bio: '', photo: '', i18n: {} };
+    m.i18n = m.i18n || {};
     openModal(isEdit ? 'წევრის რედაქტირება' : 'ახალი წევრი', `
+      ${MODAL_LANG_TABS_HTML}
       <div class="form-grid">
         <div class="form-grid cols-2">
-          <div class="form-group"><label>სახელი და გვარი *</label><input type="text" id="mem-name" value="${escapeHtml(m.name)}" /></div>
-          <div class="form-group"><label>პოზიცია</label><input type="text" id="mem-role" value="${escapeHtml(m.role)}" /></div>
-          <div class="form-group"><label>Tag (მაგ. ACCA, CPA)</label><input type="text" id="mem-tag" value="${escapeHtml(m.tag || '')}" /></div>
-          <div class="form-group"><label>ფოტო URL</label><input type="url" id="mem-photo" value="${escapeHtml(m.photo || '')}" /></div>
+          <div class="form-group"><label>სახელი და გვარი * <span class="modal-lang-hint" style="color: var(--gray-500); font-weight: 400; font-size: 12px;">KA</span></label><input type="text" id="mem-name" value="${escapeHtml(m.name)}" /></div>
+          <div class="form-group"><label>პოზიცია <span class="modal-lang-hint" style="color: var(--gray-500); font-weight: 400; font-size: 12px;">KA</span></label><input type="text" id="mem-role" value="${escapeHtml(m.role)}" /></div>
+          <div class="form-group"><label>Tag (მაგ. ACCA, CPA) <span class="modal-lang-hint" style="color: var(--gray-500); font-weight: 400; font-size: 12px;">KA</span></label><input type="text" id="mem-tag" value="${escapeHtml(m.tag || '')}" /></div>
+          <div class="form-group"><label>ფოტო URL <small style="color: var(--gray-500); font-weight: 400;">(ყველა ენისთვის საერთო)</small></label><input type="url" id="mem-photo" value="${escapeHtml(m.photo || '')}" /></div>
         </div>
-        <div class="form-group"><label>ბიო</label><textarea id="mem-bio" rows="3">${escapeHtml(m.bio || '')}</textarea></div>
+        <div class="form-group"><label>ბიო <span class="modal-lang-hint" style="color: var(--gray-500); font-weight: 400; font-size: 12px;">KA</span></label><textarea id="mem-bio" rows="3">${escapeHtml(m.bio || '')}</textarea></div>
       </div>
       <div class="form-actions">
         <button class="btn btn-outline" data-modal-cancel>გაუქმება</button>
         <button class="btn btn-yellow" id="mem-save">შენახვა</button>
       </div>
     `);
+    const lt = initModalLangTabs(m, { name: 'mem-name', role: 'mem-role', tag: 'mem-tag', bio: 'mem-bio' });
     $('#mem-save').addEventListener('click', () => {
-      const u = { name: $('#mem-name').value, role: $('#mem-role').value, tag: $('#mem-tag').value, bio: $('#mem-bio').value, photo: $('#mem-photo').value };
-      if (!u.name) { toast('სახელი სავალდებულოა', 'error'); return; }
-      if (isEdit) state.content.team[index] = u; else state.content.team.push(u);
+      lt?.finalize();
+      m.photo = $('#mem-photo').value; // non-translatable field grabbed explicitly
+      if (!m.name) { toast('სახელი სავალდებულოა (KA ძირითადი ენაა)', 'error'); return; }
+      if (isEdit) state.content.team[index] = m; else state.content.team.push(m);
       markDirty(); closeModal(); renderSection('team'); updateBadges();
       toast('შენახულია', 'success');
     });
@@ -1889,25 +1892,29 @@
 
   function openTestimonialModal(index = null) {
     const isEdit = index !== null;
-    const t = isEdit ? deepClone(state.content.testimonials[index]) : { quote: '', author: '', role: '', avatar: '' };
+    const t = isEdit ? deepClone(state.content.testimonials[index]) : { quote: '', author: '', role: '', avatar: '', i18n: {} };
+    t.i18n = t.i18n || {};
     openModal(isEdit ? 'გამოხმაურების რედაქტირება' : 'ახალი გამოხმაურება', `
+      ${MODAL_LANG_TABS_HTML}
       <div class="form-grid">
-        <div class="form-group"><label>Quote (ციტატა) *</label><textarea id="tes-quote" rows="4">${escapeHtml(t.quote)}</textarea></div>
+        <div class="form-group"><label>Quote (ციტატა) * <span class="modal-lang-hint" style="color: var(--gray-500); font-weight: 400; font-size: 12px;">KA</span></label><textarea id="tes-quote" rows="4">${escapeHtml(t.quote)}</textarea></div>
         <div class="form-grid cols-2">
-          <div class="form-group"><label>ავტორი</label><input type="text" id="tes-author" value="${escapeHtml(t.author)}" /></div>
-          <div class="form-group"><label>პოზიცია / კომპანია</label><input type="text" id="tes-role" value="${escapeHtml(t.role)}" /></div>
+          <div class="form-group"><label>ავტორი <span class="modal-lang-hint" style="color: var(--gray-500); font-weight: 400; font-size: 12px;">KA</span></label><input type="text" id="tes-author" value="${escapeHtml(t.author)}" /></div>
+          <div class="form-group"><label>პოზიცია / კომპანია <span class="modal-lang-hint" style="color: var(--gray-500); font-weight: 400; font-size: 12px;">KA</span></label><input type="text" id="tes-role" value="${escapeHtml(t.role)}" /></div>
         </div>
-        <div class="form-group"><label>Avatar URL</label><input type="url" id="tes-avatar" value="${escapeHtml(t.avatar || '')}" /></div>
+        <div class="form-group"><label>Avatar URL <small style="color: var(--gray-500); font-weight: 400;">(ყველა ენისთვის საერთო)</small></label><input type="url" id="tes-avatar" value="${escapeHtml(t.avatar || '')}" /></div>
       </div>
       <div class="form-actions">
         <button class="btn btn-outline" data-modal-cancel>გაუქმება</button>
         <button class="btn btn-yellow" id="tes-save">შენახვა</button>
       </div>
     `);
+    const lt = initModalLangTabs(t, { quote: 'tes-quote', author: 'tes-author', role: 'tes-role' });
     $('#tes-save').addEventListener('click', () => {
-      const u = { quote: $('#tes-quote').value, author: $('#tes-author').value, role: $('#tes-role').value, avatar: $('#tes-avatar').value };
-      if (!u.quote) { toast('ციტატა სავალდებულოა', 'error'); return; }
-      if (isEdit) state.content.testimonials[index] = u; else state.content.testimonials.push(u);
+      lt?.finalize();
+      t.avatar = $('#tes-avatar').value;
+      if (!t.quote) { toast('ციტატა სავალდებულოა (KA)', 'error'); return; }
+      if (isEdit) state.content.testimonials[index] = t; else state.content.testimonials.push(t);
       markDirty(); closeModal(); renderSection('testimonials'); updateBadges();
       toast('შენახულია', 'success');
     });
@@ -1959,21 +1966,24 @@
 
   function openFAQModal(index = null) {
     const isEdit = index !== null;
-    const f = isEdit ? deepClone(state.content.faq[index]) : { question: '', answer: '' };
+    const f = isEdit ? deepClone(state.content.faq[index]) : { question: '', answer: '', i18n: {} };
+    f.i18n = f.i18n || {};
     openModal(isEdit ? 'FAQ რედაქტირება' : 'ახალი FAQ', `
+      ${MODAL_LANG_TABS_HTML}
       <div class="form-grid">
-        <div class="form-group"><label>კითხვა *</label><input type="text" id="faq-q" value="${escapeHtml(f.question)}" /></div>
-        <div class="form-group"><label>პასუხი *</label><textarea id="faq-a" rows="5">${escapeHtml(f.answer)}</textarea></div>
+        <div class="form-group"><label>კითხვა * <span class="modal-lang-hint" style="color: var(--gray-500); font-weight: 400; font-size: 12px;">KA</span></label><input type="text" id="faq-q" value="${escapeHtml(f.question)}" /></div>
+        <div class="form-group"><label>პასუხი * <span class="modal-lang-hint" style="color: var(--gray-500); font-weight: 400; font-size: 12px;">KA</span></label><textarea id="faq-a" rows="5">${escapeHtml(f.answer)}</textarea></div>
       </div>
       <div class="form-actions">
         <button class="btn btn-outline" data-modal-cancel>გაუქმება</button>
         <button class="btn btn-yellow" id="faq-save">შენახვა</button>
       </div>
     `);
+    const lt = initModalLangTabs(f, { question: 'faq-q', answer: 'faq-a' });
     $('#faq-save').addEventListener('click', () => {
-      const u = { question: $('#faq-q').value, answer: $('#faq-a').value };
-      if (!u.question || !u.answer) { toast('ორივე ველი სავალდებულოა', 'error'); return; }
-      if (isEdit) state.content.faq[index] = u; else state.content.faq.push(u);
+      lt?.finalize();
+      if (!f.question || !f.answer) { toast('ორივე ველი სავალდებულოა (KA)', 'error'); return; }
+      if (isEdit) state.content.faq[index] = f; else state.content.faq.push(f);
       markDirty(); closeModal(); renderSection('faq'); updateBadges();
       toast('შენახულია', 'success');
     });
@@ -2029,39 +2039,42 @@
   function openBlogModal(index = null) {
     const isEdit = index !== null;
     const b = isEdit ? deepClone(state.content.blog[index]) : {
-      title: '', slug: '', category: '', date: new Date().toISOString().split('T')[0], readTime: '5 წუთი', excerpt: '', image: '', featured: false
+      title: '', slug: '', category: '', date: new Date().toISOString().split('T')[0], readTime: '5 წუთი', excerpt: '', image: '', featured: false, i18n: {}
     };
+    b.i18n = b.i18n || {};
     openModal(isEdit ? 'ბლოგის რედაქტირება' : 'ახალი სტატია', `
+      ${MODAL_LANG_TABS_HTML}
       <div class="form-grid">
-        <div class="form-group"><label>სათაური *</label><input type="text" id="bl-title" value="${escapeHtml(b.title)}" /></div>
+        <div class="form-group"><label>სათაური * <span class="modal-lang-hint" style="color: var(--gray-500); font-weight: 400; font-size: 12px;">KA</span></label><input type="text" id="bl-title" value="${escapeHtml(b.title)}" /></div>
         <div class="form-grid cols-2">
-          <div class="form-group"><label>Slug (URL)</label><input type="text" id="bl-slug" value="${escapeHtml(b.slug)}" /></div>
-          <div class="form-group"><label>კატეგორია</label><input type="text" id="bl-category" value="${escapeHtml(b.category)}" /></div>
+          <div class="form-group"><label>Slug (URL) <small style="color: var(--gray-500); font-weight: 400;">(ენებისთვის საერთო)</small></label><input type="text" id="bl-slug" value="${escapeHtml(b.slug)}" /></div>
+          <div class="form-group"><label>კატეგორია <span class="modal-lang-hint" style="color: var(--gray-500); font-weight: 400; font-size: 12px;">KA</span></label><input type="text" id="bl-category" value="${escapeHtml(b.category)}" /></div>
         </div>
         <div class="form-grid cols-3">
-          <div class="form-group"><label>თარიღი</label><input type="date" id="bl-date" value="${escapeHtml(b.date)}" /></div>
-          <div class="form-group"><label>წაკითხვის დრო</label><input type="text" id="bl-read" value="${escapeHtml(b.readTime || '')}" /></div>
+          <div class="form-group"><label>თარიღი <small style="color: var(--gray-500); font-weight: 400;">(საერთო)</small></label><input type="date" id="bl-date" value="${escapeHtml(b.date)}" /></div>
+          <div class="form-group"><label>წაკითხვის დრო <span class="modal-lang-hint" style="color: var(--gray-500); font-weight: 400; font-size: 12px;">KA</span></label><input type="text" id="bl-read" value="${escapeHtml(b.readTime || '')}" /></div>
           <div class="form-group">
             <label>&nbsp;</label>
             <label class="switch" style="padding: 8px 0;"><input type="checkbox" id="bl-featured" ${b.featured ? 'checked' : ''} /><span class="switch-slider"></span><span class="switch-label">Featured</span></label>
           </div>
         </div>
-        <div class="form-group"><label>Excerpt (მოკლე აღწერა)</label><textarea id="bl-excerpt" rows="3">${escapeHtml(b.excerpt || '')}</textarea></div>
-        <div class="form-group"><label>სურათის URL</label><input type="url" id="bl-image" value="${escapeHtml(b.image || '')}" /></div>
+        <div class="form-group"><label>Excerpt (მოკლე აღწერა) <span class="modal-lang-hint" style="color: var(--gray-500); font-weight: 400; font-size: 12px;">KA</span></label><textarea id="bl-excerpt" rows="3">${escapeHtml(b.excerpt || '')}</textarea></div>
+        <div class="form-group"><label>სურათის URL <small style="color: var(--gray-500); font-weight: 400;">(საერთო)</small></label><input type="url" id="bl-image" value="${escapeHtml(b.image || '')}" /></div>
       </div>
       <div class="form-actions">
         <button class="btn btn-outline" data-modal-cancel>გაუქმება</button>
         <button class="btn btn-yellow" id="bl-save">შენახვა</button>
       </div>
     `);
+    const lt = initModalLangTabs(b, { title: 'bl-title', category: 'bl-category', readTime: 'bl-read', excerpt: 'bl-excerpt' });
     $('#bl-save').addEventListener('click', () => {
-      const u = {
-        title: $('#bl-title').value, slug: $('#bl-slug').value, category: $('#bl-category').value,
-        date: $('#bl-date').value, readTime: $('#bl-read').value, excerpt: $('#bl-excerpt').value,
-        image: $('#bl-image').value, featured: $('#bl-featured').checked
-      };
-      if (!u.title) { toast('სათაური სავალდებულოა', 'error'); return; }
-      if (isEdit) state.content.blog[index] = u; else state.content.blog.push(u);
+      lt?.finalize();
+      b.slug = $('#bl-slug').value;
+      b.date = $('#bl-date').value;
+      b.image = $('#bl-image').value;
+      b.featured = $('#bl-featured').checked;
+      if (!b.title) { toast('სათაური სავალდებულოა (KA)', 'error'); return; }
+      if (isEdit) state.content.blog[index] = b; else state.content.blog.push(b);
       markDirty(); closeModal(); renderSection('blog'); updateBadges();
       toast('შენახულია', 'success');
     });
@@ -3838,28 +3851,42 @@ ${urls.map(u => `  <url>
 
   // ====== MEDIA LIBRARY ======
   function renderMedia() {
-    const media = state.content.media || [];
+    const media = (Array.isArray(state.content.media) ? state.content.media : []);
+    const hasSecret = !!getSharedSecret();
+    const hasToken = !!getGithubToken();
+    const canUpload = hasSecret || hasToken;
+
     return `
       <div class="page-header">
         <div>
           <h1>Media Library</h1>
-          <p>სურათების ბიბლიოთეკა — ატვირთული სურათები GitHub-ზე</p>
+          <p>ატვირთე სურათები — თითოეულს მიიღებ მუდმივ URL-ს რომელსაც გამოიყენებ მთელ საიტზე</p>
         </div>
       </div>
 
-      ${!getGithubToken() ? `
-        <div class="info-banner">
+      ${!canUpload ? `
+        <div class="info-banner" style="background: #fef2f2; border-left-color: #EF4444;">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/></svg>
-          <div><strong>ყურადღება:</strong> სურათების ატვირთვისთვის საჭიროა GitHub Token. წადი <a href="#settings" style="color: var(--ink); font-weight: 700;">Settings → GitHub Token</a></div>
+          <div><strong>ჯერ ვერ აიტვირთება:</strong> ჩაწერე <strong>Shared Secret</strong> → <a href="#settings" style="color: var(--ink); font-weight: 700;" onclick="location.hash='#settings'">Settings</a>. იგივე secret რომელითაც Publish მუშაობს. (ან, თუ გინდა, GitHub Token-ი დააყენე.)</div>
         </div>
-      ` : ''}
+      ` : `
+        <div class="info-banner" style="background: #f0fdf4; border-left-color: #10B981;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          <div>
+            <strong>მზადაა ასატვირთად:</strong> ${hasSecret ? 'Shared Secret' : 'GitHub Token'} დაყენებულია.
+            <div style="margin-top: 6px; font-size: 13px; color: var(--gray-700);">
+              🖼 <strong>რას ნიშნავს Media Library?</strong> აქ ატვირთული ყოველი სურათი ინახება შენს GitHub რეპოზიტორიაში და ცოცხლად იკვებება საიტიდან. "Copy URL" ღილაკით URL დააკოპირე და პასტე გააკეთე სადაც გინდა (Hero, Services, Team, Blog და ა.შ.) — URL მუდმივია, არასდროს არ გაქრება.
+            </div>
+          </div>
+        </div>
+      `}
 
-      <div class="media-upload-zone" id="upload-zone">
+      <div class="media-upload-zone" id="upload-zone" ${!canUpload ? 'style="opacity: 0.5; pointer-events: none;"' : ''}>
         <div class="icon">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
         </div>
         <h3>ატვირთე სურათი</h3>
-        <p>გადმოიტანე ფაილი აქ ან დააჭირე ასარჩევად. Max 5MB, JPG/PNG/WebP/GIF</p>
+        <p>გადმოიტანე ფაილი აქ ან დააჭირე ასარჩევად. Max 8MB · JPG / PNG / WebP / GIF / SVG</p>
         <input type="file" id="upload-input" accept="image/*" style="display: none;" multiple />
       </div>
 
@@ -4189,6 +4216,171 @@ ${urls.map(u => `  <url>
         if (input.type === 'checkbox') val = input.checked;
         obj[path[path.length - 1]] = val;
         markDirty();
+      });
+    });
+  }
+
+  // ====== REUSABLE LANGUAGE TABS FOR ITEM MODALS ======
+  // Use at the top of a modal body. translatableIds maps fieldName -> DOM element id.
+  // Example: { name: 'mem-name', role: 'mem-role', bio: 'mem-bio' }
+  // Non-translatable fields (photo, URL, etc) stay separate and don't need to be listed here.
+  const MODAL_LANG_TABS_HTML = (() => {
+    const LANGS = ['ka','en','ru','he'];
+    const LBL = { ka: '🇬🇪 ქართული', en: '🇬🇧 English', ru: '🇷🇺 Русский', he: '🇮🇱 עברית' };
+    return `
+      <div class="modal-lang-tabs" style="display: flex; gap: 4px; margin-bottom: 16px; border-bottom: 1px solid var(--gray-200);">
+        ${LANGS.map(l => `<button type="button" class="modal-lang-tab ${l==='ka'?'active':''}" data-modal-lang="${l}" style="padding: 10px 14px; background: ${l==='ka'?'var(--gray-100)':'transparent'}; border: none; border-bottom: 3px solid ${l==='ka'?'var(--yellow)':'transparent'}; font-weight: 600; cursor: pointer; font-family: inherit; font-size: 13px; color: ${l==='ka'?'var(--ink)':'var(--gray-500)'}; margin-bottom: -1px;">${LBL[l]}</button>`).join('')}
+      </div>
+    `;
+  })();
+
+  // Initialize modal lang tabs. Returns object with readDraft() and save-helper.
+  function initModalLangTabs(item, translatableIds) {
+    if (!item) return;
+    item.i18n = item.i18n || {};
+    let currentLang = 'ka';
+
+    const readCurrentLangToDraft = () => {
+      const snapshot = {};
+      Object.entries(translatableIds).forEach(([field, id]) => {
+        const el = document.getElementById(id);
+        if (el) snapshot[field] = el.value;
+      });
+      if (currentLang === 'ka') {
+        Object.assign(item, snapshot);
+      } else {
+        item.i18n[currentLang] = { ...(item.i18n[currentLang] || {}), ...snapshot };
+      }
+    };
+
+    const loadLangToForm = (lang) => {
+      const source = lang === 'ka' ? item : (item.i18n[lang] || {});
+      Object.entries(translatableIds).forEach(([field, id]) => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.value = source[field] || '';
+          el.dir = lang === 'he' ? 'rtl' : 'ltr';
+        }
+      });
+      document.querySelectorAll('.modal-lang-hint').forEach(el => { el.textContent = lang.toUpperCase(); });
+    };
+
+    document.querySelectorAll('.modal-lang-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        readCurrentLangToDraft();
+        currentLang = btn.getAttribute('data-modal-lang');
+        document.querySelectorAll('.modal-lang-tab').forEach(b => {
+          const isActive = b === btn;
+          b.classList.toggle('active', isActive);
+          b.style.background = isActive ? 'var(--gray-100)' : 'transparent';
+          b.style.borderBottomColor = isActive ? 'var(--yellow)' : 'transparent';
+          b.style.color = isActive ? 'var(--ink)' : 'var(--gray-500)';
+        });
+        loadLangToForm(currentLang);
+      });
+    });
+
+    return {
+      readCurrentLangToDraft,
+      // Call this before save: captures final tab state + strips empty i18n overrides
+      finalize: () => {
+        readCurrentLangToDraft();
+        Object.keys(item.i18n).forEach(l => {
+          const o = item.i18n[l];
+          if (!o) { delete item.i18n[l]; return; }
+          const hasAny = Object.values(o).some(v => (v || '').toString().trim());
+          if (!hasAny) delete item.i18n[l];
+        });
+        if (!Object.keys(item.i18n).length) delete item.i18n;
+      }
+    };
+  }
+
+  // ====== SECTION-LEVEL LANGUAGE TABS ======
+  // Usage: place a bar with `data-lang-tabs="sectionPath"` at top of a card,
+  // and mark translatable inputs with `data-lang-field="field.subfield"`.
+  // Non-translatable fields keep using plain `data-field`.
+  //
+  // Example: <input data-lang-field="title" data-section="hero" />
+  // KA tab → writes to state.content.hero.title
+  // EN tab → writes to state.content.hero.i18n.en.title
+  function renderSectionLangTabBar(sectionPath, label) {
+    const LANGS = ['ka', 'en', 'ru', 'he'];
+    const FLAGS = { ka: '🇬🇪', en: '🇬🇧', ru: '🇷🇺', he: '🇮🇱' };
+    const NAMES = { ka: 'ქართული (ძირითადი)', en: 'English', ru: 'Русский', he: 'עברית' };
+    return `
+      <div class="section-lang-bar" data-lang-tabs="${escapeHtml(sectionPath)}" style="background: var(--gray-50); border: 1px solid var(--gray-200); padding: 6px; display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 16px; align-items: center;">
+        <span style="font-size: 11px; color: var(--gray-500); padding: 0 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em;">${label || 'ენა'}</span>
+        ${LANGS.map(l => `
+          <button type="button" class="lang-btn ${l === 'ka' ? 'active' : ''}" data-lang="${l}" style="padding: 6px 12px; background: ${l === 'ka' ? 'var(--ink)' : 'white'}; color: ${l === 'ka' ? 'white' : 'var(--gray-700)'}; border: 1px solid ${l === 'ka' ? 'var(--ink)' : 'var(--gray-200)'}; font-weight: 600; font-size: 12px; cursor: pointer; font-family: inherit;">${FLAGS[l]} ${NAMES[l]}</button>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  // Hook up language tabs: rewrites data-field of translatable inputs on tab click,
+  // and loads the appropriate value from state.
+  function attachSectionLangTabs() {
+    $$('[data-lang-tabs]').forEach(bar => {
+      const sectionPath = bar.getAttribute('data-lang-tabs');
+      let currentLang = 'ka';
+
+      const getSectionObj = () => {
+        const keys = sectionPath.split('.');
+        let obj = state.content;
+        for (const k of keys) {
+          if (!obj) return null;
+          obj = obj[k];
+        }
+        return obj || (() => {
+          // Initialize if missing
+          let o = state.content;
+          for (const k of keys) { if (!o[k]) o[k] = {}; o = o[k]; }
+          return o;
+        })();
+      };
+
+      const setValueForLang = (input, lang) => {
+        const fieldSub = input.getAttribute('data-lang-field');
+        // Compute the actual data-field target based on current lang
+        const actualPath = lang === 'ka'
+          ? sectionPath + '.' + fieldSub
+          : sectionPath + '.i18n.' + lang + '.' + fieldSub;
+        input.setAttribute('data-field', actualPath);
+        // Load current value
+        const parts = actualPath.split('.');
+        let v = state.content;
+        for (const p of parts) { if (v == null) break; v = v[p]; }
+        input.value = v == null ? '' : v;
+        input.dir = lang === 'he' ? 'rtl' : 'ltr';
+      };
+
+      const applyLang = (lang) => {
+        currentLang = lang;
+        // Update button styles
+        $$('.lang-btn', bar).forEach(b => {
+          const isActive = b.getAttribute('data-lang') === lang;
+          b.classList.toggle('active', isActive);
+          b.style.background = isActive ? 'var(--ink)' : 'white';
+          b.style.color = isActive ? 'white' : 'var(--gray-700)';
+          b.style.borderColor = isActive ? 'var(--ink)' : 'var(--gray-200)';
+        });
+        // Reload all translatable inputs in this section
+        // Scope: find the next siblings / parent's translatable inputs after this bar
+        const scope = bar.parentElement;
+        $$('[data-lang-field]', scope).forEach(input => setValueForLang(input, lang));
+        // Hint badges (small label showing current lang)
+        $$('.lang-hint-badge', scope).forEach(el => {
+          el.textContent = lang.toUpperCase();
+        });
+      };
+
+      // Initialize all inputs to KA
+      const scope = bar.parentElement;
+      $$('[data-lang-field]', scope).forEach(input => setValueForLang(input, 'ka'));
+
+      $$('.lang-btn', bar).forEach(btn => {
+        btn.addEventListener('click', () => applyLang(btn.getAttribute('data-lang')));
       });
     });
   }
