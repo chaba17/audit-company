@@ -1,6 +1,6 @@
 {
   "_test": true,
-  "_updated": "2026-04-20T20:12:32.639Z",
+  "_updated": "2026-04-20T20:12:55.019Z",
   "megaMenus": {
     "services": {
       "label": "სერვისები",
@@ -349,7 +349,7 @@
     "favicon": "https://gubermangeo.com/assets/images/uploads/1776686619948-photo_2026-04-19_17-17-30.jpg",
     "appleTouchIcon": "https://gubermangeo.com/assets/images/uploads/1776686619948-photo_2026-04-19_17-17-30.jpg",
     "logoUrl": "https://gubermangeo.com/assets/images/uploads/1776686619948-photo_2026-04-19_17-17-30.jpg",
-    "logoBlend": "lighten"
+    "logoBlend": "darken"
   },
   "hero": {
     "tag": "გიორგი",
