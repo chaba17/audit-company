@@ -1028,6 +1028,51 @@
 
       <div class="card">
         <div class="card-header">
+          <h3 class="card-title">🌐 ბრაუზერის Tab (Title + Favicon)</h3>
+          <p class="card-subtitle">ის, რაც ჩანს ბრაუზერის ფანჯრის ზედა სათაურში და ძიების შედეგებში</p>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Default Title (ყველა გვერდისთვის)</label>
+            <input type="text" data-field="site.defaultTitle" value="${escapeHtml(s.defaultTitle || '')}" placeholder="Guberman Group — გააფორმე ბიზნესის მომავალი | საქართველო" maxlength="65" />
+            <small class="hint">30-60 სიმბოლო რეკომენდებულია. თითოეული გვერდის ცალკე სათაური — <a href="#meta" onclick="location.hash='#meta'" style="color: var(--ink); font-weight: 700;">Meta Tags</a> სექციაში</small>
+          </div>
+          <div class="form-group">
+            <label>Default Description (ყველა გვერდისთვის)</label>
+            <textarea data-field="site.defaultDescription" rows="2" maxlength="170" placeholder="სრული საბუღალტრო, საგადასახადო, აუდიტის და საკონსულტაციო მომსახურება საქართველოში.">${escapeHtml(s.defaultDescription || '')}</textarea>
+            <small class="hint">120-160 სიმბოლო — ეს ტექსტი ჩანს Google-ის ძიების შედეგებში</small>
+          </div>
+          <div class="form-grid cols-2">
+            <div class="form-group">
+              <label>Favicon URL (ბრაუზერის ტაბის ლოგო) · 32×32 ან 64×64 px</label>
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <input type="url" data-field="site.favicon" value="${escapeHtml(s.favicon || '')}" placeholder="https://gubermangeo.com/assets/images/uploads/..." style="flex: 1;" />
+                ${s.favicon ? `<img src="${escapeHtml(s.favicon)}" style="width: 32px; height: 32px; border: 1px solid var(--gray-200); background: var(--gray-100);" alt="" />` : ''}
+              </div>
+              <small class="hint">ატვირთე სურათი Media Library-ში → Copy URL → პასტე აქ. რეკ: კვადრატული PNG/ICO, 64×64 px</small>
+            </div>
+            <div class="form-group">
+              <label>Apple Touch Icon URL · 180×180 px (iPhone home-screen ლოგო)</label>
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <input type="url" data-field="site.appleTouchIcon" value="${escapeHtml(s.appleTouchIcon || '')}" placeholder="https://..." style="flex: 1;" />
+                ${s.appleTouchIcon ? `<img src="${escapeHtml(s.appleTouchIcon)}" style="width: 32px; height: 32px; border: 1px solid var(--gray-200); background: var(--gray-100);" alt="" />` : ''}
+              </div>
+              <small class="hint">iPhone-ზე Add to Home-ის შემდეგ იქნება აპლიკაციის ხატად</small>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Logo Image URL (ჰედერის ლოგოსთვის)</label>
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <input type="url" data-field="site.logoUrl" value="${escapeHtml(s.logoUrl || '')}" placeholder="https://gubermangeo.com/assets/images/uploads/logo.png" style="flex: 1;" />
+              ${s.logoUrl ? `<img src="${escapeHtml(s.logoUrl)}" style="max-height: 40px; border: 1px solid var(--gray-200); background: var(--gray-100);" alt="" />` : ''}
+            </div>
+            <small class="hint">თუ შეავსე, ჰედერში ტექსტის ("Guberman Group") ნაცვლად ეს ლოგო გამოიყენება. ცარიელი → ტექსტი რჩება.</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
           <h3 class="card-title">კონტაქტი</h3>
         </div>
         <div class="form-grid cols-2">
@@ -3862,20 +3907,36 @@ ${urls.map(u => `  <url>
           <h1>Media Library</h1>
           <p>ატვირთე სურათები — თითოეულს მიიღებ მუდმივ URL-ს რომელსაც გამოიყენებ მთელ საიტზე</p>
         </div>
+        <div class="page-header-actions">
+          ${canUpload ? `<button class="btn btn-outline btn-sm" id="test-upload-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            Test connection
+          </button>` : ''}
+        </div>
       </div>
 
       ${!canUpload ? `
         <div class="info-banner" style="background: #fef2f2; border-left-color: #EF4444;">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/></svg>
-          <div><strong>ჯერ ვერ აიტვირთება:</strong> ჩაწერე <strong>Shared Secret</strong> → <a href="#settings" style="color: var(--ink); font-weight: 700;" onclick="location.hash='#settings'">Settings</a>. იგივე secret რომელითაც Publish მუშაობს. (ან, თუ გინდა, GitHub Token-ი დააყენე.)</div>
+          <div>
+            <strong>ჯერ ვერ აიტვირთება.</strong> 2 ნაბიჯი გამარტივებისთვის:
+            <ol style="margin: 8px 0 0 20px; padding: 0; line-height: 1.8;">
+              <li>გახსენი <a href="#settings" onclick="location.hash='#settings'" style="color: var(--ink); font-weight: 700;">Settings</a> → "👥 Shared Publish (Multi-user)" ბლოკი</li>
+              <li>ჩაწერე <strong>Shared Secret</strong> (იგივე პაროლი რაც Vercel-ში <code>ADMIN_SECRET</code> env var-ად). დააჭირე "შენახვა". დაბრუნდი აქ.</li>
+            </ol>
+            <div style="margin-top: 8px; font-size: 13px; color: var(--gray-700);">💡 თუ Publish ღილაკი უკვე მუშაობს — ესე იგი Secret უკვე გაქვს სადღაც. Settings-ში გადაამოწმე "ACTIVE" მწვანე ნიშანი.</div>
+          </div>
         </div>
       ` : `
         <div class="info-banner" style="background: #f0fdf4; border-left-color: #10B981;">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
           <div>
-            <strong>მზადაა ასატვირთად:</strong> ${hasSecret ? 'Shared Secret' : 'GitHub Token'} დაყენებულია.
+            <strong>მზადაა ასატვირთად.</strong> ${hasSecret ? 'Shared Secret' : 'GitHub Token'} გაქვს დაყენებული.
             <div style="margin-top: 6px; font-size: 13px; color: var(--gray-700);">
-              🖼 <strong>რას ნიშნავს Media Library?</strong> აქ ატვირთული ყოველი სურათი ინახება შენს GitHub რეპოზიტორიაში და ცოცხლად იკვებება საიტიდან. "Copy URL" ღილაკით URL დააკოპირე და პასტე გააკეთე სადაც გინდა (Hero, Services, Team, Blog და ა.შ.) — URL მუდმივია, არასდროს არ გაქრება.
+              🖼 <strong>როგორ მუშაობს:</strong> ატვირთე ფოტო (drag-drop ან click-to-browse) → მე ვტვირთავ GitHub-ზე → უკან გიბრუნებ <strong>მუდმივ URL-ს</strong>. ფოტოს ქვემოთ "Copy URL" ღილაკი აკოპირებს URL-ს. პასტე ნებისმიერ ველში (Hero, Services, Team, Blog, Favicon...) — URL არასდროს არ გაქრება.
+            </div>
+            <div style="margin-top: 6px; font-size: 13px;">
+              ❓ <strong>არ მუშაობს?</strong> დააჭირე "Test connection" ღილაკს — მოვარგებ რას ვუკრავდე.
             </div>
           </div>
         </div>
@@ -3954,6 +4015,50 @@ ${urls.map(u => `  <url>
         renderSection('media');
         logActivity('delete', 'სურათი', 'media');
       });
+    });
+
+    // Test connection button — sends a tiny "ping" to /api/upload and reports result
+    $('#test-upload-btn')?.addEventListener('click', async () => {
+      const btn = $('#test-upload-btn');
+      btn.disabled = true;
+      const orig = btn.innerHTML;
+      btn.innerHTML = 'ტესტირება...';
+      try {
+        const secret = getSharedSecret();
+        if (!secret) {
+          toast('❌ Shared Secret არ არის დაყენებული Settings-ში', 'error', 5000);
+          return;
+        }
+        // 1x1 transparent PNG base64 payload
+        const tinyPng = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
+        const res = await fetch('/api/upload', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ secret, name: '_test-connection.png', contentBase64: tinyPng, mime: 'image/png' })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (res.ok && data.ok) {
+          toast('✅ კავშირი მუშაობს! Test ფაილი აიტვირთა: ' + data.url, 'success', 7000);
+          // Refresh media list to show the test file
+          if (!state.content.media) state.content.media = [];
+          state.content.media.unshift({
+            name: '_test-connection.png',
+            url: data.url,
+            size: 95,
+            type: 'image/png',
+            uploaded: Date.now()
+          });
+          markDirty();
+          renderSection('media');
+        } else {
+          toast(`❌ ${res.status} — ${data.error || 'უცნობი შეცდომა'}${data.detail ? ': '+data.detail : ''}`, 'error', 8000);
+        }
+      } catch (e) {
+        toast('❌ Network error: ' + e.message, 'error', 6000);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = orig;
+      }
     });
   }
 

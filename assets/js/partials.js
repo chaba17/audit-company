@@ -290,16 +290,21 @@ function renderHeader() {
     `;
   }).join("");
 
-  const siteName = (window.SITE_CONTENT && window.SITE_CONTENT.site && window.SITE_CONTENT.site.name) || 'Guberman Group';
+  const siteCfg = (window.SITE_CONTENT && window.SITE_CONTENT.site) || {};
+  const siteName = siteCfg.name || 'Guberman Group';
+  const logoUrl = siteCfg.logoUrl || '';
+
+  // If a logo image URL is configured, show it instead of the text logo
+  const logoInner = logoUrl
+    ? `<img src="${logoUrl}" alt="${siteName}" class="logo-img" style="max-height: 36px; width: auto; display: block;" />`
+    : `<div class="logo-wrap"><span class="logo-ey">${siteName}</span></div>`;
 
   return `
     <header class="header">
       <div class="container-wide">
         <nav class="nav" aria-label="Main">
-          <a href="${basePath}index.html" class="logo">
-            <div class="logo-wrap">
-              <span class="logo-ey">${siteName}</span>
-            </div>
+          <a href="${basePath}index.html" class="logo" aria-label="${siteName}">
+            ${logoInner}
             <span class="logo-tagline">Shape the future<br>with confidence</span>
           </a>
 

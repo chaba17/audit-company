@@ -92,11 +92,21 @@
     const siteName = (content.site && content.site.name) || 'Audit';
     const siteUrl = (globalSeo.siteUrl || 'https://gubermangeo.com').replace(/\/+$/, '');
 
-    const title = pageSeo.title || document.title;
-    const description = pageSeo.description || globalSeo.defaultDescription || '';
+    const siteInfo = content.site || {};
+    const title = pageSeo.title || siteInfo.defaultTitle || globalSeo.defaultTitle || document.title;
+    const description = pageSeo.description || siteInfo.defaultDescription || globalSeo.defaultDescription || '';
     const ogImage = pageSeo.ogImage || globalSeo.defaultOgImage || '';
     const keywords = pageSeo.keywords || globalSeo.defaultKeywords || '';
     const canonicalUrl = siteUrl + location.pathname;
+
+    // Favicon + Apple touch icon (site-wide, from content.site)
+    if (siteInfo.favicon) {
+      ensureLink('icon', siteInfo.favicon);
+      ensureLink('shortcut icon', siteInfo.favicon);
+    }
+    if (siteInfo.appleTouchIcon) {
+      ensureLink('apple-touch-icon', siteInfo.appleTouchIcon);
+    }
 
     const ensureMeta = (attrName, attrValue, content) => {
       if (!content) return;
