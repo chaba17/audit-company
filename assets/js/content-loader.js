@@ -3,6 +3,22 @@
    Overrides static content so admin edits appear live on the site
    ========================================================== */
 
+// ==========================================================
+// BOOT CACHE — populate window.SITE_CONTENT synchronously from localStorage
+// BEFORE anything else runs, so partials.js's first renderHeader() already
+// sees the logoUrl / site.name / etc. and doesn't flash the fallback text logo.
+// Public-only cache key (separate from admin's audit_admin_content).
+// ==========================================================
+try {
+  const cached = localStorage.getItem('site_content_cache');
+  if (cached) {
+    const parsed = JSON.parse(cached);
+    if (parsed && typeof parsed === 'object') {
+      window.SITE_CONTENT = parsed;
+    }
+  }
+} catch (_) { /* ignore cache errors */ }
+
 (async () => {
   // Escape HTML for safe insertion as text
   const escapeHTML = (s) => String(s == null ? '' : s)
@@ -39,6 +55,9 @@
   const content = await loadContent();
   if (!content) return;
   window.SITE_CONTENT = content;
+
+  // Save to public cache so next page-load can hydrate synchronously (no logo flash)
+  try { localStorage.setItem('site_content_cache', JSON.stringify(content)); } catch (_) {}
 
   // Apply per-item i18n overlays to ARRAYS so downstream code sees already-translated items
   const applyItemI18n = () => {

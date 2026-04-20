@@ -291,6 +291,23 @@ h2.display, .display {
 .logo-tagline {
   display: none;
 }
+/* Custom image logo (shows instead of text when site.logoUrl is set) */
+.logo-img {
+  display: block;
+  height: 44px;
+  width: auto;
+  max-width: 200px;
+  object-fit: contain;
+}
+/* Optional blend-mode wrappers for JPG logos with coloured backgrounds.
+   User adds class via content.site.logoBlend = 'multiply' | 'screen' | 'lighten' | 'darken' */
+.logo-img.blend-multiply { mix-blend-mode: multiply; }
+.logo-img.blend-screen   { mix-blend-mode: screen; }
+.logo-img.blend-lighten  { mix-blend-mode: lighten; }
+.logo-img.blend-darken   { mix-blend-mode: darken; }
+@media (max-width: 768px) {
+  .logo-img { height: 36px; max-width: 140px; }
+}
 
 /* ---------- Main nav menu ---------- */
 .nav-menu {

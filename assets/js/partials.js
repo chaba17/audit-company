@@ -294,9 +294,13 @@ function renderHeader() {
   const siteName = siteCfg.name || 'Guberman Group';
   const logoUrl = siteCfg.logoUrl || '';
 
-  // If a logo image URL is configured, show it instead of the text logo
+  // If a logo image URL is configured, show it instead of the text logo.
+  // Optional blend-mode (multiply/screen/lighten/darken) helps JPGs with coloured
+  // backgrounds blend into the dark header. 'multiply' removes white backgrounds.
+  const logoBlend = siteCfg.logoBlend || '';
+  const logoBlendClass = logoBlend ? ` blend-${logoBlend}` : '';
   const logoInner = logoUrl
-    ? `<img src="${logoUrl}" alt="${siteName}" class="logo-img" style="max-height: 36px; width: auto; display: block;" />`
+    ? `<img src="${logoUrl}" alt="${siteName}" class="logo-img${logoBlendClass}" />`
     : `<div class="logo-wrap"><span class="logo-ey">${siteName}</span></div>`;
 
   return `

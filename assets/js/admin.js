@@ -1126,7 +1126,18 @@
               <input type="url" data-field="site.logoUrl" data-url-preview="logo-preview" value="${escapeHtml(s.logoUrl || '')}" placeholder="https://gubermangeo.com/assets/images/uploads/logo.png" style="flex: 1;" />
               <img id="logo-preview" src="${escapeHtml(s.logoUrl || '')}" class="url-preview" data-original="${escapeHtml(s.logoUrl || '')}" style="max-height: 40px; border: 1px solid var(--gray-200); background: var(--gray-100); object-fit: contain; display: ${s.logoUrl ? 'block' : 'none'};" alt="" />
             </div>
-            <small class="hint">თუ შეავსე, ჰედერში ტექსტის ("Guberman Group") ნაცვლად ეს ლოგო გამოიყენება. ცარიელი → ტექსტი რჩება.</small>
+            <small class="hint">💡 <strong>საუკეთესო ფორმატი:</strong> PNG გამჭვირვალე ფონით (transparent background) ან SVG. JPG თეთრი ფონით დიდ ოთხკუთხედს გაჩენს — ამ შემთხვევაში გამოიყენე ქვემოთ "Blend mode".</small>
+          </div>
+          <div class="form-group">
+            <label>Logo Blend Mode (JPG თეთრი ფონით)</label>
+            <select data-field="site.logoBlend" style="max-width: 280px;">
+              <option value="" ${!s.logoBlend ? 'selected' : ''}>— არაფერი (PNG/SVG გამჭვირვალე ფონისთვის) —</option>
+              <option value="multiply" ${s.logoBlend === 'multiply' ? 'selected' : ''}>Multiply (თეთრი ფონი გაქრება — უმოკლესი)</option>
+              <option value="screen" ${s.logoBlend === 'screen' ? 'selected' : ''}>Screen (შავი ფონი გაქრება)</option>
+              <option value="lighten" ${s.logoBlend === 'lighten' ? 'selected' : ''}>Lighten (სხვა ვარიანტი)</option>
+              <option value="darken" ${s.logoBlend === 'darken' ? 'selected' : ''}>Darken (სხვა ვარიანტი)</option>
+            </select>
+            <small class="hint">თუ ლოგო JPG-ია თეთრი ფონით — აირჩიე <strong>Multiply</strong>, თეთრი ფონი გაქრება და ბნელ header-ში გაერევა. გამჭვირვალე PNG-ისთვის დატოვე ცარიელი.</small>
           </div>
         </div>
       </div>
