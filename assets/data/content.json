@@ -1,6 +1,6 @@
 {
   "_test": true,
-  "_updated": "2026-04-20T22:22:43.729Z",
+  "_updated": "2026-04-20T22:51:05.587Z",
   "megaMenus": {
     "services": {
       "label": "სერვისები",
@@ -980,7 +980,7 @@
     "successMessage": "მადლობა! დაგიკავშირდებით 24 საათში."
   },
   "search": {
-    "enabled": false,
+    "enabled": true,
     "placeholder": "მოძებნე სერვისი ან ინფორმაცია...",
     "noResultsText": "შედეგი ვერ მოიძებნა"
   },
