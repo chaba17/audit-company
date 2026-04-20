@@ -1,6 +1,6 @@
 {
   "_test": true,
-  "_updated": "2026-04-20T10:56:59.660Z",
+  "_updated": "2026-04-20T11:03:42.248Z",
   "megaMenus": {
     "services": {
       "label": "სერვისები",
@@ -359,7 +359,7 @@
       "text": "our services",
       "href": "services.html"
     },
-    "bgImage": "C:\\Users\\user\\Desktop\\Downloads\\Gemini_Generated_Image_5hpv4t5hpv4t5hpv.png"
+    "bgImage": "https://ibb.co/qwjSCmR"
   },
   "stats": [
     {
