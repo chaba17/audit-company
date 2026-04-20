@@ -214,6 +214,15 @@ function renderMegaMenu(key, data) {
     };
   }
 
+  // Per-key i18n key mapping — each mega menu section has fixed structural translations
+  const i18nKeys = {
+    services:   { title: 'nav.services',   desc: 'mega.services_desc',   cta: 'mega.services_cta' },
+    industries: { title: 'nav.industries', desc: 'mega.industries_desc', cta: 'mega.industries_cta' },
+    insights:   { title: 'nav.insights',   desc: 'mega.insights_desc',   cta: 'mega.insights_cta' },
+    about:      { title: 'nav.about',      desc: 'mega.about_desc',      cta: 'mega.about_cta' },
+    careers:    { title: 'nav.careers',    desc: 'mega.careers_desc',    cta: 'common.learn_more' }
+  }[key] || {};
+
   const linksHtml = links.map(link => `
     <a href="${basePath}${link?.href || '#'}" class="mega-link-item">
       <span>${link?.title || ''}</span>
@@ -234,9 +243,9 @@ function renderMegaMenu(key, data) {
     <div class="mega-menu" data-mega="${key}">
       <div class="mega-inner">
         <div class="mega-intro">
-          <h3>${intro.title || ''}</h3>
-          <p>${intro.desc || ''}</p>
-          ${intro.ctaText ? `<a href="${basePath}${intro.ctaHref || '#'}" class="mega-explore-btn">${intro.ctaText}</a>` : ''}
+          <h3 ${i18nKeys.title ? `data-i18n="${i18nKeys.title}"` : ''}>${intro.title || ''}</h3>
+          <p ${i18nKeys.desc ? `data-i18n="${i18nKeys.desc}"` : ''}>${intro.desc || ''}</p>
+          ${intro.ctaText ? `<a href="${basePath}${intro.ctaHref || '#'}" class="mega-explore-btn" ${i18nKeys.cta ? `data-i18n="${i18nKeys.cta}"` : ''}>${intro.ctaText}</a>` : ''}
         </div>
         <div class="mega-links">
           ${linksHtml}
@@ -257,18 +266,31 @@ function renderHeader() {
 
   const navItems = Object.keys(menusToUse).map(key => ({ key, type: "mega" }));
 
+  // i18n keys for the top-level nav labels — this is what makes the header translate
+  const navI18nKey = {
+    services:   'nav.services',
+    industries: 'nav.industries',
+    insights:   'nav.insights',
+    about:      'nav.about',
+    careers:    'nav.careers'
+  };
+
   const navItemsHtml = navItems.map(item => {
     const mega = menusToUse[item.key];
     if (!mega || !mega.label) return '';
+    const key = navI18nKey[item.key];
+    const dataI18n = key ? `data-i18n="${key}"` : '';
     return `
       <li class="has-mega" data-mega-trigger="${item.key}">
         <button class="nav-link" type="button" aria-expanded="false">
-          <span>${mega.label}</span>
+          <span ${dataI18n}>${mega.label}</span>
         </button>
         ${renderMegaMenu(item.key, mega)}
       </li>
     `;
   }).join("");
+
+  const siteName = (window.SITE_CONTENT && window.SITE_CONTENT.site && window.SITE_CONTENT.site.name) || 'Audit';
 
   return `
     <header class="header">
@@ -276,7 +298,7 @@ function renderHeader() {
         <nav class="nav" aria-label="Main">
           <a href="${basePath}index.html" class="logo">
             <div class="logo-wrap">
-              <span class="logo-ey">Audit</span>
+              <span class="logo-ey">${siteName}</span>
             </div>
             <span class="logo-tagline">Shape the future<br>with confidence</span>
           </a>
@@ -291,7 +313,7 @@ function renderHeader() {
           <div class="nav-actions">
             <button class="nav-action-item nav-search" aria-label="Search">
               ${ICONS["search"]}
-              <span>Search</span>
+              <span data-i18n="nav.search">Search</span>
             </button>
             <a href="${basePath}contact.html" class="nav-action-item nav-account">
               ${ICONS["mail"]}

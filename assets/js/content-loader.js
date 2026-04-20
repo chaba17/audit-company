@@ -241,6 +241,17 @@
     }
   } catch (e) { console.warn('Footer re-render failed:', e); }
 
+  // Re-apply translations after header/footer re-render (so new data-i18n attributes get filled)
+  const reapplyTranslations = () => {
+    try {
+      if (typeof window.applyTranslations === 'function') {
+        const lang = localStorage.getItem('lang') || 'ka';
+        window.applyTranslations(lang);
+      }
+    } catch (e) { console.warn('Re-apply translations failed:', e); }
+  };
+  reapplyTranslations();
+
   // Contact page: update phone + email + address blocks from site info
   try {
     const site = content.site || {};
@@ -275,6 +286,7 @@
           if (newBackdrop) oldBackdrop.replaceWith(newBackdrop);
         }
         document.dispatchEvent(new CustomEvent('nav-rendered'));
+        reapplyTranslations();
       }
     }
   } catch (e) { console.warn('Header re-render failed:', e); }
@@ -315,12 +327,19 @@
       ka.faq.items = content.faq.map(f => ({ q: f.question, a: f.answer }));
     }
 
-    // Services (translations keys) — create entries for NEW services too
+    // Services (translations keys) — create entries for NEW services too, in ALL languages
     if (content.services?.length) {
+      const LANGS = ['ka', 'en', 'ru', 'he'];
       content.services.forEach(s => {
-        if (!ka.services[s.id]) ka.services[s.id] = { title: '', desc: '' };
-        ka.services[s.id].title = s.title;
-        ka.services[s.id].desc = s.shortDesc;
+        LANGS.forEach(lang => {
+          const dict = window.translations[lang];
+          if (!dict || !dict.services) return;
+          if (!dict.services[s.id]) dict.services[s.id] = { title: '', desc: '' };
+          // Pick language-specific value from service.i18n[lang], else fall back to KA base
+          const i18nOverride = (s.i18n && s.i18n[lang]) || {};
+          dict.services[s.id].title = i18nOverride.title || s.title || dict.services[s.id].title;
+          dict.services[s.id].desc = i18nOverride.shortDesc || s.shortDesc || dict.services[s.id].desc;
+        });
       });
     }
 
