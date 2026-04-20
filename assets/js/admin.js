@@ -147,8 +147,33 @@
     if (!secret) throw new Error('NO_SECRET');
 
     // 3-way merge: fetch fresh live, merge with user's changes
-    const baseline = getBaseline();
+    let baseline = getBaseline();
     const live = await fetchLiveContent();
+
+    // AUTO-SYNC SAFETY: if state.content is SIGNIFICANTLY smaller than live, auto-fold
+    // live into state before proceeding. Catches the "opened fresh browser, state is
+    // still defaults" case where a publish would overwrite real content with defaults.
+    if (live && state.content) {
+      const countItems = (obj) => {
+        if (!obj) return 0;
+        const keys = ['services','team','testimonials','faq','blog','industries'];
+        return keys.reduce((s, k) => s + (Array.isArray(obj[k]) ? obj[k].length : 0), 0)
+          + (Array.isArray(obj.pricing?.plans) ? obj.pricing.plans.length : 0);
+      };
+      const stateCount = countItems(state.content);
+      const liveCount = countItems(live);
+      if (liveCount >= 10 && stateCount < liveCount * 0.7) {
+        // State is stale / defaults / empty — merge live into state FIRST.
+        // This makes subsequent merge a no-op that adds user's edits (if any) to live.
+        const liveFilled = fillMissingDefaults(JSON.parse(JSON.stringify(live)));
+        state.content = mergeContent(baseline || liveFilled, state.content, liveFilled);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state.content));
+        setBaseline(liveFilled);
+        baseline = liveFilled;
+        toast('📥 ცოცხალი კონტენტი ჩაიტვირთა შენს პანელში. Publish გრძელდება…', 'info', 4000);
+      }
+    }
+
     let mergedContent = state.content;
     let mergeSummary = null;
 
@@ -159,7 +184,6 @@
     } else if (live) {
       // No baseline but live exists → safest path is to MERGE WITH live
       // so we don't silently overwrite (e.g. a friend's additions) with state.content.
-      // Use live as baseline so the merge preserves everything in live that mine lacks.
       mergedContent = mergeContent(live, state.content, live);
     }
 
@@ -3974,10 +3998,36 @@ ${urls.map(u => `  <url>
         </div>
       ` : `
         <div class="media-grid">
-          ${media.map((m, i) => `
+          ${media.map((m, i) => {
+            // GitHub raw URL as fallback — loads immediately while Vercel propagates the file
+            const rawFallback = m.path ? `https://raw.githubusercontent.com/chaba17/audit-company/main/${m.path}` : (m.url || '');
+            return `
             <div class="media-item" data-i="${i}">
-              <img src="${escapeHtml(m.url)}" alt="${escapeHtml(m.name || '')}" />
-              <div class="media-item-info">${escapeHtml(m.name || 'image')}</div>
+              <img src="${escapeHtml(m.url)}"
+                   data-fallback="${escapeHtml(rawFallback)}"
+                   alt="${escapeHtml(m.name || '')}"
+                   loading="lazy"
+                   onerror="
+                     const fb = this.getAttribute('data-fallback');
+                     if (fb && this.src !== fb) { this.src = fb; this.setAttribute('data-retry','1'); return; }
+                     if (!this.getAttribute('data-retry-done')) {
+                       this.setAttribute('data-retry-done','1');
+                       const orig = this.getAttribute('data-original-src') || this.src.split('?')[0];
+                       this.setAttribute('data-original-src', orig);
+                       setTimeout(() => { this.src = orig + '?v=' + Date.now(); }, 3000);
+                     } else {
+                       this.style.display='none';
+                       const parent = this.parentElement;
+                       if (parent && !parent.querySelector('.media-placeholder')) {
+                         const ph = document.createElement('div');
+                         ph.className = 'media-placeholder';
+                         ph.style.cssText = 'display: grid; place-items: center; aspect-ratio: 1; background: var(--gray-100); color: var(--gray-500); font-size: 11px; padding: 12px; text-align: center;';
+                         ph.textContent = '⏳ იტვირთება...';
+                         parent.insertBefore(ph, this);
+                       }
+                     }
+                   " />
+              <div class="media-item-info" title="${escapeHtml(m.url)}">${escapeHtml(m.name || 'image')}</div>
               <div class="media-item-actions">
                 <button data-copy-url="${escapeHtml(m.url)}" title="Copy URL">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
@@ -3987,7 +4037,7 @@ ${urls.map(u => `  <url>
                 </button>
               </div>
             </div>
-          `).join('')}
+          `;}).join('')}
         </div>
       `}
     `;

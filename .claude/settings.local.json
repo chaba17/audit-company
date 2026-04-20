@@ -172,7 +172,9 @@
       "Bash(curl -sI -X POST -H \"Content-Type: application/json\" -d '{\"secret\":\"wrong\",\"name\":\"test.jpg\",\"contentBase64\":\"abc\",\"mime\":\"image/jpeg\"}' \"https://gubermangeo.com/api/upload\")",
       "Bash(curl -s -X POST -H \"Content-Type: application/json\" -d '{}' \"https://gubermangeo.com/api/upload\")",
       "Bash(curl -s \"https://gubermangeo.com/api/content?cb=$\\(date +%s\\)\" -o ./_c.json)",
-      "Bash(node -e \"const c=require\\('./_c.json'\\); console.log\\('media type:', Array.isArray\\(c.media\\) ? 'Array' : typeof c.media\\);\")"
+      "Bash(node -e \"const c=require\\('./_c.json'\\); console.log\\('media type:', Array.isArray\\(c.media\\) ? 'Array' : typeof c.media\\);\")",
+      "Bash(node -e \"const c=require\\('./_c.json'\\); console.log\\('=== LIVE SITE CONTENT ==='\\);console.log\\('services:',c.services?.length\\); console.log\\('team:',c.team?.length\\); console.log\\('industries:',c.industries?.length\\); console.log\\('pricing.plans:',c.pricing?.plans?.length\\); console.log\\(''\\);if\\(c.services?.length>=10\\){console.log\\('Services:'\\);c.services.forEach\\(\\(s,i\\)=>console.log\\('  '+\\(i+1\\)+'. '+s.title\\)\\);}\")",
+      "Bash(rm ./_c.json)"
     ]
   }
 }
