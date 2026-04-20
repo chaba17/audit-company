@@ -1,6 +1,6 @@
 {
   "_test": true,
-  "_updated": "2026-04-20T10:31:50.700Z",
+  "_updated": "2026-04-20T10:56:59.660Z",
   "megaMenus": {
     "services": {
       "label": "სერვისები",
@@ -330,7 +330,7 @@
   },
   "site": {
     "name": "Guberman Group",
-    "tagline": "Shape the future with confidence",
+    "tagline": "power - clarity - simplicity",
     "phone": "+995 577 376 197",
     "phoneAlt": "+995 577 376 197",
     "email": "info@gubermangeo.com",
@@ -339,7 +339,7 @@
     "addressDetails": "Business Hub, მე-4 სართული",
     "hours": "ორშ - პარ: 09:00 - 19:00",
     "hoursWeekend": "შაბათი: 10:00 - 15:00",
-    "copyright": "© 2026 Audit Financial Partners. ყველა უფლება დაცულია.",
+    "copyright": "© 2026 Guberman Group Georgia Financial Partners. ყველა უფლება დაცულია.",
     "social": {
       "facebook": "#",
       "instagram": "#",
@@ -348,18 +348,18 @@
     }
   },
   "hero": {
-    "tag": "Shape your future · 2026",
-    "title": "Our solutions - your peace of mind",
-    "subtitle": "<p>გაიცანი რას მიიღებ ერთ-ერთი საქართველოში წამყვანი საბუღალტრო და საგადასახადო ფირმისგან — ბუღალტერიიდან აუდიტამდე, შპს-ის რეგისტრაციიდან ვირტუალური ზონის სტატუსამდე.</p>",
+    "tag": "power - clarity - simplicity",
+    "title": "Plan success - feel like never before!",
+    "subtitle": "<p>We are here for you - audit, accounting, consulting and more...</p>",
     "primaryCta": {
-      "text": "გაიცანი როგორ დაგეხმარებით",
+      "text": "how we work",
       "href": "contact.html"
     },
     "secondaryCta": {
-      "text": "ჩვენი სერვისები",
+      "text": "our services",
       "href": "services.html"
     },
-    "bgImage": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=2000&q=85"
+    "bgImage": "C:\\Users\\user\\Desktop\\Downloads\\Gemini_Generated_Image_5hpv4t5hpv4t5hpv.png"
   },
   "stats": [
     {
