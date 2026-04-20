@@ -182,9 +182,14 @@
       const stateSmaller = liveCount > stateCount;
 
       if (noBaseline || staleBaseline || (stateLooksLikeDefaults && stateSmaller)) {
-        // Hydrate state with live content — preserves any local edits via merge.
+        // REPLACE state with live entirely — don't merge.
+        // Merge would run mergeArray(live, defaults, live) and treat live items missing
+        // from defaults as "user-deleted" (since baseline=live, mine-missing-keys = deletions),
+        // producing the exact bug we're trying to fix.
+        // Safe to replace: auto-sync only fires when user hasn't customised anything yet
+        // (no baseline / stale baseline / state equals DEFAULT_CONTENT).
         const liveFilled = fillMissingDefaults(JSON.parse(JSON.stringify(live)));
-        state.content = mergeContent(liveFilled, state.content, liveFilled);
+        state.content = liveFilled;
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state.content));
         setBaseline(liveFilled);
         baseline = liveFilled;
