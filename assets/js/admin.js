@@ -163,21 +163,27 @@
       mergedContent = mergeContent(live, state.content, live);
     }
 
-    // DATA-LOSS GUARD: if merge would dramatically shrink any section vs live, block publish.
-    // User must re-sync first (or explicitly confirm the deletion).
+    // DATA-LOSS GUARD — WIPE + SHRINK + EMPTY-PUBLISH detection
     if (live) {
       const guarded = ['services', 'team', 'testimonials', 'faq', 'blog', 'industries', 'pricing.plans'];
       const pathGet = (obj, p) => p.split('.').reduce((a, k) => (a && a[k] != null ? a[k] : null), obj);
       for (const path of guarded) {
         const liveArr = pathGet(live, path);
         const mergedArr = pathGet(mergedContent, path);
+        if (Array.isArray(liveArr) && liveArr.length > 0 && (!Array.isArray(mergedArr) || mergedArr.length === 0)) {
+          throw new Error(`⚠ გამოქვეყნება შეჩერებულია — "${path}" სექცია შენს პანელში ცარიელია, მაგრამ ცოცხალზე ${liveArr.length} ელემენტი. წაიშლება ყველაფერი. დააჭირე Sync → ხელახლა Publish.`);
+        }
         if (Array.isArray(liveArr) && Array.isArray(mergedArr)) {
           const lost = liveArr.length - mergedArr.length;
           if (lost >= 3 || (liveArr.length >= 5 && mergedArr.length < liveArr.length * 0.6)) {
-            const msg = `⚠ გამოქვეყნება შეჩერებულია — "${path}" სექციაში ცოცხალი საიტი შეიცავს ${liveArr.length} ელემენტს, მაგრამ შენი პანელი ${mergedArr.length}-ს. ეს ნიშნავს, რომ სხვა პირის დამატებები წაიშლებოდა.\n\nსცადე: დააჭირე "Sync" ღილაკს, დაელოდე ცოცხალი მონაცემების ჩატვირთვას, შემდეგ სცადე ხელახლა.`;
-            throw new Error(msg);
+            throw new Error(`⚠ გამოქვეყნება შეჩერებულია — "${path}"-ში ცოცხალზე ${liveArr.length}, შენზე ${mergedArr.length}. Sync → ხელახლა Publish.`);
           }
         }
+      }
+      const totalMerged = guarded.reduce((s, p) => s + ((Array.isArray(pathGet(mergedContent, p))) ? pathGet(mergedContent, p).length : 0), 0);
+      const totalLive = guarded.reduce((s, p) => s + ((Array.isArray(pathGet(live, p))) ? pathGet(live, p).length : 0), 0);
+      if (totalLive >= 10 && totalMerged < totalLive * 0.3) {
+        throw new Error(`⚠ გამოქვეყნება შეჩერებულია — შენს პანელში სულ ${totalMerged} ელემენტია ${totalLive}-ს ნაცვლად. Sync აუცილებელია.`);
       }
     }
 
