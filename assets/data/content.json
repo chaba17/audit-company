@@ -1,6 +1,6 @@
 {
   "_test": true,
-  "_updated": "2026-04-20T11:48:09.852Z",
+  "_updated": "2026-04-20T11:49:05.836Z",
   "megaMenus": {
     "services": {
       "label": "სერვისები",
@@ -345,7 +345,8 @@
       "instagram": "#",
       "linkedin": "#",
       "youtube": "#"
-    }
+    },
+    "favicon": "https://gubermangeo.com/assets/images/uploads/1776685716807-photo_2026-04-19_17-17-30.jpg"
   },
   "hero": {
     "tag": "Shape your future · 2026",
@@ -838,7 +839,16 @@
     }
   },
   "analytics": {},
-  "media": [],
+  "media": [
+    {
+      "name": "photo_2026-04-19_17-17-30.jpg",
+      "url": "https://gubermangeo.com/assets/images/uploads/1776685716807-photo_2026-04-19_17-17-30.jpg",
+      "path": "assets/images/uploads/1776685716807-photo_2026-04-19_17-17-30.jpg",
+      "size": 34555,
+      "type": "image/jpeg",
+      "uploaded": 1776685715116
+    }
+  ],
   "theme": {
     "ink": ""
   },
