@@ -1,6 +1,6 @@
 {
   "_test": true,
-  "_updated": "2026-04-20T12:51:25.906Z",
+  "_updated": "2026-04-20T15:29:45.645Z",
   "megaMenus": {
     "services": {
       "label": "სერვისები",
@@ -362,7 +362,7 @@
       "text": "our services",
       "href": "services.html"
     },
-    "bgImage": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=2000&q=85"
+    "bgImage": "https://gubermangeo.com/assets/images/uploads/1776698925278-Gemini_Generated_Image_5hpv4t5hpv4t5hpv.png"
   },
   "stats": [
     {
@@ -941,6 +941,14 @@
       "size": 34555,
       "type": "image/jpeg",
       "uploaded": 1776686618261
+    },
+    {
+      "name": "Gemini_Generated_Image_5hpv4t5hpv4t5hpv.png",
+      "url": "https://gubermangeo.com/assets/images/uploads/1776698925278-Gemini_Generated_Image_5hpv4t5hpv4t5hpv.png",
+      "path": "assets/images/uploads/1776698925278-Gemini_Generated_Image_5hpv4t5hpv4t5hpv.png",
+      "size": 2233543,
+      "type": "image/png",
+      "uploaded": 1776698760811
     }
   ],
   "theme": {
