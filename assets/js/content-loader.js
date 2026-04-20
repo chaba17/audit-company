@@ -15,6 +15,43 @@ try {
     const parsed = JSON.parse(cached);
     if (parsed && typeof parsed === 'object') {
       window.SITE_CONTENT = parsed;
+      // Also pre-merge hero values into window.translations (if i18n.js has loaded already,
+      // which it does since it's the first defer script). This makes i18n's very first
+      // applyTranslations() on DOMContentLoaded use the admin-published hero text instead
+      // of the hardcoded Georgian defaults — eliminating the flash-of-old-hero on refresh.
+      try {
+        const hero = parsed.hero;
+        if (hero && window.translations) {
+          const LANGS = ['ka', 'en', 'ru', 'he'];
+          const parseMark = (s) => {
+            if (typeof s !== 'string') return { pre: '', highlight: '', post: '' };
+            const m = s.match(/^([\s\S]*?)<mark>([\s\S]*?)<\/mark>([\s\S]*)$/);
+            if (m) return { pre: m[1].trim(), highlight: m[2].trim(), post: m[3].trim() };
+            return { pre: s, highlight: '', post: '' };
+          };
+          const stripP = (s) => (typeof s === 'string' ? s.replace(/^<p>|<\/p>$/gi, '').trim() : s);
+          LANGS.forEach(l => {
+            const dict = window.translations[l];
+            if (!dict || !dict.hero) return;
+            const ov = (hero.i18n && hero.i18n[l]) || {};
+            const tagV = ov.tag || hero.tag;
+            if (tagV) dict.hero.tag = tagV;
+            const titleV = ov.title || hero.title;
+            if (titleV) {
+              const p = parseMark(titleV);
+              dict.hero.title_pre = p.pre || '';
+              dict.hero.title_highlight = p.highlight || '';
+              dict.hero.title_post = p.post || '';
+            }
+            const subV = ov.subtitle || hero.subtitle;
+            if (subV) dict.hero.subtitle = stripP(subV);
+            const pT = (ov.primaryCta && ov.primaryCta.text) || (hero.primaryCta && hero.primaryCta.text);
+            if (pT) dict.hero.cta_primary = pT;
+            const sT = (ov.secondaryCta && ov.secondaryCta.text) || (hero.secondaryCta && hero.secondaryCta.text);
+            if (sT) dict.hero.cta_secondary = sT;
+          });
+        }
+      } catch (_) {}
     }
   }
 } catch (_) { /* ignore cache errors */ }
