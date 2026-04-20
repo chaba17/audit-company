@@ -1,6 +1,6 @@
 {
   "_test": true,
-  "_updated": "2026-04-20T12:35:43.771Z",
+  "_updated": "2026-04-20T12:36:23.841Z",
   "megaMenus": {
     "services": {
       "label": "სერვისები",
@@ -346,7 +346,9 @@
       "linkedin": "#",
       "youtube": "#"
     },
-    "favicon": "https://gubermangeo.com/assets/images/uploads/1776686619948-photo_2026-04-19_17-17-30.jpg"
+    "favicon": "https://gubermangeo.com/assets/images/uploads/1776686619948-photo_2026-04-19_17-17-30.jpg",
+    "appleTouchIcon": "https://gubermangeo.com/assets/images/uploads/1776686619948-photo_2026-04-19_17-17-30.jpg",
+    "logoUrl": "https://gubermangeo.com/assets/images/uploads/1776686619948-photo_2026-04-19_17-17-30.jpg"
   },
   "hero": {
     "tag": "power - clarity - simplicity",
