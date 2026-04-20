@@ -150,9 +150,9 @@
     let baseline = getBaseline();
     const live = await fetchLiveContent();
 
-    // AUTO-SYNC SAFETY: if state.content is SIGNIFICANTLY smaller than live, auto-fold
-    // live into state before proceeding. Catches the "opened fresh browser, state is
-    // still defaults" case where a publish would overwrite real content with defaults.
+    // AUTO-SYNC SAFETY — runs BEFORE the 3-way merge, aggressive enough to catch
+    // "fresh browser" sessions where state.content = defaults and a naive publish
+    // would overwrite real live content.
     if (live && state.content) {
       const countItems = (obj) => {
         if (!obj) return 0;
@@ -162,15 +162,33 @@
       };
       const stateCount = countItems(state.content);
       const liveCount = countItems(live);
-      if (liveCount >= 10 && stateCount < liveCount * 0.7) {
-        // State is stale / defaults / empty — merge live into state FIRST.
-        // This makes subsequent merge a no-op that adds user's edits (if any) to live.
+      const baselineCount = baseline ? countItems(baseline) : 0;
+
+      // Trigger auto-sync if ANY of these hold:
+      //   a) There is no baseline at all (fresh login, never synced)
+      //   b) Baseline count is very low compared to live (stale baseline from an old session)
+      //   c) State is smaller than live by ANY amount AND state likely matches DEFAULT_CONTENT
+      //      (i.e. user hasn't customised anything yet this session)
+      const noBaseline = !baseline;
+      const staleBaseline = baseline && liveCount >= 5 && baselineCount < liveCount - 1;
+      let stateLooksLikeDefaults = false;
+      try {
+        const defaults = window.DEFAULT_CONTENT;
+        const sample = ['services','team','testimonials','faq','blog','industries'];
+        stateLooksLikeDefaults = sample.every(k =>
+          JSON.stringify(state.content[k] || []) === JSON.stringify(defaults[k] || [])
+        );
+      } catch (_) {}
+      const stateSmaller = liveCount > stateCount;
+
+      if (noBaseline || staleBaseline || (stateLooksLikeDefaults && stateSmaller)) {
+        // Hydrate state with live content — preserves any local edits via merge.
         const liveFilled = fillMissingDefaults(JSON.parse(JSON.stringify(live)));
-        state.content = mergeContent(baseline || liveFilled, state.content, liveFilled);
+        state.content = mergeContent(liveFilled, state.content, liveFilled);
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state.content));
         setBaseline(liveFilled);
         baseline = liveFilled;
-        toast('📥 ცოცხალი კონტენტი ჩაიტვირთა შენს პანელში. Publish გრძელდება…', 'info', 4000);
+        toast(`📥 ცოცხალი კონტენტი (${liveCount} ელემენტი) ჩაიტვირთა პანელში. Publish გრძელდება…`, 'info', 4000);
       }
     }
 
