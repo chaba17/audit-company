@@ -162,7 +162,10 @@
       "Bash(curl -s \"https://gubermangeo.com/assets/js/partials.js\")",
       "Bash(curl -s \"https://gubermangeo.com/assets/js/i18n.js?cb=$\\(date +%s\\)\")",
       "Bash(curl -s \"https://gubermangeo.com/assets/js/content-loader.js?cb=$\\(date +%s\\)\")",
-      "Bash(curl -s \"https://gubermangeo.com/?cb=$\\(date +%s\\)\")"
+      "Bash(curl -s \"https://gubermangeo.com/?cb=$\\(date +%s\\)\")",
+      "Bash(curl -s \"https://gubermangeo.com/assets/js/partials.js?cb=$\\(date +%s\\)\")",
+      "Bash(curl -s \"https://gubermangeo.com/assets/css/style.css?cb=$\\(date +%s\\)\")",
+      "Bash(curl -s \"https://gubermangeo.com/api/content?cb=$\\(date +%s\\)\")"
     ]
   }
 }

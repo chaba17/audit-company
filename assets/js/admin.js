@@ -435,36 +435,69 @@
       : new Set([...bMap.keys()].filter(k => !mMap.has(k)));
     const userAdded = new Set([...mMap.keys()].filter(k => !bMap.has(k)));
 
+    // Detect whether the user reordered: mine's key sequence differs from baseline's key sequence
+    // (but the sets match or overlap). If so, we iterate in MINE's order to preserve the drag-drop.
+    // Otherwise we fall back to LIVE's order (in case another user reordered on the server side).
+    const mineKeys = mine.map(i => itemKey(i));
+    const baseKeys = baseline.map(i => itemKey(i));
+    const mineKeysStr = mineKeys.filter(k => bMap.has(k)).join('|');
+    const baseKeysStr = baseKeys.join('|');
+    const userReordered = !safetyOverride && mineKeys.length > 0 && mineKeysStr !== baseKeysStr.split('|').filter(k => mMap.has(k)).join('|');
+
     const result = [];
     const seen = new Set();
 
-    // Step 1: iterate live order, keep items not deleted by user
-    live.forEach(item => {
-      const k = itemKey(item);
-      if (userDeleted.has(k)) return;
-      if (seen.has(k)) return;
-      // If user has this item and modified it → use user's version
-      // Otherwise use live's version
-      if (mMap.has(k)) {
-        const mineItem = mMap.get(k);
+    if (userReordered) {
+      // Step 1 (user reordered): iterate MINE's order — user's drag-drop wins
+      mine.forEach(mineItem => {
+        const k = itemKey(mineItem);
+        if (seen.has(k)) return;
         const baseItem = bMap.get(k);
+        const liveItem = lMap.get(k);
         const userModified = baseItem && JSON.stringify(mineItem) !== JSON.stringify(baseItem);
-        result.push(userModified ? mineItem : item);
-      } else {
-        result.push(item); // friend's addition — keep it
-      }
-      seen.add(k);
-    });
-
-    // Step 2: append user's new additions (not in live)
-    mine.forEach(item => {
-      const k = itemKey(item);
-      if (seen.has(k)) return;
-      if (userAdded.has(k) || !bMap.has(k)) {
+        // Item in live? If user modified it → take mine; else take live (may have fresh data from another user)
+        // Item not in live? It's a user addition (or friend deleted it; prefer keeping mine)
+        if (liveItem) {
+          result.push(userModified ? mineItem : liveItem);
+        } else {
+          result.push(mineItem);
+        }
+        seen.add(k);
+      });
+      // Step 2: append any friend-added items from live (not in mine) at the end, unless user deleted them
+      live.forEach(item => {
+        const k = itemKey(item);
+        if (seen.has(k)) return;
+        if (userDeleted.has(k)) return;
         result.push(item);
         seen.add(k);
-      }
-    });
+      });
+    } else {
+      // Step 1 (no user reorder): iterate live order, keep items not deleted by user
+      live.forEach(item => {
+        const k = itemKey(item);
+        if (userDeleted.has(k)) return;
+        if (seen.has(k)) return;
+        if (mMap.has(k)) {
+          const mineItem = mMap.get(k);
+          const baseItem = bMap.get(k);
+          const userModified = baseItem && JSON.stringify(mineItem) !== JSON.stringify(baseItem);
+          result.push(userModified ? mineItem : item);
+        } else {
+          result.push(item); // friend's addition — keep it
+        }
+        seen.add(k);
+      });
+      // Step 2: append user's new additions (not in live)
+      mine.forEach(item => {
+        const k = itemKey(item);
+        if (seen.has(k)) return;
+        if (userAdded.has(k) || !bMap.has(k)) {
+          result.push(item);
+          seen.add(k);
+        }
+      });
+    }
 
     return result;
   }
@@ -2078,21 +2111,81 @@
 
   function openIndustryModal(index = null) {
     const isEdit = index !== null;
-    const ind = isEdit ? deepClone(state.content.industries[index]) : { title: '', description: '' };
+    const ind = isEdit ? deepClone(state.content.industries[index]) : { title: '', description: '', i18n: {} };
+    ind.i18n = ind.i18n || {};
+    const LANGS = ['ka', 'en', 'ru', 'he'];
+    const LANG_LABELS = { ka: '🇬🇪 ქართული', en: '🇬🇧 English', ru: '🇷🇺 Русский', he: '🇮🇱 עברית' };
+
     openModal(isEdit ? 'ინდუსტრიის რედაქტირება' : 'ახალი ინდუსტრია', `
+      <div class="lang-tabs" style="display: flex; gap: 4px; margin-bottom: 16px; border-bottom: 1px solid var(--gray-200); padding: 0;">
+        ${LANGS.map(l => `
+          <button type="button" class="lang-tab ${l === 'ka' ? 'active' : ''}" data-lang-tab="${l}" style="padding: 10px 14px; background: ${l === 'ka' ? 'var(--gray-100)' : 'transparent'}; border: none; border-bottom: 3px solid ${l === 'ka' ? 'var(--yellow)' : 'transparent'}; font-weight: 600; cursor: pointer; font-family: inherit; font-size: 13px; color: ${l === 'ka' ? 'var(--ink)' : 'var(--gray-500)'}; margin-bottom: -1px;">${LANG_LABELS[l]}</button>
+        `).join('')}
+      </div>
+
       <div class="form-grid">
-        <div class="form-group"><label>სახელი *</label><input type="text" id="ind-title" value="${escapeHtml(ind.title)}" /></div>
-        <div class="form-group"><label>აღწერა</label><textarea id="ind-desc" rows="3">${escapeHtml(ind.description)}</textarea></div>
+        <div class="form-group">
+          <label>სახელი * <span style="color: var(--gray-500); font-weight: 400; font-size: 12px;">(<span class="current-lang-label">KA</span>)</span></label>
+          <input type="text" id="ind-title" value="${escapeHtml(ind.title)}" />
+        </div>
+        <div class="form-group">
+          <label>აღწერა <span style="color: var(--gray-500); font-weight: 400; font-size: 12px;">(<span class="current-lang-label">KA</span>)</span></label>
+          <textarea id="ind-desc" rows="3">${escapeHtml(ind.description || '')}</textarea>
+        </div>
       </div>
       <div class="form-actions">
         <button class="btn btn-outline" data-modal-cancel>გაუქმება</button>
         <button class="btn btn-yellow" id="ind-save">შენახვა</button>
       </div>
     `);
+
+    let currentLang = 'ka';
+    const readCurrentLangToDraft = () => {
+      const snapshot = {
+        title: $('#ind-title').value,
+        description: $('#ind-desc').value
+      };
+      if (currentLang === 'ka') {
+        Object.assign(ind, snapshot);
+      } else {
+        ind.i18n[currentLang] = snapshot;
+      }
+    };
+    const loadLangToForm = (lang) => {
+      const source = lang === 'ka' ? ind : (ind.i18n[lang] || {});
+      $('#ind-title').value = source.title || '';
+      $('#ind-desc').value = source.description || '';
+      document.querySelectorAll('.current-lang-label').forEach(el => { el.textContent = lang.toUpperCase(); });
+      $('#ind-title').dir = lang === 'he' ? 'rtl' : 'ltr';
+      $('#ind-desc').dir = lang === 'he' ? 'rtl' : 'ltr';
+    };
+    document.querySelectorAll('.lang-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        readCurrentLangToDraft();
+        currentLang = btn.getAttribute('data-lang-tab');
+        document.querySelectorAll('.lang-tab').forEach(b => {
+          const active = b === btn;
+          b.classList.toggle('active', active);
+          b.style.background = active ? 'var(--gray-100)' : 'transparent';
+          b.style.borderBottomColor = active ? 'var(--yellow)' : 'transparent';
+          b.style.color = active ? 'var(--ink)' : 'var(--gray-500)';
+        });
+        loadLangToForm(currentLang);
+      });
+    });
+
     $('#ind-save').addEventListener('click', () => {
-      const u = { title: $('#ind-title').value, description: $('#ind-desc').value };
-      if (!u.title) { toast('სახელი სავალდებულოა', 'error'); return; }
-      if (isEdit) state.content.industries[index] = u; else state.content.industries.push(u);
+      readCurrentLangToDraft();
+      // Clean empty i18n overrides
+      Object.keys(ind.i18n).forEach(l => {
+        const o = ind.i18n[l];
+        if (!o) { delete ind.i18n[l]; return; }
+        const has = (o.title || '').trim() || (o.description || '').trim();
+        if (!has) delete ind.i18n[l];
+      });
+      if (!Object.keys(ind.i18n).length) delete ind.i18n;
+      if (!ind.title) { toast('სახელი სავალდებულოა (ქართული ძირითადი ენაა)', 'error'); return; }
+      if (isEdit) state.content.industries[index] = ind; else state.content.industries.push(ind);
       markDirty(); closeModal(); renderSection('industries'); updateBadges();
       toast('შენახულია', 'success');
     });
