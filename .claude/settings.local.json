@@ -174,7 +174,10 @@
       "Bash(curl -s \"https://gubermangeo.com/api/content?cb=$\\(date +%s\\)\" -o ./_c.json)",
       "Bash(node -e \"const c=require\\('./_c.json'\\); console.log\\('media type:', Array.isArray\\(c.media\\) ? 'Array' : typeof c.media\\);\")",
       "Bash(node -e \"const c=require\\('./_c.json'\\); console.log\\('=== LIVE SITE CONTENT ==='\\);console.log\\('services:',c.services?.length\\); console.log\\('team:',c.team?.length\\); console.log\\('industries:',c.industries?.length\\); console.log\\('pricing.plans:',c.pricing?.plans?.length\\); console.log\\(''\\);if\\(c.services?.length>=10\\){console.log\\('Services:'\\);c.services.forEach\\(\\(s,i\\)=>console.log\\('  '+\\(i+1\\)+'. '+s.title\\)\\);}\")",
-      "Bash(rm ./_c.json)"
+      "Bash(rm ./_c.json)",
+      "Bash(curl -s \"https://gubermangeo.com/api/content?cb=$\\(date +%s\\)\" -o /tmp/_c.json)",
+      "Bash(cp /tmp/_c.json ./_c.json)",
+      "Bash(node -e \"const c=require\\('./_c.json'\\); console.log\\('services:',c.services?.length\\); console.log\\('team:',c.team?.length\\); console.log\\('industries:',c.industries?.length\\); console.log\\('pricing plans:',c.pricing?.plans?.length\\); console.log\\('_updated:',c._updated\\);\")"
     ]
   }
 }

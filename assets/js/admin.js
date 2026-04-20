@@ -1106,16 +1106,16 @@
             <div class="form-group">
               <label>Favicon URL (ბრაუზერის ტაბის ლოგო) · 32×32 ან 64×64 px</label>
               <div style="display: flex; gap: 8px; align-items: center;">
-                <input type="url" data-field="site.favicon" value="${escapeHtml(s.favicon || '')}" placeholder="https://gubermangeo.com/assets/images/uploads/..." style="flex: 1;" />
-                ${s.favicon ? `<img src="${escapeHtml(s.favicon)}" style="width: 32px; height: 32px; border: 1px solid var(--gray-200); background: var(--gray-100);" alt="" />` : ''}
+                <input type="url" data-field="site.favicon" data-url-preview="favicon-preview" value="${escapeHtml(s.favicon || '')}" placeholder="https://gubermangeo.com/assets/images/uploads/..." style="flex: 1;" />
+                <img id="favicon-preview" src="${escapeHtml(s.favicon || '')}" class="url-preview" data-original="${escapeHtml(s.favicon || '')}" style="width: 32px; height: 32px; border: 1px solid var(--gray-200); background: var(--gray-100); object-fit: contain; display: ${s.favicon ? 'block' : 'none'};" alt="" />
               </div>
               <small class="hint">ატვირთე სურათი Media Library-ში → Copy URL → პასტე აქ. რეკ: კვადრატული PNG/ICO, 64×64 px</small>
             </div>
             <div class="form-group">
               <label>Apple Touch Icon URL · 180×180 px (iPhone home-screen ლოგო)</label>
               <div style="display: flex; gap: 8px; align-items: center;">
-                <input type="url" data-field="site.appleTouchIcon" value="${escapeHtml(s.appleTouchIcon || '')}" placeholder="https://..." style="flex: 1;" />
-                ${s.appleTouchIcon ? `<img src="${escapeHtml(s.appleTouchIcon)}" style="width: 32px; height: 32px; border: 1px solid var(--gray-200); background: var(--gray-100);" alt="" />` : ''}
+                <input type="url" data-field="site.appleTouchIcon" data-url-preview="apple-touch-preview" value="${escapeHtml(s.appleTouchIcon || '')}" placeholder="https://..." style="flex: 1;" />
+                <img id="apple-touch-preview" src="${escapeHtml(s.appleTouchIcon || '')}" class="url-preview" data-original="${escapeHtml(s.appleTouchIcon || '')}" style="width: 32px; height: 32px; border: 1px solid var(--gray-200); background: var(--gray-100); object-fit: contain; display: ${s.appleTouchIcon ? 'block' : 'none'};" alt="" />
               </div>
               <small class="hint">iPhone-ზე Add to Home-ის შემდეგ იქნება აპლიკაციის ხატად</small>
             </div>
@@ -1123,8 +1123,8 @@
           <div class="form-group">
             <label>Logo Image URL (ჰედერის ლოგოსთვის)</label>
             <div style="display: flex; gap: 8px; align-items: center;">
-              <input type="url" data-field="site.logoUrl" value="${escapeHtml(s.logoUrl || '')}" placeholder="https://gubermangeo.com/assets/images/uploads/logo.png" style="flex: 1;" />
-              ${s.logoUrl ? `<img src="${escapeHtml(s.logoUrl)}" style="max-height: 40px; border: 1px solid var(--gray-200); background: var(--gray-100);" alt="" />` : ''}
+              <input type="url" data-field="site.logoUrl" data-url-preview="logo-preview" value="${escapeHtml(s.logoUrl || '')}" placeholder="https://gubermangeo.com/assets/images/uploads/logo.png" style="flex: 1;" />
+              <img id="logo-preview" src="${escapeHtml(s.logoUrl || '')}" class="url-preview" data-original="${escapeHtml(s.logoUrl || '')}" style="max-height: 40px; border: 1px solid var(--gray-200); background: var(--gray-100); object-fit: contain; display: ${s.logoUrl ? 'block' : 'none'};" alt="" />
             </div>
             <small class="hint">თუ შეავსე, ჰედერში ტექსტის ("Guberman Group") ნაცვლად ეს ლოგო გამოიყენება. ცარიელი → ტექსტი რჩება.</small>
           </div>
@@ -1217,6 +1217,42 @@
 
   function attachSite() {
     attachFieldListeners();
+    // Live image preview for URL fields (favicon / apple-touch / logo)
+    // - Updates preview <img> as user types
+    // - If Vercel URL fails to load (file not yet propagated), retries with GitHub raw URL
+    $$('[data-url-preview]').forEach(input => {
+      const preview = document.getElementById(input.dataset.urlPreview);
+      if (!preview) return;
+      const updatePreview = (rawUrl) => {
+        if (!rawUrl) { preview.style.display = 'none'; return; }
+        preview.style.display = 'block';
+        preview.dataset.original = rawUrl;
+        preview.dataset.retried = '';
+        preview.src = rawUrl;
+      };
+      // On typing — update src live
+      input.addEventListener('input', () => updatePreview(input.value.trim()));
+      // On load failure — try GitHub raw URL as fallback
+      preview.addEventListener('error', () => {
+        const orig = preview.dataset.original || '';
+        if (!orig) return;
+        // Convert https://gubermangeo.com/<path> → raw.githubusercontent.com/<owner>/<repo>/<branch>/<path>
+        const m = orig.match(/^https:\/\/(?:gubermangeo\.com|[a-z0-9-]+\.vercel\.app)\/(.+)$/i);
+        if (m && preview.dataset.retried !== 'raw') {
+          const rawUrl = `https://raw.githubusercontent.com/chaba17/audit-company/main/${m[1]}`;
+          preview.dataset.retried = 'raw';
+          preview.src = rawUrl;
+          return;
+        }
+        // Final retry with cache-bust after 3s
+        if (preview.dataset.retried !== 'final') {
+          preview.dataset.retried = 'final';
+          setTimeout(() => {
+            preview.src = orig + (orig.includes('?') ? '&' : '?') + 'v=' + Date.now();
+          }, 3000);
+        }
+      });
+    });
   }
 
   // --- HERO ---
