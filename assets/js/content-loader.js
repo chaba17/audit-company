@@ -424,10 +424,51 @@ try {
     }
   } catch (e) { console.warn('Header re-render failed:', e); }
 
-  // Merge into i18n translations (only Georgian — English stays fallback)
+  // Merge into i18n translations
   try {
   if (window.translations?.ka) {
     const ka = window.translations.ka;
+    const ALL_LANGS = ['ka', 'en', 'ru', 'he'];
+
+    // HERO — merge into every language (uses content.hero + content.hero.i18n[lang] overrides).
+    // For non-KA languages WITHOUT an override, fall back to the KA base so admin's single-language
+    // edit propagates across all language tabs by default (not the hardcoded i18n.js values).
+    if (content.hero) {
+      const parseMark = (s) => {
+        if (typeof s !== 'string') return { pre: '', highlight: '', post: '' };
+        const m = s.match(/^([\s\S]*?)<mark>([\s\S]*?)<\/mark>([\s\S]*)$/);
+        if (m) return { pre: m[1].trim(), highlight: m[2].trim(), post: m[3].trim() };
+        return { pre: s, highlight: '', post: '' };
+      };
+      const stripP = (s) => (typeof s === 'string' ? s.replace(/^<p>|<\/p>$/gi, '').trim() : s);
+      ALL_LANGS.forEach(lang => {
+        const dict = window.translations[lang];
+        if (!dict || !dict.hero) return;
+        const override = (content.hero.i18n && content.hero.i18n[lang]) || {};
+        // Tag — override or fall back to KA base
+        const tagVal = override.tag || content.hero.tag || '';
+        if (tagVal) dict.hero.tag = tagVal;
+        // Title — single string with <mark> → split into pre/highlight/post
+        const titleVal = override.title || content.hero.title || '';
+        if (titleVal) {
+          const parts = parseMark(titleVal);
+          // Always write all three (even empty) so stale hardcoded remnants don't leak through
+          dict.hero.title_pre = parts.pre || '';
+          dict.hero.title_highlight = parts.highlight || '';
+          dict.hero.title_post = parts.post || '';
+        }
+        // Subtitle
+        const subVal = override.subtitle || content.hero.subtitle || '';
+        if (subVal) dict.hero.subtitle = stripP(subVal);
+        // CTA texts
+        const primaryText = (override.primaryCta && override.primaryCta.text) ||
+                            (content.hero.primaryCta && content.hero.primaryCta.text) || '';
+        if (primaryText) dict.hero.cta_primary = primaryText;
+        const secondaryText = (override.secondaryCta && override.secondaryCta.text) ||
+                              (content.hero.secondaryCta && content.hero.secondaryCta.text) || '';
+        if (secondaryText) dict.hero.cta_secondary = secondaryText;
+      });
+    }
 
     // Pricing
     if (content.pricing) {
@@ -495,45 +536,63 @@ try {
     applyTranslations(lang);
   }
 
-  // Update hero on homepage
-  const heroTitle = document.querySelector('.hero-content h1');
-  if (heroTitle && content.hero?.title) {
-    heroTitle.innerHTML = content.hero.title
-      .replace(/<mark>/g, '<span class="highlight">')
-      .replace(/<\/mark>/g, '</span>');
-  }
-  const heroSub = document.querySelector('.hero-sub');
-  if (heroSub && content.hero?.subtitle) {
-    heroSub.textContent = content.hero.subtitle;
-  }
-  const heroTag = document.querySelector('.hero-tag');
-  if (heroTag && content.hero?.tag) {
-    heroTag.textContent = content.hero.tag;
-  }
-  const heroBg = document.querySelector('.hero-bg img');
-  if (heroBg && content.hero?.bgImage) {
-    // Set src; add onerror fallback to GitHub raw URL in case Vercel hasn't propagated yet
-    const vercelUrl = content.hero.bgImage;
-    heroBg.onerror = function () {
-      const m = vercelUrl.match(/^https:\/\/(?:gubermangeo\.com|[a-z0-9-]+\.vercel\.app)\/(.+)$/i);
-      if (m && heroBg.src === vercelUrl) {
-        heroBg.src = `https://raw.githubusercontent.com/chaba17/audit-company/main/${m[1]}`;
-      }
+  // ===== Hero direct DOM updates (language-aware) =====
+  // These write clean HTML (no stale comma/<br> between spans) and override whatever
+  // applyTranslations put in. We resolve the current language's override, falling back to the KA base.
+  if (content.hero) {
+    const curLang = localStorage.getItem('lang') || 'ka';
+    const heroOverride = (content.hero.i18n && content.hero.i18n[curLang]) || {};
+    const pick = (fieldPath) => {
+      // e.g. 'primaryCta.text' — walk override first, then KA base
+      const parts = fieldPath.split('.');
+      const walk = (obj) => parts.reduce((v, k) => (v == null ? v : v[k]), obj);
+      return walk(heroOverride) || walk(content.hero) || '';
     };
-    heroBg.src = vercelUrl;
-  }
-  const heroPrimary = document.querySelector('.hero-actions .btn-yellow');
-  if (heroPrimary && content.hero?.primaryCta) {
-    heroPrimary.href = content.hero.primaryCta.href;
-    const arrow = heroPrimary.querySelector('.btn-arrow');
-    heroPrimary.innerHTML = '';
-    heroPrimary.append(document.createTextNode(content.hero.primaryCta.text + ' '));
-    if (arrow) heroPrimary.append(arrow);
-  }
-  const heroSecondary = document.querySelector('.hero-actions .btn-outline-light');
-  if (heroSecondary && content.hero?.secondaryCta) {
-    heroSecondary.href = content.hero.secondaryCta.href;
-    heroSecondary.textContent = content.hero.secondaryCta.text;
+
+    const heroTitle = document.querySelector('.hero-content h1');
+    const titleStr = pick('title');
+    if (heroTitle && titleStr) {
+      heroTitle.innerHTML = String(titleStr)
+        .replace(/<mark>/g, '<span class="highlight">')
+        .replace(/<\/mark>/g, '</span>');
+    }
+    const heroSub = document.querySelector('.hero-sub');
+    const subStr = pick('subtitle');
+    if (heroSub && subStr) {
+      heroSub.textContent = String(subStr).replace(/^<p>|<\/p>$/gi, '').trim();
+    }
+    const heroTag = document.querySelector('.hero-tag');
+    const tagStr = pick('tag');
+    if (heroTag && tagStr) {
+      heroTag.textContent = tagStr;
+    }
+    const heroBg = document.querySelector('.hero-bg img');
+    if (heroBg && content.hero.bgImage) {
+      // Set src; add onerror fallback to GitHub raw URL in case Vercel hasn't propagated yet
+      const vercelUrl = content.hero.bgImage;
+      heroBg.onerror = function () {
+        const m = vercelUrl.match(/^https:\/\/(?:gubermangeo\.com|[a-z0-9-]+\.vercel\.app)\/(.+)$/i);
+        if (m && heroBg.src === vercelUrl) {
+          heroBg.src = `https://raw.githubusercontent.com/chaba17/audit-company/main/${m[1]}`;
+        }
+      };
+      heroBg.src = vercelUrl;
+    }
+    const heroPrimary = document.querySelector('.hero-actions .btn-yellow');
+    const primaryText = pick('primaryCta.text');
+    if (heroPrimary && primaryText) {
+      if (content.hero.primaryCta && content.hero.primaryCta.href) heroPrimary.href = content.hero.primaryCta.href;
+      const arrow = heroPrimary.querySelector('.btn-arrow');
+      heroPrimary.innerHTML = '';
+      heroPrimary.append(document.createTextNode(primaryText + ' '));
+      if (arrow) heroPrimary.append(arrow);
+    }
+    const heroSecondary = document.querySelector('.hero-actions .btn-outline-light');
+    const secondaryText = pick('secondaryCta.text');
+    if (heroSecondary && secondaryText) {
+      if (content.hero.secondaryCta && content.hero.secondaryCta.href) heroSecondary.href = content.hero.secondaryCta.href;
+      heroSecondary.textContent = secondaryText;
+    }
   }
 
   // Stats (homepage)
