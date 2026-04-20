@@ -290,7 +290,7 @@ function renderHeader() {
     `;
   }).join("");
 
-  const siteName = (window.SITE_CONTENT && window.SITE_CONTENT.site && window.SITE_CONTENT.site.name) || 'Audit';
+  const siteName = (window.SITE_CONTENT && window.SITE_CONTENT.site && window.SITE_CONTENT.site.name) || 'Guberman Group';
 
   return `
     <header class="header">
@@ -320,16 +320,16 @@ function renderHeader() {
               <span data-i18n="nav.contact">კონტაქტი</span>
             </a>
             <div class="nav-locale-wrap" style="position: relative;">
-              <button class="nav-action-item nav-locale" type="button" aria-haspopup="true" aria-expanded="false">
+              <button class="nav-action-item nav-locale" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Language">
                 ${ICONS["globe-sm"]}
-                <span class="nav-locale-text"><strong data-current-lang-label>ქართული</strong></span>
+                <span class="nav-locale-text" data-current-lang-short>KA</span>
                 ${ICONS["chevron-down"]}
               </button>
               <div class="nav-locale-dropdown" role="menu">
-                <button type="button" data-locale-option="ka" role="menuitem">🇬🇪 &nbsp;ქართული</button>
-                <button type="button" data-locale-option="en" role="menuitem">🇬🇧 &nbsp;English</button>
-                <button type="button" data-locale-option="ru" role="menuitem">🇷🇺 &nbsp;Русский</button>
-                <button type="button" data-locale-option="he" role="menuitem">🇮🇱 &nbsp;עברית</button>
+                <button type="button" data-locale-option="ka" role="menuitem"><span class="loc-flag">🇬🇪</span> ქართული</button>
+                <button type="button" data-locale-option="en" role="menuitem"><span class="loc-flag">🇬🇧</span> English</button>
+                <button type="button" data-locale-option="ru" role="menuitem"><span class="loc-flag">🇷🇺</span> Русский</button>
+                <button type="button" data-locale-option="he" role="menuitem"><span class="loc-flag">🇮🇱</span> עברית</button>
               </div>
             </div>
             <button class="nav-toggle" type="button" aria-label="Menu" aria-expanded="false">

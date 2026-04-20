@@ -251,48 +251,45 @@ h2.display, .display {
 .nav {
   display: flex;
   align-items: stretch;
-  min-height: 80px;
+  min-height: 64px;
   gap: 0;
 }
 
-/* EY-style logo with yellow brushstroke */
+/* Compact logo (slim header) */
 .logo {
   display: flex;
   align-items: center;
   flex-shrink: 0;
-  padding: 0 24px;
-  gap: 12px;
+  padding: 0 18px;
+  gap: 10px;
   text-decoration: none;
 }
 .logo-wrap {
   position: relative;
-  padding-top: 10px;
+  padding-top: 7px;
 }
 .logo-ey {
   font-family: var(--font-display);
-  font-weight: 900;
-  font-size: 40px;
+  font-weight: 800;
+  font-size: 20px;
   color: white;
-  letter-spacing: -0.04em;
-  line-height: 0.9;
+  letter-spacing: -0.02em;
+  line-height: 1;
   display: block;
+  white-space: nowrap;
 }
 .logo-wrap::before {
   content: "";
   position: absolute;
   top: 0;
   left: 0;
-  width: 52px;
-  height: 14px;
+  width: 26px;
+  height: 7px;
   background: var(--color-yellow);
   clip-path: polygon(0 100%, 100% 0, 100% 100%);
 }
 .logo-tagline {
-  font-size: 11px;
-  color: white;
-  line-height: 1.25;
-  font-weight: 400;
-  max-width: 110px;
+  display: none;
 }
 
 /* ---------- Main nav menu ---------- */
@@ -314,9 +311,9 @@ h2.display, .display {
   display: inline-flex;
   align-items: center;
   gap: 0;
-  padding: 0 24px;
-  min-height: 80px;
-  font-size: 16px;
+  padding: 0 18px;
+  min-height: 64px;
+  font-size: 14px;
   font-weight: 500;
   color: white;
   background: transparent;
@@ -349,14 +346,14 @@ h2.display, .display {
 .nav-action-item {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 0 20px;
-  min-height: 80px;
+  gap: 6px;
+  padding: 0 12px;
+  min-height: 64px;
   color: white;
   background: transparent;
   border: none;
   cursor: pointer;
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 500;
   font-family: inherit;
   transition: background var(--t);
@@ -369,42 +366,50 @@ h2.display, .display {
   opacity: 0.9;
   flex-shrink: 0;
 }
-.nav-action-item .nav-locale-text {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  line-height: 1.2;
+
+/* Compact language switcher — just show short code */
+.nav-locale {
+  padding: 0 10px;
+  gap: 4px;
+}
+.nav-locale .nav-locale-text {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
   font-size: 13px;
-  font-weight: 400;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
-.nav-action-item .nav-locale-text strong {
-  font-size: 14px;
-  font-weight: 500;
-}
-.nav-locale svg:last-child { opacity: 0.7; transition: transform 0.2s; }
+.nav-locale svg:first-of-type { display: none; }
+.nav-locale svg:last-child { opacity: 0.7; transition: transform 0.2s; width: 12px; height: 12px; }
 .nav-locale-wrap.open .nav-locale svg:last-child { transform: rotate(180deg); }
 
-/* Language dropdown */
+/* Language dropdown — compact modern style */
 .nav-locale-dropdown {
   position: absolute;
-  top: calc(100% + 6px);
+  top: calc(100% + 4px);
   right: 0;
   background: #14141C;
-  border: 1px solid rgba(255,255,255,0.12);
-  min-width: 180px;
-  padding: 6px 0;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 6px;
+  min-width: 150px;
+  padding: 4px;
   display: none;
   flex-direction: column;
   z-index: 1000;
-  box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+  box-shadow: 0 8px 28px rgba(0,0,0,0.5);
+  overflow: hidden;
 }
 .nav-locale-wrap.open .nav-locale-dropdown { display: flex; }
+.nav-locale-dropdown .loc-flag { margin-right: 8px; font-size: 15px; }
 .nav-locale-dropdown button {
-  padding: 12px 18px;
+  padding: 10px 12px;
   background: none;
   border: none;
+  border-radius: 4px;
   color: rgba(255,255,255,0.85);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   text-align: left;
   cursor: pointer;
@@ -611,8 +616,8 @@ html.lang-rtl .btn-arrow { transform: scaleX(-1); display: inline-block; }
   display: none;
   align-items: center;
   justify-content: center;
-  width: 56px;
-  min-height: 80px;
+  width: 52px;
+  min-height: 64px;
   color: white;
   background: transparent;
   border: none;
@@ -2012,27 +2017,27 @@ body.nav-open { overflow: hidden; }
 
 /* ---------- MOBILE HEADER (dark EY-style) ---------- */
 @media (max-width: 1100px) {
-  .nav { min-height: 70px; gap: 0; }
-  .logo { padding: 0 20px; }
-  .logo-ey { font-size: 32px; }
-  .logo-wrap::before { width: 42px; height: 11px; }
+  .nav { min-height: 60px; gap: 0; }
+  .logo { padding: 0 16px; }
+  .logo-ey { font-size: 18px; }
+  .logo-wrap::before { width: 22px; height: 6px; }
   .nav-menu { margin-left: 0; }
   .nav-actions { margin-left: auto; }
-  .nav-toggle { min-height: 70px; width: 50px; }
-  .header { min-height: 70px; }
+  .nav-toggle { min-height: 60px; width: 46px; }
+  .header { min-height: 60px; }
 
   /* Adjust drawer top to match */
-  .nav-menu.open { top: 70px !important; }
+  .nav-menu.open { top: 60px !important; }
 }
 
 @media (max-width: 768px) {
-  .logo { padding: 0 16px; }
-  .logo-ey { font-size: 28px; }
-  .logo-wrap::before { width: 36px; height: 9px; }
-  .nav { min-height: 64px; }
-  .nav-toggle { min-height: 64px; width: 50px; }
-  .header { min-height: 64px; }
-  .nav-menu.open { top: 64px !important; }
+  .logo { padding: 0 12px; }
+  .logo-ey { font-size: 16px; }
+  .logo-wrap::before { width: 20px; height: 5px; }
+  .nav { min-height: 56px; }
+  .nav-toggle { min-height: 56px; width: 46px; }
+  .header { min-height: 56px; }
+  .nav-menu.open { top: 56px !important; }
 }
 
 /* ---------- MOBILE STATS BIG ---------- */
