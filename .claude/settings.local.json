@@ -165,7 +165,9 @@
       "Bash(curl -s \"https://gubermangeo.com/?cb=$\\(date +%s\\)\")",
       "Bash(curl -s \"https://gubermangeo.com/assets/js/partials.js?cb=$\\(date +%s\\)\")",
       "Bash(curl -s \"https://gubermangeo.com/assets/css/style.css?cb=$\\(date +%s\\)\")",
-      "Bash(curl -s \"https://gubermangeo.com/api/content?cb=$\\(date +%s\\)\")"
+      "Bash(curl -s \"https://gubermangeo.com/api/content?cb=$\\(date +%s\\)\")",
+      "Bash(curl -s \"https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=https%3A%2F%2Fgubermangeo.com%2F&strategy=mobile&category=performance&category=accessibility&category=best-practices&category=seo\" -o /tmp/psi.json)",
+      "Bash(curl -s \"https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=https%3A%2F%2Fgubermangeo.com%2F&strategy=mobile&category=performance&category=accessibility&category=best-practices&category=seo\" -o ./_psi.json)"
     ]
   }
 }
