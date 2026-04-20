@@ -1,6 +1,6 @@
 {
   "_test": true,
-  "_updated": "2026-04-20T21:03:31.651Z",
+  "_updated": "2026-04-20T21:11:30.922Z",
   "megaMenus": {
     "services": {
       "label": "სერვისები",
@@ -352,7 +352,7 @@
     "logoBlend": "lighten"
   },
   "hero": {
-    "tag": "გიორგი",
+    "tag": "ლამაზო ქვეყანავ რაზედ მოგიწყენია",
     "title": "Plan <mark>success</mark> - feel like never before!",
     "subtitle": "<p>We are here for you - audit, accounting, consulting and more...</p>",
     "primaryCta": {
@@ -363,7 +363,12 @@
       "text": "our services",
       "href": "services.html"
     },
-    "bgImage": "https://gubermangeo.com/assets/images/uploads/1776711003493-photo_2026-04-20_15-01-11.jpg"
+    "bgImage": "https://gubermangeo.com/assets/images/uploads/1776711003493-photo_2026-04-20_15-01-11.jpg",
+    "i18n": {
+      "en": {
+        "tag": "ლამაზო ქვეყანავ რაზედ მოგიწყენია"
+      }
+    }
   },
   "stats": [
     {
