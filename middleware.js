@@ -1,3 +1,4 @@
+// Build trigger: v3
 // Vercel Edge Middleware - HTTP Basic Auth layer for admin portal
 // Runs BEFORE the file is served. Even if someone finds the URL, they need
 // to pass HTTP Basic Auth before anything renders.
