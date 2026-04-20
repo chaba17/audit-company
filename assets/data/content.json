@@ -1,6 +1,6 @@
 {
   "_test": true,
-  "_updated": "2026-04-20T18:48:28.813Z",
+  "_updated": "2026-04-20T18:48:46.693Z",
   "megaMenus": {
     "services": {
       "label": "სერვისები",
@@ -362,7 +362,7 @@
       "text": "our services",
       "href": "services.html"
     },
-    "bgImage": ""
+    "bgImage": "https://gubermangeo.com/assets/images/uploads/1776710901749-photo_2026-04-20_15-01-11.jpg"
   },
   "stats": [
     {
