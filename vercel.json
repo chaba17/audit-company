@@ -2,6 +2,7 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
+    { "source": "/sitemap.xml", "destination": "/api/sitemap" },
     { "source": "/services/(.+)\\.html", "destination": "/services/_template" },
     { "source": "/services/(.+)", "destination": "/services/_template" }
   ],
