@@ -1,6 +1,6 @@
 {
   "_test": true,
-  "_updated": "2026-04-20T18:49:54.939Z",
+  "_updated": "2026-04-20T18:50:08.744Z",
   "megaMenus": {
     "services": {
       "label": "სერვისები",
@@ -941,6 +941,14 @@
       "size": 34555,
       "type": "image/jpeg",
       "uploaded": 1776686618261
+    },
+    {
+      "name": "photo_2026-04-20_15-01-11.jpg",
+      "url": "https://gubermangeo.com/assets/images/uploads/1776711003493-photo_2026-04-20_15-01-11.jpg",
+      "path": "assets/images/uploads/1776711003493-photo_2026-04-20_15-01-11.jpg",
+      "size": 214554,
+      "type": "image/jpeg",
+      "uploaded": 1776711002242
     }
   ],
   "theme": {
