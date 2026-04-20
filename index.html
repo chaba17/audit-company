@@ -43,7 +43,7 @@
     })();
   </script>
 
-  <link rel="stylesheet" href="assets/css/style.css?v=1776709254" />
+  <link rel="stylesheet" href="assets/css/style.css?v=1776711808" />
 </head>
 <body>
 
@@ -55,10 +55,18 @@
       <img id="hero-bg-img" alt="" width="1200" height="750" fetchpriority="high" decoding="async" />
       <script>
         // Populate hero bg synchronously from the cached URL set in <head>.
-        // No fallback URL hardcoded — this image is 100% admin-managed.
+        // If Vercel 404s (file not yet propagated), fall back to GitHub raw URL.
         (function () {
           var img = document.getElementById('hero-bg-img');
-          if (img && window.__heroBgUrl) img.src = window.__heroBgUrl;
+          if (!img || !window.__heroBgUrl) return;
+          var url = window.__heroBgUrl;
+          img.onerror = function () {
+            var m = url.match(/^https:\/\/(?:gubermangeo\.com|[a-z0-9-]+\.vercel\.app)\/(.+)$/i);
+            if (m && img.src === url) {
+              img.src = 'https://raw.githubusercontent.com/chaba17/audit-company/main/' + m[1];
+            }
+          };
+          img.src = url;
         })();
       </script>
     </div>
@@ -397,10 +405,10 @@
 
   <div id="site-footer"></div>
 
-  <script defer src="assets/js/i18n.js?v=1776709254"></script>
-  <script defer src="assets/js/partials.js?v=1776709254"></script>
-  <script defer src="assets/js/main.js?v=1776709254"></script>
-  <script defer src="assets/js/content-loader.js?v=1776709254"></script>
+  <script defer src="assets/js/i18n.js?v=1776711808"></script>
+  <script defer src="assets/js/partials.js?v=1776711808"></script>
+  <script defer src="assets/js/main.js?v=1776711808"></script>
+  <script defer src="assets/js/content-loader.js?v=1776711808"></script>
   <script>
     function renderDynamicSections() {
       const lang = localStorage.getItem("lang") || "ka";

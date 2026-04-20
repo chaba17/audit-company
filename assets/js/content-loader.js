@@ -512,7 +512,15 @@ try {
   }
   const heroBg = document.querySelector('.hero-bg img');
   if (heroBg && content.hero?.bgImage) {
-    heroBg.src = content.hero.bgImage;
+    // Set src; add onerror fallback to GitHub raw URL in case Vercel hasn't propagated yet
+    const vercelUrl = content.hero.bgImage;
+    heroBg.onerror = function () {
+      const m = vercelUrl.match(/^https:\/\/(?:gubermangeo\.com|[a-z0-9-]+\.vercel\.app)\/(.+)$/i);
+      if (m && heroBg.src === vercelUrl) {
+        heroBg.src = `https://raw.githubusercontent.com/chaba17/audit-company/main/${m[1]}`;
+      }
+    };
+    heroBg.src = vercelUrl;
   }
   const heroPrimary = document.querySelector('.hero-actions .btn-yellow');
   if (heroPrimary && content.hero?.primaryCta) {
