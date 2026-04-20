@@ -4,6 +4,11 @@
    ========================================================== */
 
 (async () => {
+  // Escape HTML for safe insertion as text
+  const escapeHTML = (s) => String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+
   // Fetch content.json with cache-busting
   const loadContent = async () => {
     try {
@@ -251,6 +256,105 @@
     } catch (e) { console.warn('Re-apply translations failed:', e); }
   };
   reapplyTranslations();
+
+  // ========================================================
+  // ABOUT PAGE — render Mission + History + Values from content.aboutPage
+  // ========================================================
+  try {
+    if (location.pathname.includes('about') && content.aboutPage) {
+      const a = content.aboutPage;
+      // Apply i18n overlay for the language
+      const lang = localStorage.getItem('lang') || 'ka';
+      const resolve = (section) => window.resolveItemI18n ? window.resolveItemI18n(section, lang) : section;
+      const hero = resolve(a.hero || {});
+      const mission = resolve(a.mission || {});
+      const history = resolve(a.history || {});
+      const values = resolve(a.values || {});
+
+      // Hero block
+      const heroEyebrow = document.querySelector('.page-header .eyebrow');
+      const heroTitle = document.querySelector('.page-header h1');
+      const heroSubtitle = document.querySelector('.page-header p');
+      if (heroEyebrow && hero.eyebrow) heroEyebrow.textContent = hero.eyebrow;
+      if (heroTitle && (hero.titlePre || hero.titleHighlight)) {
+        heroTitle.innerHTML = `${escapeHTML(hero.titlePre || '')}<br><span class="highlight">${escapeHTML(hero.titleHighlight || '')}</span>`;
+      }
+      if (heroSubtitle && hero.subtitle) heroSubtitle.textContent = hero.subtitle;
+
+      // Mission block (second .section)
+      const missionSection = document.querySelectorAll('.section')[1];
+      if (missionSection) {
+        const mEyebrow = missionSection.querySelector('.eyebrow');
+        const mTitle = missionSection.querySelector('h2.display');
+        const mText = missionSection.querySelector('p.lead');
+        const mImg = missionSection.querySelector('.split-img img');
+        const mCta = missionSection.querySelector('a.btn.btn-dark');
+        const mList = missionSection.querySelector('ul.check-list');
+        if (mEyebrow && mission.eyebrow) mEyebrow.textContent = mission.eyebrow;
+        if (mTitle && (mission.titlePre || mission.titleHighlight)) {
+          mTitle.innerHTML = `${escapeHTML(mission.titlePre || '')} <span class="highlight">${escapeHTML(mission.titleHighlight || '')}</span>`;
+        }
+        if (mText && mission.text) mText.textContent = mission.text;
+        if (mImg && mission.image) mImg.src = mission.image;
+        if (mCta && mission.ctaText) {
+          mCta.innerHTML = `${escapeHTML(mission.ctaText)} <span class="btn-arrow">→</span>`;
+          if (mission.ctaHref) mCta.href = mission.ctaHref;
+        }
+        if (mList && Array.isArray(mission.items) && mission.items.length) {
+          mList.innerHTML = mission.items.map((it, i) => `
+            <li><span class="check-num">${String(i + 1).padStart(2, '0')}.</span><span><strong>${escapeHTML(it.title || '')}</strong> — ${escapeHTML(it.text || '')}</span></li>
+          `).join('');
+        }
+      }
+
+      // History block (third .section — timeline)
+      const historySections = document.querySelectorAll('.section.bg-soft');
+      const historySection = historySections[0]; // first bg-soft after mission
+      if (historySection) {
+        const hEyebrow = historySection.querySelector('.eyebrow');
+        const hTitle = historySection.querySelector('h2.display');
+        const hList = historySection.querySelector('ul.check-list');
+        const hImg = historySection.querySelector('.split-img img');
+        if (hEyebrow && history.eyebrow) hEyebrow.textContent = history.eyebrow;
+        if (hTitle && (history.titlePre || history.titleHighlight)) {
+          hTitle.innerHTML = `${escapeHTML(history.titlePre || '')} <span class="highlight">${escapeHTML(history.titleHighlight || '')}</span>.`;
+        }
+        if (hImg && history.image) hImg.src = history.image;
+        if (hList && Array.isArray(history.timeline) && history.timeline.length) {
+          hList.innerHTML = history.timeline.map(it => `
+            <li><span class="check-num">${escapeHTML(it.year || '')}</span><span><strong>${escapeHTML(it.title || '')}.</strong> ${escapeHTML(it.text || '')}</span></li>
+          `).join('');
+        }
+      }
+
+      // Values block (fourth .section — services-grid style cards)
+      const valuesSection = document.querySelectorAll('.section')[3];
+      if (valuesSection) {
+        const vEyebrow = valuesSection.querySelector('.eyebrow');
+        const vTitle = valuesSection.querySelector('h2.display');
+        const vGrid = valuesSection.querySelector('.services-grid');
+        if (vEyebrow && values.eyebrow) vEyebrow.textContent = values.eyebrow;
+        if (vTitle && (values.titlePre || values.titleHighlight)) {
+          vTitle.innerHTML = `${escapeHTML(values.titlePre || '')} <span class="highlight">${escapeHTML(values.titleHighlight || '')}</span>`;
+        }
+        if (vGrid && Array.isArray(values.items) && values.items.length) {
+          const valueIcons = [
+            '<svg class="service-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>',
+            '<svg class="service-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>',
+            '<svg class="service-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>'
+          ];
+          vGrid.innerHTML = values.items.map((it, i) => `
+            <div class="service-card reveal visible ${i > 0 ? 'delay-' + Math.min(i, 3) : ''}">
+              <div class="service-number">${escapeHTML(it.num || ('VALUE ' + String(i+1).padStart(2, '0')))}</div>
+              ${valueIcons[i % valueIcons.length]}
+              <h3>${escapeHTML(it.title || '')}</h3>
+              <p>${escapeHTML(it.text || '')}</p>
+            </div>
+          `).join('');
+        }
+      }
+    }
+  } catch (e) { console.warn('About page render failed:', e); }
 
   // Contact page: update phone + email + address blocks from site info
   try {

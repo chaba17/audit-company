@@ -819,6 +819,7 @@
       blog: renderBlog,
       industries: renderIndustries,
       stats: renderStats,
+      aboutPage: renderAboutPage,
       contactPage: renderContactPage,
       search: renderSearchSection,
       megamenu: renderMegaMenu,
@@ -850,6 +851,7 @@
       blog: attachBlog,
       industries: attachIndustries,
       stats: attachStats,
+      aboutPage: attachAboutPage,
       contactPage: attachFieldListeners,
       search: attachFieldListeners,
       megamenu: attachMegaMenu,
@@ -2253,6 +2255,257 @@
   }
 
   // --- CONTACT PAGE ---
+  // --- ABOUT PAGE EDITOR (Mission, History timeline, Values) ---
+  function renderAboutPage() {
+    if (!state.content.aboutPage) state.content.aboutPage = {};
+    const a = state.content.aboutPage;
+    // Defaults
+    a.hero = a.hero || { eyebrow: 'ჩვენ შესახებ · 01', titlePre: '15 წელი', titleHighlight: 'საქართველოს ბიზნესთან ერთად.', subtitle: '15+ წლის გამოცდილების გუნდი, რომელიც საქართველოს ბიზნესს ეხმარება ფინანსური ზრდის გზაზე.' };
+    a.mission = a.mission || {
+      eyebrow: 'ჩვენი მისია · 02',
+      titlePre: 'ბუღალტერია არ უნდა იყოს',
+      titleHighlight: 'ტვირთი.',
+      text: 'ვაქციოთ ბუღალტერია და გადასახადები უხილავად ყოველდღიური ბიზნესისთვის. გამჭვირვალე პროცესით, პროფესიონალური გუნდით და თანამედროვე ტექნოლოგიებით ვეხმარებით მეწარმეებს ფოკუსირდნენ მთავარზე — ბიზნესის ზრდაზე.',
+      ctaText: 'დაიწყე კონსულტაცია',
+      ctaHref: 'contact.html',
+      image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=900&q=85',
+      items: [
+        { title: 'გამჭვირვალე ფასი', text: 'ფარული ხარჯების გარეშე.' },
+        { title: 'პერსონალური ბუღალტერი', text: 'თქვენი კომპანიისთვის გამოყოფილი ექსპერტი.' },
+        { title: 'ციფრული პლატფორმა', text: 'ყველა დოკუმენტი ერთ სივრცეში.' }
+      ]
+    };
+    a.history = a.history || {
+      eyebrow: 'ჩვენი ისტორია · 03',
+      titlePre: '15 წელი',
+      titleHighlight: 'წარმატების',
+      image: 'https://images.unsplash.com/photo-1664575602554-2087b04935a5?auto=format&fit=crop&w=900&q=85',
+      timeline: [
+        { year: "'10", title: 'დაარსება', text: 'პირველი კლიენტი — 3 პარტნიორი.' },
+        { year: "'15", title: '50+ კლიენტი', text: 'აუდიტის სერვისის დანერგვა.' },
+        { year: "'19", title: '200+ კლიენტი', text: 'ონლაინ პლატფორმის გაშვება.' },
+        { year: "'23", title: '400+ კლიენტი', text: 'გუნდი გაიზარდა 15 სპეციალისტამდე.' },
+        { year: "'26", title: '500+ კლიენტი', text: 'ახალი ოფისი თბილისის ცენტრში.' }
+      ]
+    };
+    a.values = a.values || {
+      eyebrow: 'ჩვენი ღირებულებები · 04',
+      titlePre: 'პრინციპები, რომლითაც',
+      titleHighlight: 'ვცხოვრობთ.',
+      items: [
+        { num: 'VALUE 01', title: 'სანდოობა', text: 'ყოველდღე ვიმსახურებთ თქვენს ნდობას — მონაცემების უსაფრთხოება და სიზუსტე პრიორიტეტია.' },
+        { num: 'VALUE 02', title: 'სისწრაფე', text: 'მოთხოვნის პასუხი 4 საათში, დეკლარაციები ვადამდე — კლიენტს არასდროს უწევს ლოდინი.' },
+        { num: 'VALUE 03', title: 'ექსპერტიზა', text: 'სერტიფიცირებული ბუღალტრები, აუდიტორები და იურისტები — ცვლილებები ვიცით პირველებმა.' }
+      ]
+    };
+
+    const imagePicker = (fieldPath, currentUrl) => `
+      <div class="form-group">
+        <label>სურათის URL</label>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <input type="url" data-field="${fieldPath}" value="${escapeHtml(currentUrl || '')}" placeholder="https://..." style="flex: 1;" />
+          <button class="btn btn-outline btn-sm" type="button" data-pick-media="${fieldPath}">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+            Library
+          </button>
+        </div>
+        ${currentUrl ? `<div style="margin-top: 8px;"><img src="${escapeHtml(currentUrl)}" alt="" style="max-width: 160px; height: auto; border: 1px solid var(--gray-200);"></div>` : ''}
+        <small class="hint">აატვირთე ახალი სურათი → <a href="#media" style="color: var(--ink); font-weight: 700;" onclick="location.hash='#media'">Media Library</a>, შემდეგ URL დააკოპირე აქ</small>
+      </div>
+    `;
+
+    return `
+      <div class="page-header">
+        <div><h1>About Page</h1><p>მართე /about გვერდის სექციები: მისია, ისტორიის ქრონიკა, ღირებულებები</p></div>
+      </div>
+
+      <div class="info-banner" style="background: #f0fdf4; border-left-color: #10B981;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        <div><strong>ცოცხალი:</strong> ყველა ცვლილება Publish-ის შემდეგ ავტომატურად ჩანს /about გვერდზე. გუნდის წევრების სია <a href="#team" onclick="location.hash='#team'" style="color: var(--ink); font-weight: 700;">Team</a> სექციაში იცვლება.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><h3 class="card-title">🎯 ჰერო ბლოკი (გვერდის თავი)</h3></div>
+        <div class="form-grid">
+          <div class="form-group"><label>Eyebrow</label><input type="text" data-field="aboutPage.hero.eyebrow" value="${escapeHtml(a.hero.eyebrow || '')}" /></div>
+          <div class="form-grid cols-2">
+            <div class="form-group"><label>სათაური (პირველი ნაწილი)</label><input type="text" data-field="aboutPage.hero.titlePre" value="${escapeHtml(a.hero.titlePre || '')}" /></div>
+            <div class="form-group"><label>Highlight (ყვითლად)</label><input type="text" data-field="aboutPage.hero.titleHighlight" value="${escapeHtml(a.hero.titleHighlight || '')}" /></div>
+          </div>
+          <div class="form-group"><label>ქვესათაური</label><textarea data-field="aboutPage.hero.subtitle" rows="2">${escapeHtml(a.hero.subtitle || '')}</textarea></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><h3 class="card-title">💡 მისიის ბლოკი</h3></div>
+        <div class="form-grid">
+          <div class="form-group"><label>Eyebrow</label><input type="text" data-field="aboutPage.mission.eyebrow" value="${escapeHtml(a.mission.eyebrow || '')}" /></div>
+          <div class="form-grid cols-2">
+            <div class="form-group"><label>სათაური (პირველი ნაწილი)</label><input type="text" data-field="aboutPage.mission.titlePre" value="${escapeHtml(a.mission.titlePre || '')}" /></div>
+            <div class="form-group"><label>Highlight (ყვითლად)</label><input type="text" data-field="aboutPage.mission.titleHighlight" value="${escapeHtml(a.mission.titleHighlight || '')}" /></div>
+          </div>
+          <div class="form-group"><label>ტექსტი (აბზაცი)</label><textarea data-field="aboutPage.mission.text" rows="4">${escapeHtml(a.mission.text || '')}</textarea></div>
+          ${imagePicker('aboutPage.mission.image', a.mission.image)}
+          <div class="form-group"><label>ნუმერაციის ჩამონათვალი (3 ელემენტი)</label>
+            <div id="mission-items" style="display: flex; flex-direction: column; gap: 8px;">
+              ${(a.mission.items || []).map((it, i) => `
+                <div style="display: grid; grid-template-columns: 1fr 2fr auto; gap: 8px; align-items: center;">
+                  <input type="text" data-mission-item="${i}" data-key="title" value="${escapeHtml(it.title || '')}" placeholder="სათაური" />
+                  <input type="text" data-mission-item="${i}" data-key="text" value="${escapeHtml(it.text || '')}" placeholder="მოკლე აღწერა" />
+                  <button class="icon-btn danger" type="button" data-remove-mission-item="${i}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg></button>
+                </div>
+              `).join('')}
+            </div>
+            <button class="btn btn-outline btn-xs" type="button" id="add-mission-item" style="margin-top: 8px;">+ დაამატე პუნქტი</button>
+          </div>
+          <div class="form-grid cols-2">
+            <div class="form-group"><label>ღილაკის ტექსტი</label><input type="text" data-field="aboutPage.mission.ctaText" value="${escapeHtml(a.mission.ctaText || '')}" /></div>
+            <div class="form-group"><label>ღილაკის URL</label><input type="text" data-field="aboutPage.mission.ctaHref" value="${escapeHtml(a.mission.ctaHref || '')}" /></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><h3 class="card-title">📅 ისტორიის ქრონიკა (Timeline)</h3></div>
+        <div class="form-grid">
+          <div class="form-group"><label>Eyebrow</label><input type="text" data-field="aboutPage.history.eyebrow" value="${escapeHtml(a.history.eyebrow || '')}" /></div>
+          <div class="form-grid cols-2">
+            <div class="form-group"><label>სათაური (პირველი ნაწილი)</label><input type="text" data-field="aboutPage.history.titlePre" value="${escapeHtml(a.history.titlePre || '')}" /></div>
+            <div class="form-group"><label>Highlight (ყვითლად)</label><input type="text" data-field="aboutPage.history.titleHighlight" value="${escapeHtml(a.history.titleHighlight || '')}" /></div>
+          </div>
+          ${imagePicker('aboutPage.history.image', a.history.image)}
+          <div class="form-group"><label>Timeline ელემენტები</label>
+            <div id="history-timeline" style="display: flex; flex-direction: column; gap: 8px;">
+              ${(a.history.timeline || []).map((it, i) => `
+                <div style="display: grid; grid-template-columns: 80px 1fr 2fr auto; gap: 8px; align-items: center;">
+                  <input type="text" data-timeline-item="${i}" data-key="year" value="${escapeHtml(it.year || '')}" placeholder="'10" />
+                  <input type="text" data-timeline-item="${i}" data-key="title" value="${escapeHtml(it.title || '')}" placeholder="სათაური" />
+                  <input type="text" data-timeline-item="${i}" data-key="text" value="${escapeHtml(it.text || '')}" placeholder="აღწერა" />
+                  <button class="icon-btn danger" type="button" data-remove-timeline-item="${i}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg></button>
+                </div>
+              `).join('')}
+            </div>
+            <button class="btn btn-outline btn-xs" type="button" id="add-timeline-item" style="margin-top: 8px;">+ დაამატე ეპოქა</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><h3 class="card-title">⭐ ღირებულებები</h3></div>
+        <div class="form-grid">
+          <div class="form-group"><label>Eyebrow</label><input type="text" data-field="aboutPage.values.eyebrow" value="${escapeHtml(a.values.eyebrow || '')}" /></div>
+          <div class="form-grid cols-2">
+            <div class="form-group"><label>სათაური (პირველი ნაწილი)</label><input type="text" data-field="aboutPage.values.titlePre" value="${escapeHtml(a.values.titlePre || '')}" /></div>
+            <div class="form-group"><label>Highlight (ყვითლად)</label><input type="text" data-field="aboutPage.values.titleHighlight" value="${escapeHtml(a.values.titleHighlight || '')}" /></div>
+          </div>
+          <div class="form-group"><label>ღირებულებების ბარათები</label>
+            <div id="values-items" style="display: flex; flex-direction: column; gap: 12px;">
+              ${(a.values.items || []).map((it, i) => `
+                <div style="border: 1px solid var(--gray-200); padding: 12px; background: var(--gray-50); display: grid; grid-template-columns: 100px 1fr auto; gap: 8px; align-items: start;">
+                  <input type="text" data-value-item="${i}" data-key="num" value="${escapeHtml(it.num || '')}" placeholder="VALUE 01" />
+                  <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <input type="text" data-value-item="${i}" data-key="title" value="${escapeHtml(it.title || '')}" placeholder="სათაური" />
+                    <textarea data-value-item="${i}" data-key="text" rows="2" placeholder="აღწერა">${escapeHtml(it.text || '')}</textarea>
+                  </div>
+                  <button class="icon-btn danger" type="button" data-remove-value-item="${i}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg></button>
+                </div>
+              `).join('')}
+            </div>
+            <button class="btn btn-outline btn-xs" type="button" id="add-value-item" style="margin-top: 8px;">+ დაამატე ღირებულება</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function attachAboutPage() {
+    attachFieldListeners();
+    const a = state.content.aboutPage;
+    const rerender = () => renderSection('aboutPage');
+
+    // Pick from library buttons
+    $$('[data-pick-media]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const field = btn.dataset.pickMedia;
+        const library = state.content.media || [];
+        if (!library.length) { toast('Media library ცარიელია. ჯერ ატვირთე Media Library-ში.', 'info', 4000); return; }
+        const url = prompt('აირჩიე URL:\n\n' + library.map((m,i) => (i+1)+'. '+m.name+'\n   '+m.url).join('\n\n') + '\n\nჩაწერე URL ან რიცხვი (1-'+library.length+'):');
+        if (!url) return;
+        const picked = /^\d+$/.test(url.trim()) ? library[parseInt(url.trim())-1]?.url : url.trim();
+        if (picked) {
+          const path = field.split('.');
+          let obj = state.content;
+          for (let i = 0; i < path.length - 1; i++) obj = obj[path[i]] || (obj[path[i]] = {});
+          obj[path[path.length-1]] = picked;
+          markDirty(); rerender();
+        }
+      });
+    });
+
+    // Mission items (title + text rows)
+    const syncMissionItems = () => {
+      a.mission.items = $$('[data-mission-item]').reduce((acc, el) => {
+        const i = parseInt(el.dataset.missionItem);
+        acc[i] = acc[i] || {};
+        acc[i][el.dataset.key] = el.value;
+        return acc;
+      }, []).filter(Boolean);
+      markDirty();
+    };
+    $$('[data-mission-item]').forEach(el => el.addEventListener('input', syncMissionItems));
+    $$('[data-remove-mission-item]').forEach(btn => btn.addEventListener('click', () => {
+      const i = parseInt(btn.dataset.removeMissionItem);
+      a.mission.items.splice(i, 1); markDirty(); rerender();
+    }));
+    $('#add-mission-item')?.addEventListener('click', () => {
+      a.mission.items = a.mission.items || [];
+      a.mission.items.push({ title: '', text: '' });
+      markDirty(); rerender();
+    });
+
+    // Timeline items (year + title + text rows)
+    const syncTimeline = () => {
+      a.history.timeline = $$('[data-timeline-item]').reduce((acc, el) => {
+        const i = parseInt(el.dataset.timelineItem);
+        acc[i] = acc[i] || {};
+        acc[i][el.dataset.key] = el.value;
+        return acc;
+      }, []).filter(Boolean);
+      markDirty();
+    };
+    $$('[data-timeline-item]').forEach(el => el.addEventListener('input', syncTimeline));
+    $$('[data-remove-timeline-item]').forEach(btn => btn.addEventListener('click', () => {
+      const i = parseInt(btn.dataset.removeTimelineItem);
+      a.history.timeline.splice(i, 1); markDirty(); rerender();
+    }));
+    $('#add-timeline-item')?.addEventListener('click', () => {
+      a.history.timeline = a.history.timeline || [];
+      a.history.timeline.push({ year: '', title: '', text: '' });
+      markDirty(); rerender();
+    });
+
+    // Values items
+    const syncValues = () => {
+      a.values.items = $$('[data-value-item]').reduce((acc, el) => {
+        const i = parseInt(el.dataset.valueItem);
+        acc[i] = acc[i] || {};
+        acc[i][el.dataset.key] = el.value;
+        return acc;
+      }, []).filter(Boolean);
+      markDirty();
+    };
+    $$('[data-value-item]').forEach(el => el.addEventListener('input', syncValues));
+    $$('[data-remove-value-item]').forEach(btn => btn.addEventListener('click', () => {
+      const i = parseInt(btn.dataset.removeValueItem);
+      a.values.items.splice(i, 1); markDirty(); rerender();
+    }));
+    $('#add-value-item')?.addEventListener('click', () => {
+      a.values.items = a.values.items || [];
+      a.values.items.push({ num: 'VALUE ' + String((a.values.items.length + 1)).padStart(2, '0'), title: '', text: '' });
+      markDirty(); rerender();
+    });
+  }
+
   function renderContactPage() {
     if (!state.content.contactPage) state.content.contactPage = {
       eyebrow: 'კონტაქტი · 01',
@@ -3678,13 +3931,15 @@ ${urls.map(u => `  <url>
   }
 
   async function handleUpload(files) {
-    if (!getGithubToken()) {
-      toast('❌ ჯერ GitHub Token-ი დააყენე Settings-ში', 'error');
+    const hasSharedSecret = !!getSharedSecret();
+    const hasToken = !!getGithubToken();
+    if (!hasSharedSecret && !hasToken) {
+      toast('❌ ჯერ Shared Secret-ი (ან GitHub Token) დააყენე Settings-ში', 'error', 5000);
       return;
     }
     for (const file of files) {
-      if (file.size > 5 * 1024 * 1024) {
-        toast(`❌ ${file.name} > 5MB`, 'error');
+      if (file.size > 8 * 1024 * 1024) {
+        toast(`❌ ${file.name} > 8MB`, 'error');
         continue;
       }
       await uploadFile(file);
@@ -3701,24 +3956,37 @@ ${urls.map(u => `  <url>
         reader.readAsDataURL(file);
       });
 
-      const timestamp = Date.now();
-      const safeName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
-      const path = `assets/images/uploads/${timestamp}-${safeName}`;
+      // Prefer shared API (no GitHub token required) → fall back to personal token
+      let url, urlPath;
+      const secret = getSharedSecret();
+      if (secret) {
+        const apiRes = await fetch('/api/upload', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ secret, name: file.name, contentBase64: base64, mime: file.type })
+        });
+        const data = await apiRes.json().catch(() => ({}));
+        if (!apiRes.ok) throw new Error(data.error || data.detail || `HTTP ${apiRes.status}`);
+        url = data.url; urlPath = data.path;
+      } else {
+        // Fallback: personal GitHub token
+        const timestamp = Date.now();
+        const safeName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+        const path = `assets/images/uploads/${timestamp}-${safeName}`;
+        await githubAPI(`contents/${path}`, {
+          method: 'PUT',
+          body: JSON.stringify({ message: `Upload ${safeName}`, content: base64, branch: GITHUB_BRANCH })
+        });
+        url = `https://gubermangeo.com/${path}`;
+        urlPath = path;
+      }
 
-      await githubAPI(`contents/${path}`, {
-        method: 'PUT',
-        body: JSON.stringify({
-          message: `Upload ${safeName}`,
-          content: base64,
-          branch: GITHUB_BRANCH
-        })
-      });
-
-      const url = `https://gubermangeo.com/${path}`;
       if (!state.content.media) state.content.media = [];
+      if (!Array.isArray(state.content.media)) state.content.media = [];
       state.content.media.unshift({
         name: file.name,
         url,
+        path: urlPath,
         size: file.size,
         type: file.type,
         uploaded: Date.now()
