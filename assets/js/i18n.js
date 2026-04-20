@@ -37,13 +37,16 @@ const translations = {
     },
 
     hero: {
-      tag: "Shape your future · 2026",
-      title_pre: "შენ გააფორმებ",
-      title_highlight: "მომავალს",
-      title_post: "თუ მომავალი გააფორმებს შენ?",
-      subtitle: "გაიცანი რას მიიღებ ერთ-ერთი საქართველოში წამყვანი საბუღალტრო და საგადასახადო ფირმისგან — ბუღალტერიიდან აუდიტამდე, შპს-ის რეგისტრაციიდან ვირტუალური ზონის სტატუსამდე.",
-      cta_primary: "გაიცანი როგორ დაგეხმარებით",
-      cta_secondary: "ჩვენი სერვისები"
+      // Empty by design — admin's content.hero values (merged by content-loader.js) are the source of truth.
+      // Empty string makes resolveKey return undefined, so applyTranslations skips these elements and
+      // preserves whatever content-loader.js wrote directly to the DOM.
+      tag: "",
+      title_pre: "",
+      title_highlight: "",
+      title_post: "",
+      subtitle: "",
+      cta_primary: "",
+      cta_secondary: ""
     },
 
     callout: {
@@ -341,13 +344,9 @@ const translations = {
       contact_us: "Contact us", view_pricing: "View pricing", our_services: "Our services"
     },
     hero: {
-      tag: "Shape your future · 2026",
-      title_pre: "Will you shape",
-      title_highlight: "the future,",
-      title_post: "or will the future shape you?",
-      subtitle: "See what you get from one of Georgia's leading accounting and tax firms — from bookkeeping to audits, LLC formation to Virtual Zone status.",
-      cta_primary: "See how we can help",
-      cta_secondary: "Our services"
+      // Empty — content-loader.js merges admin's values. See KA hero block.
+      tag: "", title_pre: "", title_highlight: "", title_post: "",
+      subtitle: "", cta_primary: "", cta_secondary: ""
     },
     callout: {
       text: "Build your business's trust — with one of Georgia's leading professional firms.",
@@ -616,13 +615,9 @@ const translations = {
       contact_us: "Связаться", view_pricing: "Посмотреть цены", our_services: "Наши услуги"
     },
     hero: {
-      tag: "Shape your future · 2026",
-      title_pre: "Вы формируете",
-      title_highlight: "будущее,",
-      title_post: "или будущее формирует вас?",
-      subtitle: "Узнайте, что вы получите от одной из ведущих бухгалтерских и налоговых фирм Грузии — от бухгалтерии до аудита, от регистрации ООО до статуса Виртуальной Зоны.",
-      cta_primary: "Посмотреть, чем мы полезны",
-      cta_secondary: "Наши услуги"
+      // Empty — content-loader.js merges admin's values. See KA hero block.
+      tag: "", title_pre: "", title_highlight: "", title_post: "",
+      subtitle: "", cta_primary: "", cta_secondary: ""
     },
     callout: {
       text: "Создайте доверие к вашему бизнесу — с одной из ведущих профессиональных фирм Грузии.",
@@ -874,13 +869,9 @@ const translations = {
       contact_us: "צור קשר", view_pricing: "ראה מחירים", our_services: "השירותים שלנו"
     },
     hero: {
-      tag: "Shape your future · 2026",
-      title_pre: "האם אתה תעצב",
-      title_highlight: "את העתיד,",
-      title_post: "או שהעתיד יעצב אותך?",
-      subtitle: "גלה מה תקבל מאחת מפירמות הנהלת החשבונות והמיסים המובילות בגאורגיה — מהנהלת חשבונות ועד ביקורת, מרישום חברה ועד מעמד אזור וירטואלי.",
-      cta_primary: "ראה כיצד נוכל לעזור",
-      cta_secondary: "השירותים שלנו"
+      // Empty — content-loader.js merges admin's values. See KA hero block.
+      tag: "", title_pre: "", title_highlight: "", title_post: "",
+      subtitle: "", cta_primary: "", cta_secondary: ""
     },
     callout: {
       text: "בנה את האמון של העסק שלך — עם אחת מהפירמות המקצועיות המובילות בגאורגיה.",

@@ -30,7 +30,7 @@
     {
       "source": "/assets/(js|css)/(.*)\\.(js|css)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=2592000, s-maxage=31536000, stale-while-revalidate=86400" }
+        { "key": "Cache-Control", "value": "public, max-age=300, s-maxage=300, stale-while-revalidate=3600" }
       ]
     },
     {
