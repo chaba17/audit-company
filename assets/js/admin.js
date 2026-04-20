@@ -583,6 +583,13 @@
     ['site', 'hero', 'stats', 'services', 'pricing', 'team', 'testimonials', 'faq', 'blog', 'industries', 'footer', 'seo', 'analytics', 'media', 'theme'].forEach(key => {
       if (!content[key]) content[key] = deepClone(window.DEFAULT_CONTENT[key] || (Array.isArray(window.DEFAULT_CONTENT[key]) ? [] : {}));
     });
+    // Normalize fields that MUST be arrays — historic content.json versions had some of
+    // these as {} which crashes every .map/.length call site.
+    ['media', 'services', 'team', 'testimonials', 'faq', 'blog', 'industries', 'stats'].forEach(key => {
+      if (!Array.isArray(content[key])) {
+        content[key] = [];
+      }
+    });
     return content;
   }
 
@@ -2485,7 +2492,7 @@
     $$('[data-pick-media]').forEach(btn => {
       btn.addEventListener('click', () => {
         const field = btn.dataset.pickMedia;
-        const library = state.content.media || [];
+        const library = Array.isArray(state.content.media) ? state.content.media : [];
         if (!library.length) { toast('Media library ცარიელია. ჯერ ატვირთე Media Library-ში.', 'info', 4000); return; }
         const url = prompt('აირჩიე URL:\n\n' + library.map((m,i) => (i+1)+'. '+m.name+'\n   '+m.url).join('\n\n') + '\n\nჩაწერე URL ან რიცხვი (1-'+library.length+'):');
         if (!url) return;
