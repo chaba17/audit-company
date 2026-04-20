@@ -1,6 +1,6 @@
 {
   "_test": true,
-  "_updated": "2026-04-20T21:25:40.084Z",
+  "_updated": "2026-04-20T21:26:29.422Z",
   "megaMenus": {
     "services": {
       "label": "სერვისები",
@@ -353,7 +353,7 @@
   },
   "hero": {
     "tag": "ლამაზო ქვეყანავ რაზედ მოგიწყენია",
-    "title": "Plan <mark>success</mark> - feel like never before!",
+    "title": "Plan <mark>success</mark> - feel like never before!\nallooooo",
     "subtitle": "<p>We are here for you - audit, accounting, consulting and more...</p>",
     "primaryCta": {
       "text": "როგორ ვმუშაობთ?!",
