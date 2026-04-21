@@ -251,7 +251,7 @@ h2.display, .display {
 .nav {
   display: flex;
   align-items: stretch;
-  min-height: 64px;
+  min-height: 84px;
   gap: 0;
 }
 
@@ -260,7 +260,7 @@ h2.display, .display {
   display: flex;
   align-items: center;
   flex-shrink: 0;
-  padding: 0 18px;
+  padding: 8px 18px;
   gap: 10px;
   text-decoration: none;
 }
@@ -291,12 +291,16 @@ h2.display, .display {
 .logo-tagline {
   display: none;
 }
-/* Custom image logo (shows instead of text when site.logoUrl is set) */
+/* Custom image logo (shows instead of text when site.logoUrl is set).
+   height: 100% stretches to the full header height (minus .logo's vertical
+   padding), so admin-uploaded logos scale with the header instead of being
+   pinned to a tiny fixed height. */
 .logo-img {
   display: block;
-  height: 44px;
+  height: 100%;
+  max-height: 72px;
   width: auto;
-  max-width: 200px;
+  max-width: 240px;
   object-fit: contain;
 }
 /* Optional blend-mode wrappers for JPG logos with coloured backgrounds.
@@ -306,7 +310,7 @@ h2.display, .display {
 .logo-img.blend-lighten  { mix-blend-mode: lighten; }
 .logo-img.blend-darken   { mix-blend-mode: darken; }
 @media (max-width: 768px) {
-  .logo-img { height: 36px; max-width: 140px; }
+  .logo-img { height: 100%; max-height: 48px; max-width: 160px; }
 }
 
 /* ---------- Main nav menu ---------- */
@@ -2034,27 +2038,27 @@ body.nav-open { overflow: hidden; }
 
 /* ---------- MOBILE HEADER (dark EY-style) ---------- */
 @media (max-width: 1100px) {
-  .nav { min-height: 60px; gap: 0; }
-  .logo { padding: 0 16px; }
+  .nav { min-height: 68px; gap: 0; }
+  .logo { padding: 6px 16px; }
   .logo-ey { font-size: 18px; }
   .logo-wrap::before { width: 22px; height: 6px; }
   .nav-menu { margin-left: 0; }
   .nav-actions { margin-left: auto; }
-  .nav-toggle { min-height: 60px; width: 46px; }
-  .header { min-height: 60px; }
+  .nav-toggle { min-height: 68px; width: 46px; }
+  .header { min-height: 68px; }
 
   /* Adjust drawer top to match */
-  .nav-menu.open { top: 60px !important; }
+  .nav-menu.open { top: 68px !important; }
 }
 
 @media (max-width: 768px) {
-  .logo { padding: 0 12px; }
+  .logo { padding: 6px 12px; }
   .logo-ey { font-size: 16px; }
   .logo-wrap::before { width: 20px; height: 5px; }
-  .nav { min-height: 56px; }
-  .nav-toggle { min-height: 56px; width: 46px; }
-  .header { min-height: 56px; }
-  .nav-menu.open { top: 56px !important; }
+  .nav { min-height: 60px; }
+  .nav-toggle { min-height: 60px; width: 46px; }
+  .header { min-height: 60px; }
+  .nav-menu.open { top: 60px !important; }
 }
 
 /* ---------- MOBILE STATS BIG ---------- */
