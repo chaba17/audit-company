@@ -191,6 +191,22 @@ try {
     ensureMeta('name', 'keywords', keywords);
     ensureLink('canonical', canonicalUrl);
 
+    // hreflang — tell Google which URL serves which language.
+    // For this site, all languages share the same URL (client-side switcher),
+    // so we emit self-referential alternates; "x-default" points to root.
+    const ensureHreflang = (lang, href) => {
+      let el = document.head.querySelector(`link[rel="alternate"][hreflang="${lang}"]`);
+      if (!el) {
+        el = document.createElement('link');
+        el.setAttribute('rel', 'alternate');
+        el.setAttribute('hreflang', lang);
+        document.head.appendChild(el);
+      }
+      el.setAttribute('href', href);
+    };
+    ['ka', 'en', 'ru', 'he'].forEach(l => ensureHreflang(l, canonicalUrl));
+    ensureHreflang('x-default', canonicalUrl);
+
     // Site-verification tokens (Google Search Console, Bing, Yandex, Pinterest, Facebook)
     const verification = (globalSeo.verification) || {};
     if (verification.google) ensureMeta('name', 'google-site-verification', verification.google);
@@ -244,6 +260,62 @@ try {
         document.head.appendChild(ld);
       }
       ld.textContent = JSON.stringify(org, null, 2);
+    }
+
+    // ====================================================
+    // FAQ schema — helps Google show rich results with Q&A
+    // ====================================================
+    if ((pageKey === 'home' || pageKey === 'services') && Array.isArray(content.faq) && content.faq.length > 0) {
+      const lang = localStorage.getItem('lang') || 'ka';
+      const resolveFaq = (f) => window.resolveItemI18n ? window.resolveItemI18n(f, lang) : f;
+      const faqLd = {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: content.faq.slice(0, 10).map(f => {
+          const r = resolveFaq(f);
+          return {
+            '@type': 'Question',
+            name: r.question || '',
+            acceptedAnswer: { '@type': 'Answer', text: (r.answer || '').replace(/<[^>]+>/g, '') }
+          };
+        })
+      };
+      let faqScript = document.head.querySelector('script[data-faq-jsonld]');
+      if (!faqScript) {
+        faqScript = document.createElement('script');
+        faqScript.type = 'application/ld+json';
+        faqScript.setAttribute('data-faq-jsonld', '');
+        document.head.appendChild(faqScript);
+      }
+      faqScript.textContent = JSON.stringify(faqLd);
+    }
+
+    // ====================================================
+    // BreadcrumbList schema — for service inner pages
+    // ====================================================
+    if (location.pathname.includes('/services/')) {
+      const slug = location.pathname.split('/').pop().replace('.html', '').replace(/\/$/, '');
+      const svc = (content.services || []).find(s => {
+        const urlSlug = (s.id || '').toString().replace(/\s+/g, '-').replace(/[\/\\?#&=]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+        return urlSlug === slug || s.id === slug;
+      });
+      const bcLd = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: siteUrl + '/' },
+          { '@type': 'ListItem', position: 2, name: 'Services', item: siteUrl + '/services' },
+          { '@type': 'ListItem', position: 3, name: (svc && svc.title) || slug, item: canonicalUrl }
+        ]
+      };
+      let bcScript = document.head.querySelector('script[data-bc-jsonld]');
+      if (!bcScript) {
+        bcScript = document.createElement('script');
+        bcScript.type = 'application/ld+json';
+        bcScript.setAttribute('data-bc-jsonld', '');
+        document.head.appendChild(bcScript);
+      }
+      bcScript.textContent = JSON.stringify(bcLd);
     }
   } catch (e) { console.warn('SEO inject failed:', e); }
 
@@ -421,6 +493,120 @@ try {
       }
     }
   } catch (e) { console.warn('About page render failed:', e); }
+
+  // =====================================================================
+  // LIVE CHAT WIDGET — floating action button with WhatsApp/Telegram/WeChat/Viber
+  // Admin toggles each channel via content.site.chat.{whatsapp,telegram,wechat,viber}.
+  // Fully inline (no external deps), rendered once, re-used across all pages.
+  // =====================================================================
+  try {
+    const chat = (content.site && content.site.chat) || {};
+    const enabled = chat.enabled !== false; // default: on if any channel is set
+    const prefillRaw = (chat.prefill || '').trim();
+    const greeting = chat.greeting || 'გამარჯობა! როგორ დაგეხმაროთ? 👋';
+    const prefill = encodeURIComponent(prefillRaw);
+    // Strip non-digit characters for phone URIs (keep + for E.164)
+    const cleanPhone = (n) => (n || '').toString().replace(/[^+0-9]/g, '');
+
+    const channels = [];
+    if (chat.whatsapp) {
+      channels.push({
+        key: 'whatsapp',
+        label: 'WhatsApp',
+        desc: chat.whatsapp,
+        bg: '#25D366',
+        href: `https://wa.me/${cleanPhone(chat.whatsapp).replace(/^\+/, '')}${prefill ? '?text=' + prefill : ''}`,
+        icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.463 3.488"/></svg>'
+      });
+    }
+    if (chat.telegram) {
+      const handle = chat.telegram.replace(/^@/, '').replace(/^https?:\/\/(t\.me|telegram\.me)\//i, '');
+      channels.push({
+        key: 'telegram',
+        label: 'Telegram',
+        desc: '@' + handle,
+        bg: '#229ED9',
+        href: `https://t.me/${encodeURIComponent(handle)}${prefill ? '?text=' + prefill : ''}`,
+        icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.5.5 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>'
+      });
+    }
+    if (chat.wechat) {
+      channels.push({
+        key: 'wechat',
+        label: 'WeChat',
+        desc: chat.wechat,
+        bg: '#07C160',
+        href: `weixin://dl/chat?${encodeURIComponent(chat.wechat)}`,
+        copy: chat.wechat, // fallback — some users will need to copy ID
+        icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 0 1 .213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.29.295a.326.326 0 0 0 .167-.054l1.903-1.114a.864.864 0 0 1 .717-.098 10.16 10.16 0 0 0 2.837.403c.276 0 .543-.027.81-.049-.164-.572-.257-1.164-.257-1.788 0-3.695 3.447-6.695 7.696-6.695.15 0 .298.008.446.018-.533-3.41-3.756-5.895-7.694-5.895zM5.785 5.991c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 0 1-1.162 1.178A1.17 1.17 0 0 1 4.623 7.17c0-.651.52-1.18 1.162-1.18zm5.813 0c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 0 1-1.162 1.178 1.17 1.17 0 0 1-1.162-1.178c0-.651.52-1.18 1.162-1.18zm5.34 2.867c-3.676 0-6.686 2.53-6.686 5.682 0 3.153 3.01 5.684 6.687 5.684.75 0 1.498-.106 2.181-.308a.635.635 0 0 1 .52.066l1.463.842a.261.261 0 0 0 .136.04.232.232 0 0 0 .232-.231c0-.059-.024-.116-.04-.171l-.303-1.135a.462.462 0 0 1-.015-.147.473.473 0 0 1 .185-.366c1.348-.98 2.216-2.48 2.216-4.154 0-3.153-3.01-5.682-6.687-5.682zm-2.23 2.72c.533 0 .965.432.965.964a.967.967 0 0 1-.965.964.966.966 0 0 1-.964-.964c0-.533.432-.965.964-.965zm4.463 0c.534 0 .966.432.966.964a.968.968 0 0 1-.966.964.966.966 0 0 1-.964-.964c0-.533.431-.965.964-.965z"/></svg>'
+      });
+    }
+    if (chat.viber) {
+      channels.push({
+        key: 'viber',
+        label: 'Viber',
+        desc: chat.viber,
+        bg: '#7360F2',
+        href: `viber://chat?number=${encodeURIComponent(cleanPhone(chat.viber))}`,
+        icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M11.398.002C9.473.028 5.331.344 3.014 2.467 1.293 4.177.693 6.7.623 9.82c-.06 3.11-.13 8.95 5.5 10.541h.002l-.002 2.416s-.038.975.602 1.172c.75.232 1.2-.481 1.92-1.248.391-.421.929-1.045 1.335-1.518 3.855.324 6.815-.418 7.152-.528.779-.253 5.182-.818 5.896-6.66.736-6.024-.36-9.832-2.34-11.55l-.012-.005c-.6-.55-3.002-2.3-8.37-2.32 0 0-.395-.025-1.032-.028zm1.079 1.955c.543.003.871.02.871.02 4.537.018 6.706 1.382 7.216 1.842 1.675 1.431 2.532 4.864 1.911 9.899-.596 4.877-4.165 5.184-4.823 5.396-.281.09-2.861.733-6.107.522 0 0-2.416 2.914-3.17 3.672-.118.118-.257.167-.35.142-.13-.03-.167-.186-.165-.41l.02-4.013c-4.766-1.32-4.486-6.29-4.436-8.886.06-2.598.544-4.728 2-6.167 1.96-1.772 5.477-2.035 7.111-2.044 0 0 .157-.005.39-.005zm-3.63 3.045c-.11-.01-.22.02-.306.083l.005-.004c-.15.167-.384.283-.65.35.223-.042 1.068-.005 1.395.767.267.632.446 1.36.476 1.492l.004.014c.032.133.05.312-.09.572-.137.253-.394.5-.57.657-.187.15-.35.377-.304.557.094.325.45.885.722 1.16h.005c.472.48.942.998 1.512 1.305.57.306 1.073.51 1.462.597.133.028.31.003.388-.198.077-.2.39-.535.611-.78.218-.238.445-.244.576-.21.131.033.83.373 1.41.618.58.245 1.009.414 1.146.486.205.108.37.193.38.368.012.197-.012.505-.115.867-.141.51-.945.98-1.325 1.012-.38.033-.757.18-2.59-.536-2.194-.859-3.602-3.042-3.715-3.196-.11-.148-.865-1.17-.865-2.233 0-1.063.539-1.588.73-1.823l.003-.004c.15-.164.29-.166.419-.171z"/></svg>'
+      });
+    }
+
+    if (enabled && channels.length > 0 && !document.getElementById('chat-widget-root')) {
+      const root = document.createElement('div');
+      root.id = 'chat-widget-root';
+      root.className = 'chat-widget';
+      root.innerHTML = `
+        <button class="chat-fab" type="button" aria-label="Open chat" aria-expanded="false">
+          <svg class="chat-fab-icon chat-fab-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <svg class="chat-fab-icon chat-fab-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          <span class="chat-fab-pulse" aria-hidden="true"></span>
+        </button>
+        <div class="chat-panel" role="dialog" aria-label="Chat channels">
+          <div class="chat-panel-header">
+            <strong>${escapeHTML(greeting)}</strong>
+            <div class="chat-panel-sub">აირჩიე სასურველი აპლიკაცია</div>
+          </div>
+          <div class="chat-panel-channels">
+            ${channels.map(ch => `
+              <a class="chat-channel" href="${ch.href}" target="_blank" rel="noopener noreferrer"
+                 data-channel="${ch.key}"${ch.copy ? ` data-copy="${escapeHTML(ch.copy)}"` : ''}>
+                <span class="chat-channel-icon" style="background:${ch.bg}">${ch.icon}</span>
+                <span class="chat-channel-text">
+                  <strong>${escapeHTML(ch.label)}</strong>
+                  <span>${escapeHTML(ch.desc)}</span>
+                </span>
+              </a>
+            `).join('')}
+          </div>
+        </div>
+      `;
+      document.body.appendChild(root);
+
+      const fab = root.querySelector('.chat-fab');
+      const panel = root.querySelector('.chat-panel');
+      const togglePanel = (force) => {
+        const next = typeof force === 'boolean' ? force : !root.classList.contains('is-open');
+        root.classList.toggle('is-open', next);
+        fab.setAttribute('aria-expanded', String(next));
+      };
+      fab.addEventListener('click', (e) => { e.stopPropagation(); togglePanel(); });
+      document.addEventListener('click', (e) => {
+        if (!root.contains(e.target)) togglePanel(false);
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && root.classList.contains('is-open')) togglePanel(false);
+      });
+
+      // WeChat needs copy-to-clipboard fallback (weixin:// only works if app installed)
+      root.querySelectorAll('[data-copy]').forEach(a => {
+        a.addEventListener('click', (e) => {
+          const id = a.getAttribute('data-copy');
+          if (navigator.clipboard) navigator.clipboard.writeText(id).catch(() => {});
+        });
+      });
+    }
+  } catch (e) { console.warn('Chat widget render failed:', e); }
 
   // Contact page: update phone + email + address blocks from site info
   try {
@@ -789,6 +975,34 @@ try {
           <p>${ind.description || ''}</p>
           <svg class="industry-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </div>
+      `).join('');
+    }
+  }
+
+  // Homepage insights grid — replace hardcoded Unsplash placeholders with
+  // admin's real blog posts (first 3). Uses admin's own WebP-optimized images
+  // instead of pulling ~600KB of Unsplash JPEGs for every visitor.
+  // SEO wins: proper alt text, real content, no external image dependency.
+  const isHomepagePath = location.pathname === '/' ||
+    location.pathname.endsWith('/index.html') || location.pathname.endsWith('/index');
+  if (isHomepagePath && Array.isArray(content.blog) && content.blog.length > 0) {
+    const insightsGrid = document.querySelector('section.section .insights-grid');
+    if (insightsGrid) {
+      const lang = localStorage.getItem('lang') || 'ka';
+      const resolve = (b) => window.resolveItemI18n ? window.resolveItemI18n(b, lang) : b;
+      const posts = content.blog.slice(0, 3).map(resolve);
+      insightsGrid.innerHTML = posts.map((b, i) => `
+        <a href="blog.html${b.slug ? '#' + encodeURIComponent(b.slug) : ''}" class="insight-card reveal visible ${i > 0 ? 'delay-' + Math.min(i, 3) : ''}">
+          ${b.image ? `<div class="insight-img"><img src="${escapeHTML(b.image)}" alt="${escapeHTML(b.title || '')}" loading="lazy" decoding="async" width="800" height="500" /></div>` : ''}
+          <div class="insight-meta">
+            <span class="tag">${escapeHTML((b.category || '').toString().toUpperCase())}</span>
+            ${b.date ? `<span>${escapeHTML(b.date)}</span>` : ''}
+            ${b.readTime ? `<span>· ${escapeHTML(b.readTime)}</span>` : ''}
+          </div>
+          <h3>${escapeHTML(b.title || '')}</h3>
+          <p>${escapeHTML((b.excerpt || '').substring(0, 160))}</p>
+          <span class="insight-link">წაიკითხე →</span>
+        </a>
       `).join('');
     }
   }

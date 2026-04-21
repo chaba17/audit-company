@@ -2181,6 +2181,155 @@ body.nav-open { overflow: hidden; }
 }
 
 /* ==========================================================
+   CHAT WIDGET — floating action button + channel panel.
+   Rendered by content-loader.js when content.site.chat has any channel.
+   Minimal JS state: .is-open on #chat-widget-root toggles visibility.
+   ========================================================== */
+.chat-widget {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9998;
+  font-family: var(--font-sans, system-ui, sans-serif);
+  color: var(--color-ink, #2e2e38);
+}
+.chat-fab {
+  position: relative;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: var(--color-yellow, #FFE600);
+  color: var(--color-ink, #2e2e38);
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18), 0 4px 8px rgba(0, 0, 0, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.chat-fab:hover { transform: scale(1.06); box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22); }
+.chat-fab:active { transform: scale(0.97); }
+.chat-fab-icon {
+  width: 26px;
+  height: 26px;
+  position: absolute;
+  transition: opacity 0.15s ease, transform 0.2s ease;
+}
+.chat-fab-close { opacity: 0; transform: rotate(-90deg); }
+.is-open .chat-fab-open  { opacity: 0; transform: rotate(90deg); }
+.is-open .chat-fab-close { opacity: 1; transform: rotate(0); }
+
+/* Subtle pulse to draw attention — paused when panel opens or on prefers-reduced-motion */
+.chat-fab-pulse {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid var(--color-yellow, #FFE600);
+  opacity: 0;
+  animation: chat-pulse 2.5s ease-out infinite;
+  pointer-events: none;
+}
+.is-open .chat-fab-pulse { animation: none; opacity: 0; }
+@keyframes chat-pulse {
+  0%   { opacity: 0.6; transform: scale(1); }
+  70%  { opacity: 0;   transform: scale(1.35); }
+  100% { opacity: 0;   transform: scale(1.35); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .chat-fab-pulse { animation: none; }
+  .chat-fab, .chat-fab-icon { transition: none; }
+}
+
+.chat-panel {
+  position: absolute;
+  bottom: calc(100% + 14px);
+  right: 0;
+  width: 320px;
+  max-width: calc(100vw - 40px);
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.22), 0 4px 12px rgba(0, 0, 0, 0.08);
+  opacity: 0;
+  transform: translateY(8px) scale(0.98);
+  transform-origin: bottom right;
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  overflow: hidden;
+}
+.is-open .chat-panel {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+.chat-panel-header {
+  padding: 18px 18px 14px;
+  background: linear-gradient(135deg, var(--color-ink, #2e2e38), #1a1a24);
+  color: #fff;
+}
+.chat-panel-header strong {
+  display: block;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+.chat-panel-sub {
+  margin-top: 4px;
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.72);
+}
+.chat-panel-channels { padding: 8px; }
+.chat-channel {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.12s ease;
+}
+.chat-channel:hover { background: var(--color-gray-100, #f6f6fa); }
+.chat-channel-icon {
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+}
+.chat-channel-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+.chat-channel-text strong {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-ink, #2e2e38);
+}
+.chat-channel-text span {
+  font-size: 12.5px;
+  color: var(--color-gray-700, #4b4b55);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* RTL (Hebrew) */
+html.lang-rtl .chat-widget { right: auto; left: 20px; }
+html.lang-rtl .chat-panel  { right: auto; left: 0; transform-origin: bottom left; }
+
+/* Don't let the search overlay or other modals sit behind the chat FAB */
+@media (max-width: 480px) {
+  .chat-widget { bottom: 16px; right: 16px; }
+  .chat-panel { width: min(320px, calc(100vw - 32px)); }
+}
+
+/* ==========================================================
    PERF — content-visibility for below-the-fold sections
    Tells the browser it can skip rendering + layout of off-screen
    sections until they scroll close to the viewport. Huge render-time

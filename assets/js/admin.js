@@ -1193,6 +1193,7 @@
       <div class="card">
         <div class="card-header">
           <h3 class="card-title">სოციალური ქსელები</h3>
+          <p class="card-subtitle">Footer-ში footer ludet links. ცარიელი — ტაბი აღარ ჩანს.</p>
         </div>
         <div class="form-grid cols-2">
           <div class="form-group">
@@ -1210,6 +1211,56 @@
           <div class="form-group">
             <label>YouTube</label>
             <input type="url" data-field="site.social.youtube" value="${escapeHtml(s.social?.youtube || '')}" placeholder="https://youtube.com/..." />
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">💬 მდნიშვნელობა Live chat widget</h3>
+          <p class="card-subtitle">Floating ღილაკი მარჯვენა-ქვედა კუთხეში — ვიზიტორი აჭერს და WhatsApp/Telegram/WeChat-ში ხსნის საუბარს. რომელიც ველსაც არ შეავსებ, იმ ტაბი იმალება.</p>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="switch">
+              <input type="checkbox" data-field="site.chat.enabled" ${s.chat?.enabled ? 'checked' : ''} />
+              <span class="switch-slider"></span>
+              <span class="switch-label">Live chat widget ჩართულია</span>
+            </label>
+            <small class="hint">Desktop + mobile. Default: ჩართული</small>
+          </div>
+        </div>
+        <div class="form-grid cols-2">
+          <div class="form-group">
+            <label>WhatsApp — ტელეფონის ნომერი</label>
+            <input type="text" data-field="site.chat.whatsapp" value="${escapeHtml(s.chat?.whatsapp || '')}" placeholder="+995555123456" />
+            <small class="hint">საერთაშორისო ფორმატი, + ნიშნით. მაგ: +995555123456</small>
+          </div>
+          <div class="form-group">
+            <label>Telegram — username (@-ის გარეშე)</label>
+            <input type="text" data-field="site.chat.telegram" value="${escapeHtml(s.chat?.telegram || '')}" placeholder="gubermangroup" />
+            <small class="hint">telegram.me/<strong>username</strong></small>
+          </div>
+          <div class="form-group">
+            <label>WeChat — ID</label>
+            <input type="text" data-field="site.chat.wechat" value="${escapeHtml(s.chat?.wechat || '')}" placeholder="your-wechat-id" />
+            <small class="hint">WeChat-ში საუბრისთვის გადავა weixin:// schema-ზე</small>
+          </div>
+          <div class="form-group">
+            <label>Viber — ტელეფონის ნომერი (არასავალდებულო)</label>
+            <input type="text" data-field="site.chat.viber" value="${escapeHtml(s.chat?.viber || '')}" placeholder="+995555123456" />
+          </div>
+        </div>
+        <div class="form-grid cols-2">
+          <div class="form-group">
+            <label>მისალმება ტექსტი</label>
+            <input type="text" data-field="site.chat.greeting" value="${escapeHtml(s.chat?.greeting || '')}" placeholder="გამარჯობა! როგორ დაგეხმაროთ? 👋" />
+            <small class="hint">ჩანს chat panel-ის თავში</small>
+          </div>
+          <div class="form-group">
+            <label>წინასწარი მესიჯი (pre-filled)</label>
+            <input type="text" data-field="site.chat.prefill" value="${escapeHtml(s.chat?.prefill || '')}" placeholder="გამარჯობა, საიტიდან გწერთ..." />
+            <small class="hint">ავტომატურად ჩაწერს ამას WhatsApp/Telegram/Viber-ში</small>
           </div>
         </div>
       </div>
