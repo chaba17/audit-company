@@ -552,89 +552,137 @@ try {
       });
     }
 
-    // Always show the contact form option (even if no channels configured) so
-    // the widget is useful from day one.
-    const showWidget = enabled;
-    if (showWidget && !document.getElementById('chat-widget-root')) {
+    // Phone (Call) channel — from site.phone, uses tel: link.
+    // On desktop this usually opens the OS default dialer/FaceTime/etc.
+    const sitePhone = (content.site && content.site.phone) || '';
+    if (sitePhone) {
+      channels.unshift({
+        key: 'call',
+        label: 'Call',
+        desc: sitePhone,
+        bg: '#2e2e38',
+        href: 'tel:' + cleanPhone(sitePhone),
+        external: false, // tel: links don't need target=_blank
+        icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>'
+      });
+    }
+
+    // Message channel — opens the contact-form modal.
+    channels.push({
+      key: 'message',
+      label: 'Message',
+      desc: 'info@gubermangeo.com',
+      bg: '#FFE600',
+      fg: '#2e2e38', // dark text on yellow bg
+      action: 'open-form',
+      icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>'
+    });
+
+    if (enabled && channels.length > 0 && !document.getElementById('chat-widget-root')) {
       const curLang = localStorage.getItem('lang') || 'ka';
       const T = {
         ka: {
-          pickApp: 'აირჩიე სასურველი აპლიკაცია',
-          or: 'ან დაწერე პირდაპირ',
-          tabApps: 'აპლიკაციები', tabForm: 'შეტყობინება',
           name: 'სახელი', email: 'ელ. ფოსტა', phone: 'ტელეფონი', message: 'შეტყობინება',
           send: 'გაგზავნა', sending: 'იგზავნება…',
+          formTitle: 'დაგვიტოვეთ შეტყობინება',
+          formSub: 'დაგიკავშირდებით 24 საათში',
           success: 'მადლობა! ჩვენ დაგიკავშირდებით 24 საათში.',
           errorValidation: 'გთხოვთ შეავსოთ სახელი და ელ.ფოსტა.',
           errorRate: 'ძალიან ბევრი მცდელობა. სცადეთ მოგვიანებით.',
-          errorGeneric: 'ვერ გაიგზავნა. სცადეთ ცოტა ხანში.'
+          errorGeneric: 'ვერ გაიგზავნა. სცადეთ ცოტა ხანში.',
+          ariaOpen: 'დახურე', ariaClosed: 'დაგვიკავშირდი',
+          callLabel: 'ზარი', whatsappLabel: 'WhatsApp', telegramLabel: 'Telegram',
+          viberLabel: 'Viber', wechatLabel: 'WeChat', messageLabel: 'შეტყობინება'
         },
         en: {
-          pickApp: 'Choose your preferred app', or: 'or send us a message',
-          tabApps: 'Apps', tabForm: 'Message',
           name: 'Name', email: 'Email', phone: 'Phone', message: 'Message',
           send: 'Send', sending: 'Sending…',
+          formTitle: 'Send us a message', formSub: "We'll reply within 24 hours",
           success: "Thanks! We'll get back to you within 24 hours.",
           errorValidation: 'Please fill in your name and email.',
           errorRate: 'Too many attempts. Please try again later.',
-          errorGeneric: 'Could not send. Please try again shortly.'
+          errorGeneric: 'Could not send. Please try again shortly.',
+          ariaOpen: 'Close', ariaClosed: 'Contact us',
+          callLabel: 'Call', whatsappLabel: 'WhatsApp', telegramLabel: 'Telegram',
+          viberLabel: 'Viber', wechatLabel: 'WeChat', messageLabel: 'Message'
         },
         ru: {
-          pickApp: 'Выберите приложение', or: 'или напишите нам сообщение',
-          tabApps: 'Приложения', tabForm: 'Сообщение',
           name: 'Имя', email: 'Email', phone: 'Телефон', message: 'Сообщение',
           send: 'Отправить', sending: 'Отправка…',
+          formTitle: 'Напишите нам', formSub: 'Ответим в течение 24 часов',
           success: 'Спасибо! Мы свяжемся с вами в течение 24 часов.',
           errorValidation: 'Пожалуйста, заполните имя и email.',
           errorRate: 'Слишком много попыток. Попробуйте позже.',
-          errorGeneric: 'Не удалось отправить. Попробуйте позже.'
+          errorGeneric: 'Не удалось отправить. Попробуйте позже.',
+          ariaOpen: 'Закрыть', ariaClosed: 'Связаться',
+          callLabel: 'Звонок', whatsappLabel: 'WhatsApp', telegramLabel: 'Telegram',
+          viberLabel: 'Viber', wechatLabel: 'WeChat', messageLabel: 'Сообщение'
         },
         he: {
-          pickApp: 'בחר את האפליקציה המועדפת', or: 'או שלח לנו הודעה',
-          tabApps: 'אפליקציות', tabForm: 'הודעה',
           name: 'שם', email: 'אימייל', phone: 'טלפון', message: 'הודעה',
           send: 'שלח', sending: 'שולח…',
+          formTitle: 'שלח לנו הודעה', formSub: 'נענה תוך 24 שעות',
           success: 'תודה! נחזור אליכם תוך 24 שעות.',
           errorValidation: 'נא מלא שם ואימייל.',
           errorRate: 'יותר מדי ניסיונות. נסה שוב מאוחר יותר.',
-          errorGeneric: 'לא נשלח. נסה שוב מעט מאוחר יותר.'
+          errorGeneric: 'לא נשלח. נסה שוב מעט מאוחר יותר.',
+          ariaOpen: 'סגור', ariaClosed: 'צור קשר',
+          callLabel: 'התקשר', whatsappLabel: 'WhatsApp', telegramLabel: 'Telegram',
+          viberLabel: 'Viber', wechatLabel: 'WeChat', messageLabel: 'הודעה'
         }
       }[curLang] || {};
+
+      // Map channel keys to localized labels
+      const labelByKey = {
+        call: T.callLabel, whatsapp: T.whatsappLabel, telegram: T.telegramLabel,
+        viber: T.viberLabel, wechat: T.wechatLabel, message: T.messageLabel
+      };
 
       const root = document.createElement('div');
       root.id = 'chat-widget-root';
       root.className = 'chat-widget';
       root.innerHTML = `
-        <button class="chat-fab" type="button" aria-label="Open chat" aria-expanded="false">
+        <div class="chat-dial" role="menu" aria-label="Contact channels">
+          ${channels.map((ch, i) => {
+            const label = labelByKey[ch.key] || ch.label;
+            const fg = ch.fg || '#ffffff';
+            const linkAttrs = ch.action === 'open-form'
+              ? `type="button" data-action="open-form"`
+              : (ch.key === 'call'
+                  ? `href="${ch.href}"`
+                  : `href="${ch.href}" target="_blank" rel="noopener noreferrer"`)
+              + (ch.copy ? ` data-copy="${escapeHTML(ch.copy)}"` : '');
+            const tag = ch.action === 'open-form' ? 'button' : 'a';
+            return `
+              <${tag} class="chat-dial-item" ${linkAttrs}
+                    style="--bg:${ch.bg}; --fg:${fg}; --delay:${i * 32}ms"
+                    data-channel="${ch.key}"
+                    role="menuitem"
+                    aria-label="${escapeHTML(label)}">
+                <span class="chat-dial-icon">${ch.icon}</span>
+                <span class="chat-dial-label">${escapeHTML(label)}</span>
+              </${tag}>
+            `;
+          }).join('')}
+        </div>
+        <button class="chat-fab" type="button" aria-label="${escapeHTML(T.ariaClosed)}" aria-expanded="false">
           <svg class="chat-fab-icon chat-fab-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           <svg class="chat-fab-icon chat-fab-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
           <span class="chat-fab-pulse" aria-hidden="true"></span>
         </button>
-        <div class="chat-panel" role="dialog" aria-label="Chat channels">
-          <div class="chat-panel-header">
-            <strong>${escapeHTML(greeting)}</strong>
-            <div class="chat-panel-sub">${escapeHTML(channels.length ? T.pickApp : T.or)}</div>
-          </div>
-          ${channels.length ? `
-            <div class="chat-panel-channels">
-              ${channels.map(ch => `
-                <a class="chat-channel" href="${ch.href}" target="_blank" rel="noopener noreferrer"
-                   data-channel="${ch.key}"${ch.copy ? ` data-copy="${escapeHTML(ch.copy)}"` : ''}>
-                  <span class="chat-channel-icon" style="background:${ch.bg}">${ch.icon}</span>
-                  <span class="chat-channel-text">
-                    <strong>${escapeHTML(ch.label)}</strong>
-                    <span>${escapeHTML(ch.desc)}</span>
-                  </span>
-                </a>
-              `).join('')}
-            </div>
-          ` : ''}
-          <details class="chat-form-accordion"${channels.length ? '' : ' open'}>
-            <summary class="chat-form-summary">
-              <svg class="chat-form-summary-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-              <span class="chat-form-summary-text">${escapeHTML(T.tabForm)}</span>
-              <svg class="chat-form-summary-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-            </summary>
+
+        <!-- Separate modal for the contact form (opened only via the Message dial item) -->
+        <div class="chat-form-modal" role="dialog" aria-modal="true" aria-label="${escapeHTML(T.formTitle)}" hidden>
+          <div class="chat-form-modal-inner">
+            <header class="chat-form-modal-header">
+              <div>
+                <strong>${escapeHTML(T.formTitle)}</strong>
+                <span>${escapeHTML(T.formSub)}</span>
+              </div>
+              <button type="button" class="chat-form-modal-close" aria-label="Close">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+              </button>
+            </header>
             <form class="chat-form" novalidate>
               <div class="chat-form-row">
                 <input type="text" name="name" required maxlength="120" placeholder="${escapeHTML(T.name)} *" autocomplete="name" />
@@ -648,7 +696,6 @@ try {
               <div class="chat-form-row">
                 <textarea name="message" rows="3" maxlength="5000" placeholder="${escapeHTML(T.message)}"></textarea>
               </div>
-              <!-- honeypot -->
               <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;width:1px;height:1px;" aria-hidden="true" />
               <div class="chat-form-feedback" role="status" hidden></div>
               <button type="submit" class="chat-form-submit">
@@ -656,38 +703,69 @@ try {
                 <span class="chat-form-submit-arrow">→</span>
               </button>
             </form>
-          </details>
+          </div>
         </div>
       `;
       document.body.appendChild(root);
 
       const fab = root.querySelector('.chat-fab');
-      const togglePanel = (force) => {
+      const dial = root.querySelector('.chat-dial');
+      const modal = root.querySelector('.chat-form-modal');
+      const modalClose = root.querySelector('.chat-form-modal-close');
+
+      const toggleDial = (force) => {
         const next = typeof force === 'boolean' ? force : !root.classList.contains('is-open');
         root.classList.toggle('is-open', next);
         fab.setAttribute('aria-expanded', String(next));
+        fab.setAttribute('aria-label', next ? T.ariaOpen : T.ariaClosed);
       };
-      fab.addEventListener('click', (e) => { e.stopPropagation(); togglePanel(); });
+      const toggleModal = (force) => {
+        const next = typeof force === 'boolean' ? force : modal.hidden;
+        modal.hidden = !next;
+        if (next) {
+          const firstInput = modal.querySelector('input[name="name"]');
+          setTimeout(() => firstInput && firstInput.focus(), 50);
+        }
+      };
+
+      fab.addEventListener('click', (e) => { e.stopPropagation(); toggleDial(); });
       document.addEventListener('click', (e) => {
-        if (!root.contains(e.target)) togglePanel(false);
+        if (root.classList.contains('is-open') && !dial.contains(e.target) && e.target !== fab && !fab.contains(e.target) && !modal.contains(e.target)) {
+          toggleDial(false);
+        }
       });
       document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && root.classList.contains('is-open')) togglePanel(false);
+        if (e.key === 'Escape') {
+          if (!modal.hidden) toggleModal(false);
+          else if (root.classList.contains('is-open')) toggleDial(false);
+        }
       });
 
-      // WeChat fallback — copy ID to clipboard on click
-      root.querySelectorAll('[data-copy]').forEach(a => {
-        a.addEventListener('click', () => {
-          const id = a.getAttribute('data-copy');
-          if (navigator.clipboard) navigator.clipboard.writeText(id).catch(() => {});
+      // Dial item behavior
+      root.querySelectorAll('.chat-dial-item').forEach(item => {
+        item.addEventListener('click', (e) => {
+          const action = item.getAttribute('data-action');
+          if (action === 'open-form') {
+            e.preventDefault();
+            toggleDial(false);
+            toggleModal(true);
+            return;
+          }
+          // WeChat fallback — copy ID so user can paste in the app
+          const copy = item.getAttribute('data-copy');
+          if (copy && navigator.clipboard) navigator.clipboard.writeText(copy).catch(() => {});
+          // Close the dial after tapping any other channel (feels more native)
+          setTimeout(() => toggleDial(false), 150);
         });
       });
 
-      // Contact form submit — reuses /api/send-contact (Zoho SMTP)
-      const form = root.querySelector('.chat-form');
+      modalClose.addEventListener('click', () => toggleModal(false));
+      modal.addEventListener('click', (e) => { if (e.target === modal) toggleModal(false); });
+
+      // Form submission — posts to /api/send-contact (Zoho SMTP)
+      const form = modal.querySelector('.chat-form');
       const feedback = form.querySelector('.chat-form-feedback');
       const showFeedback = (msg, kind) => {
-        if (!feedback) return;
         feedback.hidden = false;
         feedback.textContent = msg;
         feedback.classList.remove('is-success', 'is-error', 'is-info');
@@ -702,7 +780,7 @@ try {
         }
         const btn = form.querySelector('.chat-form-submit');
         const btnText = btn.querySelector('.chat-form-submit-text');
-        const originalLabel = btnText.textContent;
+        const original = btnText.textContent;
         btn.disabled = true;
         btnText.textContent = T.sending;
         showFeedback(T.sending, 'info');
@@ -725,7 +803,7 @@ try {
           showFeedback(T.errorGeneric, 'error');
         } finally {
           btn.disabled = false;
-          btnText.textContent = originalLabel;
+          btnText.textContent = original;
         }
       });
     }

@@ -2181,9 +2181,10 @@ body.nav-open { overflow: hidden; }
 }
 
 /* ==========================================================
-   CHAT WIDGET — floating action button + channel panel.
-   Rendered by content-loader.js when content.site.chat has any channel.
-   Minimal JS state: .is-open on #chat-widget-root toggles visibility.
+   CHAT WIDGET — speed-dial style.
+   The yellow FAB expands a VERTICAL STACK of circular icon buttons
+   (one per channel: Call, WhatsApp, Telegram, Viber, WeChat, Message).
+   Clicking "Message" opens a separate modal with the contact form.
    ========================================================== */
 .chat-widget {
   position: fixed;
@@ -2191,8 +2192,13 @@ body.nav-open { overflow: hidden; }
   right: 20px;
   z-index: 9998;
   font-family: var(--font-sans, system-ui, sans-serif);
-  color: var(--color-ink, #2e2e38);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
 }
+
+/* Main yellow FAB */
 .chat-fab {
   position: relative;
   width: 58px;
@@ -2207,6 +2213,7 @@ body.nav-open { overflow: hidden; }
   align-items: center;
   justify-content: center;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  z-index: 2;
 }
 .chat-fab:hover { transform: scale(1.06); box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22); }
 .chat-fab:active { transform: scale(0.97); }
@@ -2220,7 +2227,7 @@ body.nav-open { overflow: hidden; }
 .is-open .chat-fab-open  { opacity: 0; transform: rotate(90deg); }
 .is-open .chat-fab-close { opacity: 1; transform: rotate(0); }
 
-/* Subtle pulse to draw attention — paused when panel opens or on prefers-reduced-motion */
+/* Pulse ring */
 .chat-fab-pulse {
   position: absolute;
   inset: -4px;
@@ -2236,133 +2243,145 @@ body.nav-open { overflow: hidden; }
   70%  { opacity: 0;   transform: scale(1.35); }
   100% { opacity: 0;   transform: scale(1.35); }
 }
-@media (prefers-reduced-motion: reduce) {
-  .chat-fab-pulse { animation: none; }
-  .chat-fab, .chat-fab-icon { transition: none; }
-}
 
-.chat-panel {
-  position: absolute;
-  bottom: calc(100% + 14px);
-  right: 0;
-  width: 320px;
-  max-width: calc(100vw - 40px);
-  background: #ffffff;
-  border-radius: 14px;
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.22), 0 4px 12px rgba(0, 0, 0, 0.08);
-  opacity: 0;
-  transform: translateY(8px) scale(0.98);
-  transform-origin: bottom right;
+/* Speed-dial stack — collapsed by default */
+.chat-dial {
+  display: flex;
+  flex-direction: column-reverse; /* visual bottom = closest to FAB */
+  align-items: flex-end;
+  gap: 10px;
   pointer-events: none;
-  transition: opacity 0.18s ease, transform 0.18s ease;
-  overflow: hidden;
 }
-.is-open .chat-panel {
+.chat-dial-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  font: inherit;
+  /* Hidden state: scale in from bottom-right */
+  opacity: 0;
+  transform: translateY(12px) scale(0.6);
+  transition: opacity 0.2s ease, transform 0.25s cubic-bezier(0.4, 1.4, 0.6, 1);
+  transition-delay: 0ms;
+  pointer-events: none;
+}
+.is-open .chat-dial-item {
   opacity: 1;
   transform: translateY(0) scale(1);
+  transition-delay: var(--delay, 0ms);
   pointer-events: auto;
 }
-.chat-panel-header {
-  padding: 18px 18px 14px;
-  background: linear-gradient(135deg, var(--color-ink, #2e2e38), #1a1a24);
-  color: #fff;
+.chat-dial-label {
+  order: 1;
+  background: #ffffff;
+  color: var(--color-ink, #2e2e38);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.14), 0 2px 4px rgba(0, 0, 0, 0.06);
 }
-.chat-panel-header strong {
+.chat-dial-icon {
+  order: 2;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--bg, #333);
+  color: var(--fg, #fff);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(0, 0, 0, 0.08);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.chat-dial-item:hover .chat-dial-icon { transform: scale(1.08); box-shadow: 0 8px 22px rgba(0, 0, 0, 0.24); }
+.chat-dial-item:active .chat-dial-icon { transform: scale(0.96); }
+.chat-dial-item:focus-visible .chat-dial-icon {
+  outline: 3px solid var(--color-yellow, #FFE600);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chat-fab-pulse { animation: none; }
+  .chat-fab, .chat-fab-icon, .chat-dial-item, .chat-dial-icon { transition: none; }
+}
+
+/* Contact-form modal — centered dialog */
+.chat-form-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 12, 20, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  padding: 24px;
+  animation: chat-modal-fade 0.18s ease;
+}
+.chat-form-modal[hidden] { display: none; }
+@keyframes chat-modal-fade { from { opacity: 0; } to { opacity: 1; } }
+.chat-form-modal-inner {
+  width: 100%;
+  max-width: 420px;
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
+  overflow: hidden;
+  animation: chat-modal-pop 0.22s cubic-bezier(0.4, 1.4, 0.6, 1);
+}
+@keyframes chat-modal-pop {
+  from { transform: translateY(12px) scale(0.95); opacity: 0; }
+  to   { transform: translateY(0) scale(1); opacity: 1; }
+}
+.chat-form-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 20px 14px;
+  background: linear-gradient(135deg, var(--color-ink, #2e2e38), #1a1a24);
+  color: #ffffff;
+}
+.chat-form-modal-header strong {
   display: block;
   font-size: 15px;
   font-weight: 700;
-  line-height: 1.35;
 }
-.chat-panel-sub {
+.chat-form-modal-header span {
+  display: block;
   margin-top: 4px;
   font-size: 12.5px;
   color: rgba(255, 255, 255, 0.72);
 }
-.chat-panel-channels { padding: 8px; }
-.chat-channel {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
-  border-radius: 10px;
-  text-decoration: none;
-  color: inherit;
-  transition: background 0.12s ease;
-}
-.chat-channel:hover { background: var(--color-gray-100, #f6f6fa); }
-.chat-channel-icon {
-  flex-shrink: 0;
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
+.chat-form-modal-close {
+  background: rgba(255, 255, 255, 0.12);
+  border: none;
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   color: #ffffff;
-}
-.chat-channel-text {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  overflow: hidden;
-}
-.chat-channel-text strong {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--color-ink, #2e2e38);
-}
-.chat-channel-text span {
-  font-size: 12.5px;
-  color: var(--color-gray-700, #4b4b55);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* Collapsible contact-form section — appears under the apps list */
-.chat-form-accordion {
-  border-top: 1px solid var(--color-gray-200, #e7e7ea);
-}
-.chat-form-accordion[open] .chat-form-summary-chevron { transform: rotate(180deg); }
-/* Remove the native triangle marker in all browsers */
-.chat-form-summary::-webkit-details-marker { display: none; }
-.chat-form-summary { list-style: none; }
-.chat-form-summary {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 13px 16px;
   cursor: pointer;
-  color: var(--color-ink, #2e2e38);
-  font-weight: 600;
-  font-size: 14px;
-  user-select: none;
   transition: background 0.12s ease;
-}
-.chat-form-summary:hover { background: var(--color-gray-50, #fafafc); }
-.chat-form-summary-icon { color: var(--color-gray-500, #747480); flex-shrink: 0; }
-.chat-form-summary-text { flex: 1; }
-.chat-form-summary-chevron {
-  color: var(--color-gray-500, #747480);
   flex-shrink: 0;
-  transition: transform 0.2s ease;
 }
-
-/* Contact form itself */
+.chat-form-modal-close:hover { background: rgba(255, 255, 255, 0.2); }
 .chat-form {
-  padding: 4px 16px 16px;
+  padding: 16px 20px 20px;
   display: flex;
   flex-direction: column;
-  gap: 9px;
-  animation: chat-form-in 0.18s ease;
-}
-@keyframes chat-form-in {
-  from { opacity: 0; transform: translateY(-4px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .chat-form { animation: none; }
-  .chat-form-summary-chevron { transition: none; }
+  gap: 10px;
 }
 .chat-form-row input,
 .chat-form-row textarea {
@@ -2420,15 +2439,19 @@ body.nav-open { overflow: hidden; }
 .chat-form-submit-arrow { transition: transform 0.15s ease; }
 .chat-form-submit:hover:not(:disabled) .chat-form-submit-arrow { transform: translateX(3px); }
 
-/* RTL (Hebrew) */
-html.lang-rtl .chat-widget { right: auto; left: 20px; }
-html.lang-rtl .chat-panel  { right: auto; left: 0; transform-origin: bottom left; }
+/* RTL (Hebrew) — put the speed-dial on the left */
+html.lang-rtl .chat-widget { right: auto; left: 20px; align-items: flex-start; }
+html.lang-rtl .chat-dial { align-items: flex-start; }
+html.lang-rtl .chat-dial-item .chat-dial-label { order: 2; }
+html.lang-rtl .chat-dial-item .chat-dial-icon  { order: 1; }
 html.lang-rtl .chat-form-submit-arrow { transform: scaleX(-1); }
 
-/* Don't let the search overlay or other modals sit behind the chat FAB */
+/* Mobile tweaks */
 @media (max-width: 480px) {
-  .chat-widget { bottom: 16px; right: 16px; }
-  .chat-panel { width: min(320px, calc(100vw - 32px)); }
+  .chat-widget { bottom: 16px; right: 16px; gap: 8px; }
+  html.lang-rtl .chat-widget { right: auto; left: 16px; }
+  .chat-dial-icon { width: 44px; height: 44px; }
+  .chat-dial-label { font-size: 12.5px; padding: 5px 10px; }
 }
 
 /* ==========================================================
