@@ -1,6 +1,6 @@
 {
   "_test": true,
-  "_updated": "2026-04-21T10:56:49.475Z",
+  "_updated": "2026-04-21T12:13:59.318Z",
   "megaMenus": {
     "services": {
       "label": "სერვისები",
@@ -363,7 +363,7 @@
       "text": "our services",
       "href": "services.html"
     },
-    "bgImage": "https://gubermangeo.com/assets/images/uploads/1776768978435-Gemini_Generated_Image_xgry8dxgry8dxgry.png",
+    "bgImage": "https://gubermangeo.com/assets/images/uploads/hero-optimized.webp",
     "i18n": {
       "en": {
         "tag": "ლამაზო ქვეყანავ რაზედ მოგიწყენია",
@@ -988,7 +988,7 @@
     "successMessage": "მადლობა! დაგიკავშირდებით 24 საათში."
   },
   "search": {
-    "enabled": false,
+    "enabled": true,
     "placeholder": "მოძებნე სერვისი ან ინფორმაცია...",
     "noResultsText": "შედეგი ვერ მოიძებნა"
   },
