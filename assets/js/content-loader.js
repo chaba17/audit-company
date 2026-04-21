@@ -613,16 +613,10 @@ try {
         <div class="chat-panel" role="dialog" aria-label="Chat channels">
           <div class="chat-panel-header">
             <strong>${escapeHTML(greeting)}</strong>
-            <div class="chat-panel-sub">${channels.length ? escapeHTML(T.pickApp) : escapeHTML(T.or)}</div>
+            <div class="chat-panel-sub">${escapeHTML(channels.length ? T.pickApp : T.or)}</div>
           </div>
           ${channels.length ? `
-            <div class="chat-tabs" role="tablist">
-              <button class="chat-tab is-active" role="tab" data-tab="apps" aria-selected="true">${escapeHTML(T.tabApps)}</button>
-              <button class="chat-tab" role="tab" data-tab="form" aria-selected="false">${escapeHTML(T.tabForm)}</button>
-            </div>
-          ` : ''}
-          ${channels.length ? `
-            <div class="chat-panel-channels" data-pane="apps">
+            <div class="chat-panel-channels">
               ${channels.map(ch => `
                 <a class="chat-channel" href="${ch.href}" target="_blank" rel="noopener noreferrer"
                    data-channel="${ch.key}"${ch.copy ? ` data-copy="${escapeHTML(ch.copy)}"` : ''}>
@@ -635,27 +629,34 @@ try {
               `).join('')}
             </div>
           ` : ''}
-          <form class="chat-form" data-pane="form"${channels.length ? ' hidden' : ''} novalidate>
-            <div class="chat-form-row">
-              <input type="text" name="name" required maxlength="120" placeholder="${escapeHTML(T.name)} *" autocomplete="name" />
-            </div>
-            <div class="chat-form-row">
-              <input type="email" name="email" required maxlength="200" placeholder="${escapeHTML(T.email)} *" autocomplete="email" />
-            </div>
-            <div class="chat-form-row">
-              <input type="tel" name="phone" maxlength="40" placeholder="${escapeHTML(T.phone)}" autocomplete="tel" />
-            </div>
-            <div class="chat-form-row">
-              <textarea name="message" rows="3" maxlength="5000" placeholder="${escapeHTML(T.message)}"></textarea>
-            </div>
-            <!-- honeypot -->
-            <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;width:1px;height:1px;" aria-hidden="true" />
-            <div class="chat-form-feedback" role="status" hidden></div>
-            <button type="submit" class="chat-form-submit">
-              <span class="chat-form-submit-text">${escapeHTML(T.send)}</span>
-              <span class="chat-form-submit-arrow">→</span>
-            </button>
-          </form>
+          <details class="chat-form-accordion"${channels.length ? '' : ' open'}>
+            <summary class="chat-form-summary">
+              <svg class="chat-form-summary-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              <span class="chat-form-summary-text">${escapeHTML(T.tabForm)}</span>
+              <svg class="chat-form-summary-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+            </summary>
+            <form class="chat-form" novalidate>
+              <div class="chat-form-row">
+                <input type="text" name="name" required maxlength="120" placeholder="${escapeHTML(T.name)} *" autocomplete="name" />
+              </div>
+              <div class="chat-form-row">
+                <input type="email" name="email" required maxlength="200" placeholder="${escapeHTML(T.email)} *" autocomplete="email" />
+              </div>
+              <div class="chat-form-row">
+                <input type="tel" name="phone" maxlength="40" placeholder="${escapeHTML(T.phone)}" autocomplete="tel" />
+              </div>
+              <div class="chat-form-row">
+                <textarea name="message" rows="3" maxlength="5000" placeholder="${escapeHTML(T.message)}"></textarea>
+              </div>
+              <!-- honeypot -->
+              <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;width:1px;height:1px;" aria-hidden="true" />
+              <div class="chat-form-feedback" role="status" hidden></div>
+              <button type="submit" class="chat-form-submit">
+                <span class="chat-form-submit-text">${escapeHTML(T.send)}</span>
+                <span class="chat-form-submit-arrow">→</span>
+              </button>
+            </form>
+          </details>
         </div>
       `;
       document.body.appendChild(root);
@@ -672,22 +673,6 @@ try {
       });
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && root.classList.contains('is-open')) togglePanel(false);
-      });
-
-      // Tab switching (apps vs form)
-      root.querySelectorAll('.chat-tab').forEach(tab => {
-        tab.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const target = tab.getAttribute('data-tab');
-          root.querySelectorAll('.chat-tab').forEach(t => {
-            const active = t === tab;
-            t.classList.toggle('is-active', active);
-            t.setAttribute('aria-selected', String(active));
-          });
-          root.querySelectorAll('[data-pane]').forEach(p => {
-            p.hidden = p.getAttribute('data-pane') !== target;
-          });
-        });
       });
 
       // WeChat fallback — copy ID to clipboard on click

@@ -2319,39 +2319,50 @@ body.nav-open { overflow: hidden; }
   white-space: nowrap;
 }
 
-/* Tabs (apps vs contact form) */
-.chat-tabs {
+/* Collapsible contact-form section — appears under the apps list */
+.chat-form-accordion {
+  border-top: 1px solid var(--color-gray-200, #e7e7ea);
+}
+.chat-form-accordion[open] .chat-form-summary-chevron { transform: rotate(180deg); }
+/* Remove the native triangle marker in all browsers */
+.chat-form-summary::-webkit-details-marker { display: none; }
+.chat-form-summary { list-style: none; }
+.chat-form-summary {
   display: flex;
-  padding: 0 8px;
-  background: var(--color-gray-50, #fafafc);
-  border-bottom: 1px solid var(--color-gray-200, #e7e7ea);
-}
-.chat-tab {
-  flex: 1;
-  padding: 11px 12px;
-  background: transparent;
-  border: none;
-  border-bottom: 2px solid transparent;
-  margin-bottom: -1px;
-  font: inherit;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--color-gray-500, #747480);
+  align-items: center;
+  gap: 10px;
+  padding: 13px 16px;
   cursor: pointer;
-  transition: color 0.15s ease, border-color 0.15s ease;
-}
-.chat-tab.is-active {
   color: var(--color-ink, #2e2e38);
-  border-bottom-color: var(--color-yellow, #FFE600);
+  font-weight: 600;
+  font-size: 14px;
+  user-select: none;
+  transition: background 0.12s ease;
 }
-.chat-tab:hover:not(.is-active) { color: var(--color-ink, #2e2e38); }
+.chat-form-summary:hover { background: var(--color-gray-50, #fafafc); }
+.chat-form-summary-icon { color: var(--color-gray-500, #747480); flex-shrink: 0; }
+.chat-form-summary-text { flex: 1; }
+.chat-form-summary-chevron {
+  color: var(--color-gray-500, #747480);
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
 
-/* Contact form inside the chat panel */
+/* Contact form itself */
 .chat-form {
-  padding: 14px 16px 16px;
+  padding: 4px 16px 16px;
   display: flex;
   flex-direction: column;
   gap: 9px;
+  animation: chat-form-in 0.18s ease;
+}
+@keyframes chat-form-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .chat-form { animation: none; }
+  .chat-form-summary-chevron { transition: none; }
 }
 .chat-form-row input,
 .chat-form-row textarea {
