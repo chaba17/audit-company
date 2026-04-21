@@ -1,6 +1,6 @@
 {
   "_test": true,
-  "_updated": "2026-04-21T17:51:42.578Z",
+  "_updated": "2026-04-21T17:52:23.506Z",
   "megaMenus": {
     "services": {
       "label": "სერვისები",
@@ -352,7 +352,7 @@
     "logoBlend": "lighten"
   },
   "hero": {
-    "tag": "Power - clarity - simplicity",
+    "tag": "ძალა - სიცხადე - სიმარტივე",
     "title": "Plan <mark>success</mark> - feel like never before!\nallooooo",
     "subtitle": "<p>We are here for you - audit, accounting, consulting and more...</p>",
     "primaryCta": {
