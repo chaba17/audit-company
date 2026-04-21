@@ -1,6 +1,6 @@
 {
   "_test": true,
-  "_updated": "2026-04-21T10:53:45.731Z",
+  "_updated": "2026-04-21T10:56:49.475Z",
   "megaMenus": {
     "services": {
       "label": "სერვისები",
@@ -363,7 +363,7 @@
       "text": "our services",
       "href": "services.html"
     },
-    "bgImage": "https://gubermangeo.com/assets/images/uploads/1776711003493-photo_2026-04-20_15-01-11.jpg",
+    "bgImage": "https://gubermangeo.com/assets/images/uploads/1776768978435-Gemini_Generated_Image_xgry8dxgry8dxgry.png",
     "i18n": {
       "en": {
         "tag": "ლამაზო ქვეყანავ რაზედ მოგიწყენია",
@@ -961,6 +961,14 @@
       "size": 214554,
       "type": "image/jpeg",
       "uploaded": 1776711002242
+    },
+    {
+      "name": "Gemini_Generated_Image_xgry8dxgry8dxgry.png",
+      "url": "https://gubermangeo.com/assets/images/uploads/1776768978435-Gemini_Generated_Image_xgry8dxgry8dxgry.png",
+      "path": "assets/images/uploads/1776768978435-Gemini_Generated_Image_xgry8dxgry8dxgry.png",
+      "size": 2158104,
+      "type": "image/png",
+      "uploaded": 1776768813873
     }
   ],
   "theme": {
