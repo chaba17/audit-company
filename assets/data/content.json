@@ -1,6 +1,6 @@
 {
   "_test": true,
-  "_updated": "2026-04-21T22:29:35.395Z",
+  "_updated": "2026-04-21T22:35:32.971Z",
   "megaMenus": {
     "services": {
       "label": "სერვისები",
@@ -352,7 +352,8 @@
     "logoBlend": "lighten",
     "chat": {
       "enabled": true,
-      "whatsapp": "+995599499927"
+      "whatsapp": "+995599499927",
+      "viber": "+995599499927"
     }
   },
   "hero": {
