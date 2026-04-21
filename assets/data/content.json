@@ -1,6 +1,6 @@
 {
   "_test": true,
-  "_updated": "2026-04-21T18:20:19.986Z",
+  "_updated": "2026-04-21T18:31:48.768Z",
   "megaMenus": {
     "services": {
       "label": "სერვისები",
@@ -370,7 +370,7 @@
         "primaryCta": {
           "text": "how we do it"
         },
-        "title": "Plan <mark>success</mark> - feel the power",
+        "title": "Plan success - feel the power",
         "subtitle": "Passion is energy. Feel the power that comes from focusing on what excites you. \nYou are the one who acts! We are here for you, enhancing your abilities.\nConsulting, financial accounting, auditing and more...",
         "secondaryCta": {
           "text": "our services"
