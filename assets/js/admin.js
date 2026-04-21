@@ -4211,21 +4211,25 @@ ${urls.map(u => `  <url>
     }
   }
 
-  // Client-side image optimizer:
-  // - Bitmap images over 500KB OR wider than 2000px → resized + reencoded as JPEG q=0.82
-  // - PNGs with transparency are detected and kept as PNG (canvas toBlob with image/png)
-  // - Everything else (SVG/GIF/small JPEG) passes through unchanged
-  // Goal: stop 2-10MB admin-uploaded bitmaps from becoming hero LCP weights.
-  async function maybeOptimizeImage(file) {
+  // Client-side image optimizer — upload pipeline:
+  // - Every bitmap image (PNG/JPEG/any raster) is transcoded to WebP q=0.8
+  //   and downsized to max 2000px wide. WebP handles alpha, so PNG
+  //   transparency is preserved and file size typically drops 30-70%.
+  // - SVG / GIF pass through unchanged (SVG is vector, GIF may be animated).
+  // - If the resulting WebP is larger than the original (rare), we keep the original.
+  // - If the browser can't encode WebP (ancient browser), we fall back to JPEG q=0.82.
+  // Goal: stop 2-10MB admin-uploaded bitmaps from becoming hero LCP weights and
+  // serve the smallest format browsers support universally in 2026 (WebP).
+  async function maybeOptimizeImage(file, { force = false } = {}) {
     if (!file.type || !file.type.startsWith('image/')) return file;
     if (/svg|gif/.test(file.type)) return file;
-    if (file.size < 500 * 1024) return file; // already small, skip
+    // Skip tiny files unless forced (Media Library batch mode)
+    if (!force && file.size < 250 * 1024) return file;
 
     try {
       const bmp = await (typeof createImageBitmap === 'function'
         ? createImageBitmap(file)
         : (async () => {
-            // Fallback via <img>
             const url = URL.createObjectURL(file);
             const img = await new Promise((resolve, reject) => {
               const i = new Image();
@@ -4246,35 +4250,44 @@ ${urls.map(u => `  <url>
       canvas.width = w;
       canvas.height = h;
       const ctx = canvas.getContext('2d');
-      // For PNGs-with-alpha we keep transparent bg; otherwise paint white so jpeg doesn't go black
-      const keepPNG = file.type === 'image/png';
-      if (!keepPNG) {
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, w, h);
-      }
+      // WebP preserves alpha, no white-fill needed.
       ctx.drawImage(bmp._img || bmp, 0, 0, w, h);
       if (bmp.close) bmp.close();
 
-      const outType = keepPNG ? 'image/png' : 'image/jpeg';
-      const outQuality = keepPNG ? undefined : 0.82;
-      const blob = await new Promise(res => canvas.toBlob(res, outType, outQuality));
+      // Try WebP first. If canvas.toBlob with image/webp returns null (browser
+      // doesn't support WebP encoding), fall back to JPEG.
+      let blob = await new Promise(res => canvas.toBlob(res, 'image/webp', 0.80));
+      let outType = 'image/webp';
+      let outExt = '.webp';
+      if (!blob) {
+        blob = await new Promise(res => {
+          // For JPEG fall-back paint white under any transparency
+          ctx.globalCompositeOperation = 'destination-over';
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, w, h);
+          canvas.toBlob(res, 'image/jpeg', 0.82);
+        });
+        outType = 'image/jpeg';
+        outExt = '.jpg';
+      }
       if (!blob) return file;
 
-      // Only replace if we actually made it smaller (heuristic: at least 20% smaller)
-      if (blob.size >= file.size * 0.8) return file;
+      // Only replace if meaningfully smaller (skip when already well-compressed)
+      if (!force && blob.size >= file.size * 0.9) return file;
 
-      const extMap = { 'image/jpeg': '.jpg', 'image/png': '.png' };
-      const origExt = (file.name.match(/\.[a-z0-9]+$/i) || [''])[0];
-      const newExt = extMap[outType] || origExt || '.jpg';
-      const newName = file.name.replace(/\.[^.]+$/, '') + newExt;
-      const optimized = new File([blob], newName, { type: outType });
-      toast(`🗜 ${file.name}: ${(file.size/1024/1024).toFixed(1)}MB → ${(blob.size/1024/1024).toFixed(2)}MB`, 'info', 3500);
+      const baseName = file.name.replace(/\.[^.]+$/, '');
+      const optimized = new File([blob], baseName + outExt, { type: outType });
+      const savedPct = Math.max(0, Math.round((1 - blob.size / file.size) * 100));
+      toast(`🗜 ${file.name} → ${outExt.slice(1).toUpperCase()} (${savedPct}% ნაკლები, ${(blob.size/1024).toFixed(0)}KB)`, 'info', 3500);
       return optimized;
     } catch (e) {
       console.warn('Image optimize failed, uploading original:', e);
       return file;
     }
   }
+
+  // Expose for Media Library's batch "Re-compress all" button
+  window.__maybeOptimizeImage = maybeOptimizeImage;
 
   async function uploadFile(originalFile) {
     const file = await maybeOptimizeImage(originalFile);
