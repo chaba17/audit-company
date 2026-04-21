@@ -2181,6 +2181,26 @@ body.nav-open { overflow: hidden; }
 }
 
 /* ==========================================================
+   PERF — content-visibility for below-the-fold sections
+   Tells the browser it can skip rendering + layout of off-screen
+   sections until they scroll close to the viewport. Huge render-time
+   win on mobile with a long homepage.
+   The contain-intrinsic-size avoids scrollbar jumping by reserving space.
+   ========================================================== */
+.section,
+.callout-bar,
+.footer {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 720px;
+}
+/* Don't apply to the hero or the very top section (they're ATF) */
+.hero,
+.hero-bg,
+.hero-content {
+  content-visibility: visible;
+}
+
+/* ==========================================================
    SEARCH OVERLAY — modal triggered by the header search button
    (wired up in main.js / initSearch).  Respects prefers-reduced-motion.
    ========================================================== */
