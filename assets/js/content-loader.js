@@ -552,7 +552,55 @@ try {
       });
     }
 
-    if (enabled && channels.length > 0 && !document.getElementById('chat-widget-root')) {
+    // Always show the contact form option (even if no channels configured) so
+    // the widget is useful from day one.
+    const showWidget = enabled;
+    if (showWidget && !document.getElementById('chat-widget-root')) {
+      const curLang = localStorage.getItem('lang') || 'ka';
+      const T = {
+        ka: {
+          pickApp: 'აირჩიე სასურველი აპლიკაცია',
+          or: 'ან დაწერე პირდაპირ',
+          tabApps: 'აპლიკაციები', tabForm: 'შეტყობინება',
+          name: 'სახელი', email: 'ელ. ფოსტა', phone: 'ტელეფონი', message: 'შეტყობინება',
+          send: 'გაგზავნა', sending: 'იგზავნება…',
+          success: 'მადლობა! ჩვენ დაგიკავშირდებით 24 საათში.',
+          errorValidation: 'გთხოვთ შეავსოთ სახელი და ელ.ფოსტა.',
+          errorRate: 'ძალიან ბევრი მცდელობა. სცადეთ მოგვიანებით.',
+          errorGeneric: 'ვერ გაიგზავნა. სცადეთ ცოტა ხანში.'
+        },
+        en: {
+          pickApp: 'Choose your preferred app', or: 'or send us a message',
+          tabApps: 'Apps', tabForm: 'Message',
+          name: 'Name', email: 'Email', phone: 'Phone', message: 'Message',
+          send: 'Send', sending: 'Sending…',
+          success: "Thanks! We'll get back to you within 24 hours.",
+          errorValidation: 'Please fill in your name and email.',
+          errorRate: 'Too many attempts. Please try again later.',
+          errorGeneric: 'Could not send. Please try again shortly.'
+        },
+        ru: {
+          pickApp: 'Выберите приложение', or: 'или напишите нам сообщение',
+          tabApps: 'Приложения', tabForm: 'Сообщение',
+          name: 'Имя', email: 'Email', phone: 'Телефон', message: 'Сообщение',
+          send: 'Отправить', sending: 'Отправка…',
+          success: 'Спасибо! Мы свяжемся с вами в течение 24 часов.',
+          errorValidation: 'Пожалуйста, заполните имя и email.',
+          errorRate: 'Слишком много попыток. Попробуйте позже.',
+          errorGeneric: 'Не удалось отправить. Попробуйте позже.'
+        },
+        he: {
+          pickApp: 'בחר את האפליקציה המועדפת', or: 'או שלח לנו הודעה',
+          tabApps: 'אפליקציות', tabForm: 'הודעה',
+          name: 'שם', email: 'אימייל', phone: 'טלפון', message: 'הודעה',
+          send: 'שלח', sending: 'שולח…',
+          success: 'תודה! נחזור אליכם תוך 24 שעות.',
+          errorValidation: 'נא מלא שם ואימייל.',
+          errorRate: 'יותר מדי ניסיונות. נסה שוב מאוחר יותר.',
+          errorGeneric: 'לא נשלח. נסה שוב מעט מאוחר יותר.'
+        }
+      }[curLang] || {};
+
       const root = document.createElement('div');
       root.id = 'chat-widget-root';
       root.className = 'chat-widget';
@@ -565,26 +613,54 @@ try {
         <div class="chat-panel" role="dialog" aria-label="Chat channels">
           <div class="chat-panel-header">
             <strong>${escapeHTML(greeting)}</strong>
-            <div class="chat-panel-sub">აირჩიე სასურველი აპლიკაცია</div>
+            <div class="chat-panel-sub">${channels.length ? escapeHTML(T.pickApp) : escapeHTML(T.or)}</div>
           </div>
-          <div class="chat-panel-channels">
-            ${channels.map(ch => `
-              <a class="chat-channel" href="${ch.href}" target="_blank" rel="noopener noreferrer"
-                 data-channel="${ch.key}"${ch.copy ? ` data-copy="${escapeHTML(ch.copy)}"` : ''}>
-                <span class="chat-channel-icon" style="background:${ch.bg}">${ch.icon}</span>
-                <span class="chat-channel-text">
-                  <strong>${escapeHTML(ch.label)}</strong>
-                  <span>${escapeHTML(ch.desc)}</span>
-                </span>
-              </a>
-            `).join('')}
-          </div>
+          ${channels.length ? `
+            <div class="chat-tabs" role="tablist">
+              <button class="chat-tab is-active" role="tab" data-tab="apps" aria-selected="true">${escapeHTML(T.tabApps)}</button>
+              <button class="chat-tab" role="tab" data-tab="form" aria-selected="false">${escapeHTML(T.tabForm)}</button>
+            </div>
+          ` : ''}
+          ${channels.length ? `
+            <div class="chat-panel-channels" data-pane="apps">
+              ${channels.map(ch => `
+                <a class="chat-channel" href="${ch.href}" target="_blank" rel="noopener noreferrer"
+                   data-channel="${ch.key}"${ch.copy ? ` data-copy="${escapeHTML(ch.copy)}"` : ''}>
+                  <span class="chat-channel-icon" style="background:${ch.bg}">${ch.icon}</span>
+                  <span class="chat-channel-text">
+                    <strong>${escapeHTML(ch.label)}</strong>
+                    <span>${escapeHTML(ch.desc)}</span>
+                  </span>
+                </a>
+              `).join('')}
+            </div>
+          ` : ''}
+          <form class="chat-form" data-pane="form"${channels.length ? ' hidden' : ''} novalidate>
+            <div class="chat-form-row">
+              <input type="text" name="name" required maxlength="120" placeholder="${escapeHTML(T.name)} *" autocomplete="name" />
+            </div>
+            <div class="chat-form-row">
+              <input type="email" name="email" required maxlength="200" placeholder="${escapeHTML(T.email)} *" autocomplete="email" />
+            </div>
+            <div class="chat-form-row">
+              <input type="tel" name="phone" maxlength="40" placeholder="${escapeHTML(T.phone)}" autocomplete="tel" />
+            </div>
+            <div class="chat-form-row">
+              <textarea name="message" rows="3" maxlength="5000" placeholder="${escapeHTML(T.message)}"></textarea>
+            </div>
+            <!-- honeypot -->
+            <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;width:1px;height:1px;" aria-hidden="true" />
+            <div class="chat-form-feedback" role="status" hidden></div>
+            <button type="submit" class="chat-form-submit">
+              <span class="chat-form-submit-text">${escapeHTML(T.send)}</span>
+              <span class="chat-form-submit-arrow">→</span>
+            </button>
+          </form>
         </div>
       `;
       document.body.appendChild(root);
 
       const fab = root.querySelector('.chat-fab');
-      const panel = root.querySelector('.chat-panel');
       const togglePanel = (force) => {
         const next = typeof force === 'boolean' ? force : !root.classList.contains('is-open');
         root.classList.toggle('is-open', next);
@@ -598,12 +674,74 @@ try {
         if (e.key === 'Escape' && root.classList.contains('is-open')) togglePanel(false);
       });
 
-      // WeChat needs copy-to-clipboard fallback (weixin:// only works if app installed)
+      // Tab switching (apps vs form)
+      root.querySelectorAll('.chat-tab').forEach(tab => {
+        tab.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const target = tab.getAttribute('data-tab');
+          root.querySelectorAll('.chat-tab').forEach(t => {
+            const active = t === tab;
+            t.classList.toggle('is-active', active);
+            t.setAttribute('aria-selected', String(active));
+          });
+          root.querySelectorAll('[data-pane]').forEach(p => {
+            p.hidden = p.getAttribute('data-pane') !== target;
+          });
+        });
+      });
+
+      // WeChat fallback — copy ID to clipboard on click
       root.querySelectorAll('[data-copy]').forEach(a => {
-        a.addEventListener('click', (e) => {
+        a.addEventListener('click', () => {
           const id = a.getAttribute('data-copy');
           if (navigator.clipboard) navigator.clipboard.writeText(id).catch(() => {});
         });
+      });
+
+      // Contact form submit — reuses /api/send-contact (Zoho SMTP)
+      const form = root.querySelector('.chat-form');
+      const feedback = form.querySelector('.chat-form-feedback');
+      const showFeedback = (msg, kind) => {
+        if (!feedback) return;
+        feedback.hidden = false;
+        feedback.textContent = msg;
+        feedback.classList.remove('is-success', 'is-error', 'is-info');
+        feedback.classList.add('is-' + (kind || 'info'));
+      };
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const data = Object.fromEntries(new FormData(form).entries());
+        if (!data.name || !data.email) {
+          showFeedback(T.errorValidation, 'error');
+          return;
+        }
+        const btn = form.querySelector('.chat-form-submit');
+        const btnText = btn.querySelector('.chat-form-submit-text');
+        const originalLabel = btnText.textContent;
+        btn.disabled = true;
+        btnText.textContent = T.sending;
+        showFeedback(T.sending, 'info');
+        try {
+          const res = await fetch('/api/send-contact', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ...data, source: 'chat-widget' })
+          });
+          const json = await res.json().catch(() => ({}));
+          if (res.ok && json.ok) {
+            showFeedback(T.success, 'success');
+            form.reset();
+          } else if (res.status === 429) {
+            showFeedback(T.errorRate, 'error');
+          } else {
+            showFeedback(json.error || T.errorGeneric, 'error');
+          }
+        } catch (_) {
+          showFeedback(T.errorGeneric, 'error');
+        } finally {
+          btn.disabled = false;
+          btnText.textContent = originalLabel;
+        }
       });
     }
   } catch (e) { console.warn('Chat widget render failed:', e); }
