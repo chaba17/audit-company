@@ -52,6 +52,29 @@ try {
           });
         }
       } catch (_) {}
+
+      // Inject favicon + apple-touch-icon tags synchronously from cache so
+      // the tab icon AND iOS home-screen icon are correct BEFORE DOMContentLoaded.
+      // Without this, iOS Safari's "Add to Home Screen" scanner may miss the
+      // apple-touch-icon (which is otherwise injected later by content-loader).
+      try {
+        const site = parsed.site || {};
+        const addLink = (rel, href) => {
+          if (!href) return;
+          // Avoid duplicates if the HTML already has this rel
+          if (document.head && document.head.querySelector(`link[rel="${rel}"]`)) {
+            document.head.querySelector(`link[rel="${rel}"]`).setAttribute('href', href);
+            return;
+          }
+          const l = document.createElement('link');
+          l.rel = rel;
+          l.href = href;
+          if (document.head) document.head.appendChild(l);
+        };
+        addLink('icon', site.favicon);
+        addLink('shortcut icon', site.favicon);
+        addLink('apple-touch-icon', site.appleTouchIcon || site.favicon);
+      } catch (_) {}
     }
   }
 } catch (_) { /* ignore cache errors */ }
