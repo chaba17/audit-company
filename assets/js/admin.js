@@ -4211,7 +4211,73 @@ ${urls.map(u => `  <url>
     }
   }
 
-  async function uploadFile(file) {
+  // Client-side image optimizer:
+  // - Bitmap images over 500KB OR wider than 2000px → resized + reencoded as JPEG q=0.82
+  // - PNGs with transparency are detected and kept as PNG (canvas toBlob with image/png)
+  // - Everything else (SVG/GIF/small JPEG) passes through unchanged
+  // Goal: stop 2-10MB admin-uploaded bitmaps from becoming hero LCP weights.
+  async function maybeOptimizeImage(file) {
+    if (!file.type || !file.type.startsWith('image/')) return file;
+    if (/svg|gif/.test(file.type)) return file;
+    if (file.size < 500 * 1024) return file; // already small, skip
+
+    try {
+      const bmp = await (typeof createImageBitmap === 'function'
+        ? createImageBitmap(file)
+        : (async () => {
+            // Fallback via <img>
+            const url = URL.createObjectURL(file);
+            const img = await new Promise((resolve, reject) => {
+              const i = new Image();
+              i.onload = () => resolve(i);
+              i.onerror = reject;
+              i.src = url;
+            });
+            URL.revokeObjectURL(url);
+            return { width: img.naturalWidth, height: img.naturalHeight, _img: img, close(){} };
+          })());
+
+      const maxW = 2000;
+      const scale = bmp.width > maxW ? maxW / bmp.width : 1;
+      const w = Math.round(bmp.width * scale);
+      const h = Math.round(bmp.height * scale);
+
+      const canvas = document.createElement('canvas');
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      // For PNGs-with-alpha we keep transparent bg; otherwise paint white so jpeg doesn't go black
+      const keepPNG = file.type === 'image/png';
+      if (!keepPNG) {
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, w, h);
+      }
+      ctx.drawImage(bmp._img || bmp, 0, 0, w, h);
+      if (bmp.close) bmp.close();
+
+      const outType = keepPNG ? 'image/png' : 'image/jpeg';
+      const outQuality = keepPNG ? undefined : 0.82;
+      const blob = await new Promise(res => canvas.toBlob(res, outType, outQuality));
+      if (!blob) return file;
+
+      // Only replace if we actually made it smaller (heuristic: at least 20% smaller)
+      if (blob.size >= file.size * 0.8) return file;
+
+      const extMap = { 'image/jpeg': '.jpg', 'image/png': '.png' };
+      const origExt = (file.name.match(/\.[a-z0-9]+$/i) || [''])[0];
+      const newExt = extMap[outType] || origExt || '.jpg';
+      const newName = file.name.replace(/\.[^.]+$/, '') + newExt;
+      const optimized = new File([blob], newName, { type: outType });
+      toast(`🗜 ${file.name}: ${(file.size/1024/1024).toFixed(1)}MB → ${(blob.size/1024/1024).toFixed(2)}MB`, 'info', 3500);
+      return optimized;
+    } catch (e) {
+      console.warn('Image optimize failed, uploading original:', e);
+      return file;
+    }
+  }
+
+  async function uploadFile(originalFile) {
+    const file = await maybeOptimizeImage(originalFile);
     toast(`ატვირთვა: ${file.name}...`, 'info', 2000);
     try {
       const base64 = await new Promise((resolve, reject) => {
