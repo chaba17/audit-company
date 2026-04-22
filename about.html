@@ -60,7 +60,7 @@ a{color:inherit;text-decoration:none}
 .hero h1{font-family:var(--font-display);font-size:clamp(36px,6vw,72px);line-height:1.05;font-weight:800;margin:0 0 24px;letter-spacing:-0.02em;color:#fff}
 .hero-sub{font-size:clamp(15px,1.4vw,18px);line-height:1.6;color:rgba(255,255,255,0.82);margin:0 0 36px;max-width:600px}
 .hero-actions{display:flex;gap:16px;flex-wrap:wrap}
-.highlight{color:var(--color-yellow);font-style:normal;white-space:nowrap}
+.highlight{position:relative;display:inline-block;z-index:1;padding:0 4px;font-style:normal;white-space:nowrap}.highlight::before{content:"";position:absolute;left:0;right:0;bottom:0.1em;height:0.5em;background:var(--color-yellow);z-index:-1}
 .btn{display:inline-flex;align-items:center;gap:10px;padding:14px 24px;font-weight:700;font-size:14px;text-decoration:none;border:none;cursor:pointer;transition:all 0.25s;border-radius:2px}
 .btn-lg{padding:18px 32px;font-size:16px}
 .btn-yellow{background:var(--color-yellow);color:var(--color-ink)}
@@ -71,8 +71,8 @@ a{color:inherit;text-decoration:none}
 @media(max-width:1100px){.nav{min-height:60px}.logo{padding:0 16px}.nav-toggle{display:inline-flex;align-items:center;min-height:60px;width:46px}.nav-menu{display:none}}
 @media(max-width:768px){.nav{min-height:56px}.logo{padding:0 12px}.nav-toggle{min-height:56px}.hero-content{padding:60px 0}.hero{min-height:65vh}}
 </style>
-  <link rel="preload" href="assets/css/style.css?v=1776813307" as="style" onload="this.onload=null;this.rel='stylesheet'" />
-  <noscript><link rel="stylesheet" href="assets/css/style.css?v=1776813307" /></noscript>
+  <link rel="preload" href="assets/css/style.css?v=1776851456" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link rel="stylesheet" href="assets/css/style.css?v=1776851456" /></noscript>
   <!-- critical-css-end -->
 </head>
 <body>
@@ -153,7 +153,7 @@ a{color:inherit;text-decoration:none}
         </div>
         <div class="col-6 reveal delay-1">
           <div class="split-img" style="aspect-ratio: 4/3;">
-            alt="Professional team working together in a modern office"  loading="lazy" decoding="async" width="900" height="563" />
+            <img src="https://images.unsplash.com/photo-1664575602554-2087b04935a5?auto=format&fit=crop&w=900&q=85" alt="Professional team working together in a modern office" loading="lazy" decoding="async" width="900" height="563" />
           </div>
         </div>
       </div>
@@ -244,9 +244,9 @@ a{color:inherit;text-decoration:none}
   </section>
 
   <div id="site-footer"></div>
-  <script defer src="assets/js/i18n.js?v=1776813307"></script>
-  <script defer src="assets/js/partials.js?v=1776813307"></script>
-  <script defer src="assets/js/main.js?v=1776813307"></script>
-  <script defer src="assets/js/content-loader.js?v=1776813307"></script>
+  <script defer src="assets/js/i18n.js?v=1776851456"></script>
+  <script defer src="assets/js/partials.js?v=1776851456"></script>
+  <script defer src="assets/js/main.js?v=1776851456"></script>
+  <script defer src="assets/js/content-loader.js?v=1776851456"></script>
 </body>
 </html>
