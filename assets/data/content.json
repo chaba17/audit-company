@@ -1,6 +1,6 @@
 {
   "_test": true,
-  "_updated": "2026-04-22T19:06:54.344Z",
+  "_updated": "2026-04-22T19:07:16.628Z",
   "megaMenus": {
     "services": {
       "label": "სერვისები",
@@ -348,7 +348,7 @@
     },
     "favicon": "https://gubermangeo.com/assets/images/uploads/1776884764472-guberman_favicon_64.png",
     "appleTouchIcon": "https://gubermangeo.com/assets/images/uploads/1776686619948-photo_2026-04-19_17-17-30.jpg",
-    "logoUrl": "https://gubermangeo.com/assets/images/uploads/1776686619948-photo_2026-04-19_17-17-30.jpg",
+    "logoUrl": "https://gubermangeo.com/assets/images/uploads/1776884764472-guberman_favicon_64.png",
     "logoBlend": "lighten",
     "chat": {
       "enabled": true,
