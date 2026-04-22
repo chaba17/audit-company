@@ -1,6 +1,6 @@
 {
   "_test": true,
-  "_updated": "2026-04-21T23:06:49.278Z",
+  "_updated": "2026-04-22T08:37:05.957Z",
   "megaMenus": {
     "services": {
       "label": "სერვისები",
@@ -357,9 +357,9 @@
     }
   },
   "hero": {
-    "tag": "ძალა - სიცხადე - სიმარტივე",
-    "title": "დაგეგმე წარმატება - იგრძენი ძალა",
-    "subtitle": "მისწრაფება ენერგიაა. იგრძენი ძალა, რომელიც იმ საქმეზე ფოკუსირებას მოაქვს, რაც აღგაფრთოვანებს.\nშენ ხარ ის, ვინც მოქმედებს! ჩვენ შენ გვერდით ვართ, ვაძლიერებთ შენს შესაძლებლობებს.\nკონსულტაცია, ფინანსური აღრიცხვა, აუდიტი და სხვა... ",
+    "tag": "შენი გამოცდილი პარტნიორი",
+    "title": "ეძიე სიცხადე - გაამარტივე წარმატება",
+    "subtitle": "მისწრაფება ენერგიაა. ეძიე სიცხადე, იგრძენი ძალა, რომელიც იმ საქმეზე ფოკუსირებას მოაქვს, რაც აღგაფრთოვანებს.\nშენ ხარ ის, ვინც მოქმედებს! ჩვენ შენ გვერდით ვართ, ვაძლიერებთ შენს შესაძლებლობებს.\nკონსულტაცია, ფინანსური აღრიცხვა, აუდიტი და სხვა... ",
     "primaryCta": {
       "text": "როგორ ვმუშაობთ",
       "href": "contact.html"
@@ -371,12 +371,12 @@
     "bgImage": "https://gubermangeo.com/assets/images/uploads/hero-optimized.webp",
     "i18n": {
       "en": {
-        "tag": "Power - clarity - simplicity",
+        "tag": "Your experienced partner",
         "primaryCta": {
           "text": "how we do it"
         },
-        "title": "Plan success - feel the power",
-        "subtitle": "Passion is energy. Feel the power that comes from focusing on what excites you. \nYou are the one who acts! We are here for you, enhancing your abilities.\nConsulting, financial accounting, auditing and more...",
+        "title": "Seek clarity - Simplify success",
+        "subtitle": "Passion is energy. Seek clarity, feel the power that comes from focusing on what excites you. \nYou are the one who acts! We are here for you, enhancing your abilities.\nConsulting, financial accounting, auditing and more...",
         "secondaryCta": {
           "text": "our services"
         }
@@ -991,7 +991,7 @@
     "successMessage": "მადლობა! დაგიკავშირდებით 24 საათში."
   },
   "search": {
-    "enabled": true,
+    "enabled": false,
     "placeholder": "მოძებნე სერვისი ან ინფორმაცია...",
     "noResultsText": "შედეგი ვერ მოიძებნა"
   },
