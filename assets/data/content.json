@@ -1,6 +1,6 @@
 {
   "_test": true,
-  "_updated": "2026-04-22T08:37:05.957Z",
+  "_updated": "2026-04-22T11:32:45.545Z",
   "megaMenus": {
     "services": {
       "label": "სერვისები",
@@ -358,8 +358,8 @@
   },
   "hero": {
     "tag": "შენი გამოცდილი პარტნიორი",
-    "title": "ეძიე სიცხადე - გაამარტივე წარმატება",
-    "subtitle": "მისწრაფება ენერგიაა. ეძიე სიცხადე, იგრძენი ძალა, რომელიც იმ საქმეზე ფოკუსირებას მოაქვს, რაც აღგაფრთოვანებს.\nშენ ხარ ის, ვინც მოქმედებს! ჩვენ შენ გვერდით ვართ, ვაძლიერებთ შენს შესაძლებლობებს.\nკონსულტაცია, ფინანსური აღრიცხვა, აუდიტი და სხვა... ",
+    "title": "გაამარტივე წარმატება",
+    "subtitle": "მისწრაფება ენერგიაა. იგრძენი ძალა, რომელიც იმ საქმეზე ფოკუსირებას მოაქვს, რაც აღგაფრთოვანებს.\nშენ ხარ ის, ვინც მოქმედებს! ჩვენ შენ გვერდით ვართ, ვაძლიერებთ შენს შესაძლებლობებს. სიცხადით ვამარცხებთ ქაოსს.\nკონსულტაცია, ფინანსური აღრიცხვა, აუდიტი და სხვა... ",
     "primaryCta": {
       "text": "როგორ ვმუშაობთ",
       "href": "contact.html"
@@ -375,8 +375,8 @@
         "primaryCta": {
           "text": "how we do it"
         },
-        "title": "Seek clarity - Simplify success",
-        "subtitle": "Passion is energy. Seek clarity, feel the power that comes from focusing on what excites you. \nYou are the one who acts! We are here for you, enhancing your abilities.\nConsulting, financial accounting, auditing and more...",
+        "title": "Simplify success",
+        "subtitle": "Passion is energy. Seek clarity, feel the power that comes from focusing on what excites you. \nYou are the one who acts! We are here for you, enhancing your abilities. Dominate over chaos with clarity.\nConsulting, financial accounting, auditing and more...",
         "secondaryCta": {
           "text": "our services"
         }
