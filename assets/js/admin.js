@@ -1139,6 +1139,25 @@
             </select>
             <small class="hint">თუ ლოგო JPG-ია თეთრი ფონით — აირჩიე <strong>Multiply</strong>, თეთრი ფონი გაქრება და ბნელ header-ში გაერევა. გამჭვირვალე PNG-ისთვის დატოვე ცარიელი.</small>
           </div>
+          <div class="form-group">
+            <label>Footer Logo URL (ფუტერის ლოგო — არასავალდებულო)</label>
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <input type="url" data-field="site.footerLogoUrl" data-url-preview="footer-logo-preview" value="${escapeHtml(s.footerLogoUrl || '')}" placeholder="https://gubermangeo.com/assets/images/uploads/logo-light.png" style="flex: 1;" />
+              <img id="footer-logo-preview" src="${escapeHtml(s.footerLogoUrl || '')}" class="url-preview" data-original="${escapeHtml(s.footerLogoUrl || '')}" style="max-height: 40px; border: 1px solid var(--gray-200); background: var(--ink); object-fit: contain; display: ${s.footerLogoUrl ? 'block' : 'none'};" alt="" />
+            </div>
+            <small class="hint">💡 ფუტერის ფონი მუქია — საუკეთესოა <strong>ღია/თეთრი ვარიანტი</strong> PNG გამჭვირვალე ფონით. თუ ცარიელია, გამოიყენება ჰედერის ლოგო.</small>
+          </div>
+          <div class="form-group">
+            <label>Footer Logo Blend Mode</label>
+            <select data-field="site.footerLogoBlend" style="max-width: 280px;">
+              <option value="" ${!s.footerLogoBlend ? 'selected' : ''}>— არაფერი (გამჭვირვალე PNG/SVG) —</option>
+              <option value="multiply" ${s.footerLogoBlend === 'multiply' ? 'selected' : ''}>Multiply (თეთრი ფონი გაქრება)</option>
+              <option value="screen" ${s.footerLogoBlend === 'screen' ? 'selected' : ''}>Screen (შავი ფონი გაქრება)</option>
+              <option value="lighten" ${s.footerLogoBlend === 'lighten' ? 'selected' : ''}>Lighten</option>
+              <option value="darken" ${s.footerLogoBlend === 'darken' ? 'selected' : ''}>Darken</option>
+            </select>
+            <small class="hint">იგივე წესი რაც ჰედერის ლოგოსთვის — JPG-თვის თეთრი ფონით აირჩიე Screen (ფუტერი მუქია).</small>
+          </div>
         </div>
       </div>
 

@@ -368,13 +368,21 @@ function renderFooter() {
   const tagline = site.tagline || 'Shape the future<br>with confidence';
   const social = site.social || {};
   const socialLink = (url) => (url && url !== '#') ? url : '#';
+  // Footer logo: independent from header (often a light/white variant).
+  // Falls back to header logoUrl, then to text mark.
+  const footerLogoUrl = site.footerLogoUrl || site.logoUrl || '';
+  const footerLogoBlend = site.footerLogoBlend || '';
+  const footerLogoBlendClass = footerLogoBlend ? ` blend-${footerLogoBlend}` : '';
+  const footerLogoInner = footerLogoUrl
+    ? `<img src="${footerLogoUrl}" alt="${siteName}" class="logo-img${footerLogoBlendClass}" />`
+    : `<div class="logo-wrap"><span class="logo-ey">${siteName}</span></div>`;
   return `
     <footer class="footer">
       <div class="container">
         <div class="footer-top">
           <div class="footer-about">
             <a href="${basePath}index.html" class="logo">
-              <div class="logo-wrap"><span class="logo-ey">${siteName}</span></div>
+              ${footerLogoInner}
               <span class="logo-tagline" style="color: rgba(255,255,255,0.6);">${tagline}</span>
             </a>
             <p data-i18n="footer.about" style="margin-top: 20px;"></p>

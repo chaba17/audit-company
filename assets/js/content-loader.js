@@ -442,8 +442,10 @@ try {
       }
       if (heroSubtitle && hero.subtitle) heroSubtitle.textContent = hero.subtitle;
 
-      // Mission block (second .section)
-      const missionSection = document.querySelectorAll('.section')[1];
+      // Mission block — targeted via data-about-section for stability
+      // (was previously index-based which broke when sections were added/removed).
+      const missionSection = document.querySelector('[data-about-section="mission"]')
+        || document.querySelectorAll('.section')[0];
       if (missionSection) {
         const mEyebrow = missionSection.querySelector('.eyebrow');
         const mTitle = missionSection.querySelector('h2.display');
@@ -468,9 +470,9 @@ try {
         }
       }
 
-      // History block (third .section — timeline)
-      const historySections = document.querySelectorAll('.section.bg-soft');
-      const historySection = historySections[0]; // first bg-soft after mission
+      // History block — timeline
+      const historySection = document.querySelector('[data-about-section="history"]')
+        || document.querySelectorAll('.section.bg-soft')[0];
       if (historySection) {
         const hEyebrow = historySection.querySelector('.eyebrow');
         const hTitle = historySection.querySelector('h2.display');
@@ -488,8 +490,9 @@ try {
         }
       }
 
-      // Values block (fourth .section — services-grid style cards)
-      const valuesSection = document.querySelectorAll('.section')[3];
+      // Values block — services-grid style cards
+      const valuesSection = document.querySelector('[data-about-section="values"]')
+        || document.querySelectorAll('.section')[2];
       if (valuesSection) {
         const vEyebrow = valuesSection.querySelector('.eyebrow');
         const vTitle = valuesSection.querySelector('h2.display');
@@ -1070,7 +1073,8 @@ try {
 
   // Team (about page) — fully dynamic, re-renders the whole grid
   if (location.pathname.includes('about') && content.team?.length) {
-    const teamSection = document.querySelector('.section.bg-soft .insights-grid');
+    const teamSection = document.querySelector('[data-about-section="team"] .insights-grid')
+      || document.querySelector('.section.bg-soft .insights-grid');
     if (teamSection) {
       teamSection.innerHTML = content.team.map((m, i) => `
         <div class="insight-card reveal visible ${i > 0 ? 'delay-' + Math.min(i, 3) : ''}">
