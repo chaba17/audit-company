@@ -1,6 +1,6 @@
 {
   "_test": true,
-  "_updated": "2026-05-05T14:34:42.010Z",
+  "_updated": "2026-05-05T14:37:06.187Z",
   "megaMenus": {
     "services": {
       "label": "სერვისები",
@@ -625,8 +625,8 @@
     "plans": [
       {
         "name": "სტარტერი",
-        "description": "ახალი ინდმეწარმისთვის და მცირე ბიზნესისთვის",
-        "price": "150",
+        "description": "ახალი ინდმეწარმისთვის  მცირე ბიზნესისთვის",
+        "price": "5000",
         "currency": "₾",
         "featured": false,
         "features": [
